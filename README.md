@@ -5,7 +5,7 @@ Env Setup : https://reactnative.dev/docs/environment-setup
 <ol>
   <li>
     Clone the repository
-    <p><code>git pull https://github.com/Project-Based-Learning-IT/CollegeSpace.git</code></p>
+    <p><code>git clone https://github.com/Project-Based-Learning-IT/CollegeSpace.git</code></p>
   </li>
   <li>
     Navigate to the cloned repository
