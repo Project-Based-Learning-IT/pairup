@@ -4,5 +4,5 @@ module.exports = {
   singleQuote: true,
   trailingComma: 'all',
   arrowParens: 'avoid',
-  // endOfLine: 'auto', //Handle line endings in windows
+  endOfLine: 'auto', //Handle line endings in windows
 };

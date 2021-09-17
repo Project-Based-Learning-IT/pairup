@@ -34,13 +34,7 @@ const App = () => {
           backgroundColor="transparent"
           translucent
         />
-        <View
-          style={{
-            flex: 1,
-            padding: 15,
-            paddingTop: 40,
-            backgroundColor: '#ffffff',
-          }}>
+        <View style={styles.dashboardView}>
           <Text style={styles.dashboardText}>Discover</Text>
         </View>
       </SafeAreaView>
@@ -52,6 +46,12 @@ const styles = StyleSheet.create({
   dashboardText: {
     fontSize: 35,
     fontWeight: 'bold',
+  },
+  dashboardView: {
+    flex: 1,
+    padding: 15,
+    paddingTop: 40,
+    backgroundColor: '#ffffff',
   },
 });
 
