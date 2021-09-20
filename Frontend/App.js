@@ -7,51 +7,84 @@
  */
 
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import Discover from './components/Discover';
+import Messages from './components/Messages';
+import Profile from './components/Profile';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Feather from 'react-native-vector-icons/Feather';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+const Tab = createBottomTabNavigator();
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.black : Colors.black,
-  };
-
   return (
-    <>
-      <SafeAreaView style={{flex: 0}} />
-      <SafeAreaView style={{flex: 1}}>
-        <StatusBar
-          barStyle={'dark-content'}
-          backgroundColor="transparent"
-          translucent
+    <NavigationContainer>
+      <StatusBar
+        barStyle={'dark-content'}
+        backgroundColor="transparent"
+        translucent
+      />
+      <Tab.Navigator
+        initialRouteName="Discover"
+        screenOptions={({route}) => ({
+          tabBarIcon: ({focused, color, size}) => {
+            if (route.name === 'Discover') {
+              return (
+                <View style={focused ? styles.focussedTabButton : {}}>
+                  <Feather
+                    name={focused ? 'compass' : 'compass'}
+                    size={size}
+                    color={color}
+                  />
+                </View>
+              );
+            }
+            if (route.name === 'Messages') {
+              return (
+                <View style={focused ? styles.focussedTabButton : {}}>
+                  <Feather
+                    name={focused ? 'message-circle' : 'message-circle'}
+                    size={size}
+                    color={color}
+                  />
+                </View>
+              );
+            }
+            if (route.name === 'Profile') {
+              return (
+                <View style={focused ? styles.focussedTabButton : {}}>
+                  <MaterialCommunityIcons
+                    name={focused ? 'account-outline' : 'account-outline'}
+                    size={size}
+                    color={color}
+                  />
+                </View>
+              );
+            }
+          },
+          tabBarActiveTintColor: '#F65E7E',
+          tabBarInactiveTintColor: 'gray',
+          tabBarShowLabel: false,
+        })}>
+        <Tab.Screen
+          name="Discover"
+          component={Discover}
+          options={{headerShown: false}}
         />
-        <View style={styles.dashboardView}>
-          <Text style={styles.dashboardText}>Discover</Text>
-        </View>
-      </SafeAreaView>
-    </>
+        <Tab.Screen name="Messages" component={Messages} />
+        <Tab.Screen name="Profile" component={Profile} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  dashboardText: {
-    fontSize: 35,
-    fontWeight: 'bold',
-  },
-  dashboardView: {
-    flex: 1,
-    padding: 15,
-    paddingTop: 40,
-    backgroundColor: '#ffffff',
+  focussedTabButton: {
+    padding: 6,
+    borderRadius: 50,
+    backgroundColor: '#F4F4F4',
   },
 });
 
