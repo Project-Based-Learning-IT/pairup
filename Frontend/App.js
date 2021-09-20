@@ -22,9 +22,8 @@ const App = () => {
   return (
     <NavigationContainer>
       <StatusBar
-        barStyle={'dark-content'}
-        backgroundColor="transparent"
-        translucent
+        barStyle={'lignt-content'}
+        backgroundColor="#C30F31"
       />
       <Tab.Navigator
         initialRouteName="Discover"
