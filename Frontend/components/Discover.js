@@ -1,10 +1,18 @@
-import {View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  StatusBar,
+} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Card from './Card';
 import Swiper from 'react-native-deck-swiper';
 import OverlayLabel from './OverlayLabel';
+import FocusAwareStatusBar from './FocusAwareStatusBar';
 
 // TODO: Delete the following data
 const cards = [
@@ -33,13 +41,13 @@ function Discover() {
   const [index, setIndex] = React.useState(0);
   const [swipedAll, setSwipedAll] = React.useState(cards.length === 0);
 
-  const onSwipedLeft = (index) => {
-    console.log(index, "Left")
+  const onSwipedLeft = index => {
+    console.log(index, 'Left');
     setIndex(index + 1);
   };
 
-  const onSwipedRight = (index) => {
-    console.log(index, "Right")
+  const onSwipedRight = index => {
+    console.log(index, 'Right');
     setIndex(index + 1);
   };
 
@@ -47,7 +55,7 @@ function Discover() {
     setSwipedAll(true);
   };
 
-  const undo = (ref) => {
+  const undo = ref => {
     ref.current.jumpToCardIndex(0);
     setIndex(0);
     setSwipedAll(false);
@@ -55,6 +63,9 @@ function Discover() {
 
   return (
     <View style={styles.container}>
+      {/* A status bar which changes color based on the tab selected */}
+      <FocusAwareStatusBar backgroundColor="#C30F31" barStyle="light-content" />
+
       {/* Absolute positioned discover background (which is supposed to use gradient) */}
       <View style={styles.discoverBackground}></View>
 
@@ -64,7 +75,7 @@ function Discover() {
       </View>
 
       {/* Main content with swipe cards */}
-      <View style={{height: height-250, alignSelf: 'stretch'}}>
+      <View style={{height: height - 250, alignSelf: 'stretch'}}>
         <Swiper
           ref={swiperRef}
           onSwipedLeft={onSwipedLeft}
@@ -75,7 +86,7 @@ function Discover() {
           backgroundColor="transparent"
           cards={cards}
           cardIndex={index}
-          renderCard={(card) => <Card card={card}/>}
+          renderCard={card => <Card card={card} />}
           stackSize={5}
           stackScale={4}
           stackSeparation={8}
@@ -107,28 +118,27 @@ function Discover() {
                 },
               },
             },
-          }}
-        >
-        </Swiper>
+          }}></Swiper>
       </View>
 
       <View style={styles.bottomOptionsContainer}>
-        <TouchableOpacity 
-          style={styles.bottomOption}
-          onPress={() => index < cards.length && swiperRef.current.swipeLeft()}
-        >
-          <MaterialCommunityIcons name="close" size={36} color="gray" />
-        </TouchableOpacity>
-        {swipedAll && <TouchableOpacity
-          style={styles.bottomOption}
-          onPress={() =>  index > 0 && undo(swiperRef)}
-        >
-          <MaterialCommunityIcons name="refresh" size={36} color="#FF9500" />
-        </TouchableOpacity>}
         <TouchableOpacity
           style={styles.bottomOption}
-          onPress={() => index < cards.length && swiperRef.current.swipeRight()}
-        >
+          onPress={() => index < cards.length && swiperRef.current.swipeLeft()}>
+          <MaterialCommunityIcons name="close" size={36} color="gray" />
+        </TouchableOpacity>
+        {swipedAll && (
+          <TouchableOpacity
+            style={styles.bottomOption}
+            onPress={() => index > 0 && undo(swiperRef)}>
+            <MaterialCommunityIcons name="refresh" size={36} color="#FF9500" />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          style={styles.bottomOption}
+          onPress={() =>
+            index < cards.length && swiperRef.current.swipeRight()
+          }>
           <MaterialCommunityIcons name="heart" size={36} color="#FF375F" />
         </TouchableOpacity>
       </View>
@@ -136,7 +146,7 @@ function Discover() {
   );
 }
 
-const { height } = Dimensions.get('window')
+const {height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
