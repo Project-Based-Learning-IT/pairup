@@ -1,4 +1,4 @@
-package com.awesomeproject;
+package com.pbl.collegespace;
 
 import com.facebook.react.ReactActivity;
 import android.os.Bundle;
@@ -18,4 +18,12 @@ public class MainActivity extends ReactActivity {
     protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(null);
   }
+
+  // @Override
+  // protected List<ReactPackage> getPackages() {
+  //   return Arrays.<ReactPackage>asList(
+  //       new MainReactPackage(),
+  //       new RNGoogleSigninPackage() // <-- this needs to be in the list
+  //   );
+  // }
 }
