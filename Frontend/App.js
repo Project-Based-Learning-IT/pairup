@@ -1,13 +1,5 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React from 'react';
-import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
+import React, {useContext} from 'react';
+import {StatusBar, StyleSheet, View, Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import Discover from './components/Discover';
 import Messages from './components/Messages';
@@ -17,105 +9,194 @@ import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   GoogleSignin,
-  GoogleSigninButton,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import SplashScreen from './components/SplashScreen';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import GoogleLogin from './components/GoogleLogin';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+const AuthContext = React.createContext();
+
+function useAuth() {
+  return useContext(AuthContext);
+}
 
 const Tab = createBottomTabNavigator();
+const LoggedOutStack = createNativeStackNavigator();
 
 const App = () => {
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isSignedIn, setIsSignedIn] = React.useState(false);
+  const [user, setUser] = React.useState({});
+
+  const signIn = async () => {
+    try {
+      const userInfo = await GoogleSignin.signIn();
+
+      if(userInfo.user.email.split('@')[1] === 'viit.ac.in'){
+        setUser(userInfo);
+        setIsSignedIn(true);
+      }
+      else {
+        GoogleSignin.revokeAccess();
+        Alert.alert(
+          'Sign In failed',
+          'You are not a student of VIIT'
+        );
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      await GoogleSignin.signOut();
+      setIsSignedIn(false);
+      setUser({});
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   React.useEffect(async () => {
     try {
-      GoogleSignin.configure({
-        // scopes: [
-          // 'https://www.googleapis.com/auth/userinfo.email',
-          // 'https://www.googleapis.com/auth/userinfo.profile'
-        // ], // what API you want to access on behalf of the user, default is email and profile
-        // webClientId: '394579027980-pcr6jtjponhlh7spf5t04oaek4ht8e2s.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-        // offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-        // hostedDomain: '', // specifies a hosted domain restriction
-        // loginHint: '', // [iOS] The user's ID, or email address, to be prefilled in the authentication UI if possible. [See docs here](https://developers.google.com/identity/sign-in/ios/api/interface_g_i_d_sign_in.html#a0a68c7504c31ab0b728432565f6e33fd)
-        // forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-        // accountName: '', // [Android] specifies an account name on the device that should be used
-        // iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-        // googleServicePlistPath: '', // [iOS] optional, if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
-      });
+      setIsLoading(true);
+
+      GoogleSignin.configure({});
       await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      // this.setState({ userInfo });
-      console.log('userInfo', userInfo);
 
-      const isSignedIn = await GoogleSignin.isSignedIn();
+      const loggedInState = await GoogleSignin.isSignedIn();
+      console.log('loggedInState', loggedInState)
 
-      console.log(isSignedIn)
+      if(loggedInState) {
+        const userInfo = await GoogleSignin.signInSilently();
+        setUser(userInfo);
+        setIsSignedIn(loggedInState);
+      }
+
+      // TODO: Remove this fake splash screen
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 0);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
+        console.log('SIGN_IN_CANCELLED');
       } else if (error.code === statusCodes.IN_PROGRESS) {
         // operation (e.g. sign in) is in progress already
+        console.log('IN_PROGRESS');
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         // play services not available or outdated
+        console.log('PLAY_SERVICES_NOT_AVAILABLE');
       } else {
         // some other error happened
+        console.log('some other error happened');
       }
+      setIsLoading(false);
     }
   }, []);
 
+  if(isLoading) {
+    console.log('Loading')
+    return (
+      <SplashScreen></SplashScreen>
+    )
+  }
+
   return (
-    <NavigationContainer>
-      <StatusBar barStyle={'dark-content'} backgroundColor={'#fff'} />
-      <Tab.Navigator
-        initialRouteName="Discover"
-        screenOptions={({route}) => ({
-          tabBarIcon: ({focused, color, size}) => {
-            if (route.name === 'Discover') {
-              return (
-                <View style={focused ? styles.focussedTabButton : {}}>
-                  <Feather
-                    name={focused ? 'compass' : 'compass'}
-                    size={size}
-                    color={color}
-                  />
-                </View>
-              );
-            }
-            if (route.name === 'Messages') {
-              return (
-                <View style={focused ? styles.focussedTabButton : {}}>
-                  <Feather
-                    name={focused ? 'message-circle' : 'message-circle'}
-                    size={size}
-                    color={color}
-                  />
-                </View>
-              );
-            }
-            if (route.name === 'Profile') {
-              return (
-                <View style={focused ? styles.focussedTabButton : {}}>
-                  <MaterialCommunityIcons
-                    name={focused ? 'account-outline' : 'account-outline'}
-                    size={size}
-                    color={color}
-                  />
-                </View>
-              );
-            }
-          },
-          tabBarActiveTintColor: '#F65E7E',
-          tabBarInactiveTintColor: 'gray',
-          tabBarShowLabel: false,
-        })}>
-        <Tab.Screen
-          name="Discover"
-          component={Discover}
-          options={{headerShown: false}}
-        />
-        <Tab.Screen name="Messages" component={Messages} />
-        <Tab.Screen name="Profile" component={Profile} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider style={{ flex: 1}}>
+    <AuthContext.Provider
+      value={{
+        isSignedIn,
+        isLoading,
+        signIn,
+        user,
+        setUser,
+        signOut,
+      }}
+    >
+      <NavigationContainer>
+        <StatusBar barStyle={'dark-content'} backgroundColor='transparent' translucent={true}/>
+        {!isSignedIn && (
+          <LoggedOutStack.Navigator>
+            <LoggedOutStack.Screen
+              name="GoogleLogin"
+              component={GoogleLogin}
+              options={{headerShown: false}}
+            >
+            </LoggedOutStack.Screen>
+          </LoggedOutStack.Navigator>
+        )}
+        {isSignedIn && (
+          <Tab.Navigator
+            initialRouteName="Profile"
+            screenOptions={({route}) => ({
+              tabBarIcon: ({focused, color, size}) => {
+                if (route.name === 'Discover') {
+                  return (
+                    <View style={focused ? styles.focussedTabButton : {}}>
+                      <Feather
+                        name={focused ? 'compass' : 'compass'}
+                        size={size}
+                        color={color}
+                      />
+                    </View>
+                  );
+                }
+                if (route.name === 'Messages') {
+                  return (
+                    <View style={focused ? styles.focussedTabButton : {}}>
+                      <Feather
+                        name={focused ? 'message-circle' : 'message-circle'}
+                        size={size}
+                        color={color}
+                      />
+                    </View>
+                  );
+                }
+                if (route.name === 'Profile') {
+                  return (
+                    <View style={focused ? styles.focussedTabButton : {}}>
+                      <MaterialCommunityIcons
+                        name={focused ? 'account-outline' : 'account-outline'}
+                        size={size}
+                        color={color}
+                      />
+                    </View>
+                  );
+                }
+              },
+              tabBarActiveTintColor: '#F65E7E',
+              tabBarInactiveTintColor: 'gray',
+              tabBarShowLabel: false,
+            })}>
+            <Tab.Screen
+              name="Discover"
+              component={Discover}
+              options={{
+                headerShown: false
+              }}
+            />
+            <Tab.Screen 
+              name="Messages"
+              component={Messages} 
+            />
+            <Tab.Screen 
+              name="Profile"
+              component={Profile}
+              options={{
+                headerShown: false
+              }}
+            />
+          </Tab.Navigator>
+        )}
+      </NavigationContainer>
+    </AuthContext.Provider>
+    </SafeAreaProvider>
   );
 };
 
@@ -127,4 +208,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export {App, useAuth};
