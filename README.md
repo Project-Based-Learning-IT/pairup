@@ -1,4 +1,5 @@
 
+
 # CollegeSpace
 
 <li>
@@ -51,6 +52,8 @@ Install requirements if not done already
 https://console.clever-cloud.com/
 Same email and password
 * Documentation: https://flask-sqlalchemy.palletsprojects.com/en/2.x/
+* To start flask server <br>
+`python app.py`
 
 ### Heroku
 
