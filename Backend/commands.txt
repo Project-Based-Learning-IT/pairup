@@ -1,0 +1,105 @@
+pip install virtualenv
+virtualenv env          
+if scripts or virtulenv is not executing then use this command in powershell admin
+Set-ExecutionPolicy unrestricted 
+enter A
+In another powershell terminal 
+ .\env\Scripts\activate.ps1 or .bat for cmd
+env at start appears 
+To deactivate virtual environment use deactivate
+
+pip install flask
+
+
+for database
+with env at start
+pip install flask-sqlalchemy
+
+SQLALCHEMY_DATABASE_URI
+mysql://username:password@server/db
+mysql://root:12345@localhost/db_name
+
+// to create database using python
+pip install mysql-connector
+pip install mysql-connector-python
+import mysql.connector
+
+mydb = mysql.connector.connect(
+	host="localhost",
+	user="root",
+	passwd = "password123",
+	)
+
+my_cursor = mydb.cursor()
+
+#my_cursor.execute("CREATE DATABASE our_users")
+
+my_cursor.execute("SHOW DATABASES")
+for db in my_cursor:
+	print(db)
+
+
+sqlalchemy needs mysqldb like connector
+pip install mysqlclient
+change uri to mysql+mysqldb://<user>:<password>@<host>[:<port>]/<dbname>
+
+OR other pymysql
+pip install pymsql
+pip install cryptography
+change uri to mysql+pymysql://<username>:<password>@<host>/<dbname>[?<options>]
+
+to create .db file for sqlite viewer or for mysql
+in terminal
+python or winpty python
+from app(or sqlalchemy filename) import db
+db.create_all()
+exit()
+
+https://flask-sqlalchemy.palletsprojects.com/en/2.x/
+
+flask run
+
+# HEROKU
+heroku login
+
+pip install gunicorn
+pip freeze > requirements.txt
+Procfile
+web: gunicorn app:app
+(space is there)
+
+
+add heroku from program files in path if not automatically added by heroku (restart if required)
+
+check by heroku command
+heroku login
+press any key
+log in
+
+install git
+
+// optional if repo is already present
+git init
+git add .
+git commit -m "Initial commmit"
+
+heroku create todo-codewithharry
+git remote -v
+git push heroku master
+
+
+for errors 
+heroku logs --tail
+
+
+to check logs of heroku cli - 
+heroku logs --app appname_on_heroku
+
+
+# Database clever cloud information
+Get URI after login
+
+
+Use PhpMyadmin
+https://console.clever-cloud.com/
+Same email and password
