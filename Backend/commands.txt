@@ -92,7 +92,7 @@ for errors
 heroku logs --tail
 
 
-to check logs of heroku cli - 
+to check logs on heroku cli - 
 heroku logs --app appname_on_heroku
 
 
