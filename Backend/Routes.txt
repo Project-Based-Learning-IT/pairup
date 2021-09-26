@@ -1,0 +1,14 @@
+1. Verify login
+2. Add user
+3. Update name
+4. Update experience
+5. Update projects
+6. Update skills
+7. Update contact
+8. Update About - has bio, headline, requirements
+9. Update Social URLs
+10. Fetch messages
+11. Add message
+12. Fetch recommendations
+13. Add Bloom filters
+14. Update Bloom filter
