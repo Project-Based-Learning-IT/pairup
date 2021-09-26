@@ -45,6 +45,7 @@ Install requirements if not done already
 
     pip install flask
     pip install flask-sqlalchemy
+    pip install mysqlclient
     [Model training packages]
  Install a python formatter in VSCode outside of virtual environment
  <br>
