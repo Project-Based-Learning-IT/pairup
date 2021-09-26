@@ -14,8 +14,11 @@ import {
 import SplashScreen from './components/SplashScreen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import GoogleLogin from './components/GoogleLogin';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import LinkedinLogin from './components/LinkedinLogin';
+import GetStarted from './components/GetStarted';
+import SignUp from './components/SignUp';
+import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 
 const AuthContext = React.createContext();
 
@@ -23,10 +26,18 @@ function useAuth() {
   return useContext(AuthContext);
 }
 
-const CLIENT_ID = '78mt8ifqn5yg9n';
-const urlEncoded = 'https%3A%2F%2Fwww.google.com';
-const redirectUrl = 'https://www.google.com';
-const CLIENT_SECRET = 'qp0rG6VQXZyB1ZoN'
+const theme = {
+  ...DefaultTheme,
+  roundness: 6,
+  dark: false,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#2840C6',
+    primaryDark: '#001a94',
+    accent: '#f1c40f',
+    dimText: '#b0bec5',
+  },
+};
 
 const Tab = createBottomTabNavigator();
 const LoggedOutStack = createNativeStackNavigator();
@@ -38,28 +49,19 @@ const App = () => {
 
   const signInWithGoogle = async () => {
     try {
+      if (GoogleSignin.isSignedIn()) {
+        GoogleSignin.signOut();
+      }
       const userInfo = await GoogleSignin.signIn();
 
-      if(userInfo.user.email.split('@')[1] === 'viit.ac.in'){
+      if (userInfo.user.email.split('@')[1] === 'viit.ac.in') {
         return userInfo;
-      }
-      else {
-        GoogleSignin.revokeAccess();
-        Alert.alert(
-          'Sign In failed',
-          'You are not a student of VIIT'
-        );
+      } else {
+        await GoogleSignin.revokeAccess();
+        Alert.alert('Sign In Failed', 'You are not a student of VIIT');
       }
       return undefined;
     } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const signInWithLinkedin = async (access_token) => {
-    try {
-    }
-    catch (error) {
       console.log(error);
     }
   };
@@ -81,19 +83,20 @@ const App = () => {
       GoogleSignin.configure({});
       await GoogleSignin.hasPlayServices();
 
-      const loggedInState = await GoogleSignin.isSignedIn();
-      console.log('loggedInState', loggedInState)
+      // TODO: store user in storage
+      // const loggedInState = await GoogleSignin.isSignedIn();
+      // console.log('loggedInState', loggedInState);
 
-      if(loggedInState) {
-        const userInfo = await GoogleSignin.signInSilently();
-        setUser(userInfo);
-        setIsSignedIn(loggedInState);
-      }
+      // if (loggedInState) {
+      //   const userInfo = await GoogleSignin.signInSilently();
+      //   setUser(userInfo);
+      //   setIsSignedIn(loggedInState);
+      // }
 
       // TODO: Remove this fake splash screen
       setTimeout(() => {
         setIsLoading(false);
-      }, 0);
+      }, 2000);
     } catch (error) {
       console.log(error);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -113,112 +116,114 @@ const App = () => {
     }
   }, []);
 
-  // if(true) {
-  //   return <LinkedinLogin />
-  // }
-
-  if(isLoading) {
-    console.log('Loading')
-    return (
-      <SplashScreen></SplashScreen>
-    )
+  if (isLoading) {
+    console.log('Loading');
+    return <SplashScreen></SplashScreen>;
   }
 
   return (
-    <SafeAreaProvider style={{ flex: 1}}>
-    <AuthContext.Provider
-      value={{
-        isSignedIn,
-        isLoading,
-        signInWithGoogle,
-        user,
-        setUser,
-        signOut,
-      }}
-    >
-      <NavigationContainer>
-        <StatusBar barStyle={'dark-content'} backgroundColor='transparent' translucent={true}/>
-        {!isSignedIn && (
-          <LoggedOutStack.Navigator>
-            <LoggedOutStack.Screen
-              name="GoogleLogin"
-              component={GoogleLogin}
-              options={{headerShown: false}}
-            >
-            </LoggedOutStack.Screen>
-            <LoggedOutStack.Screen
-              name="LinkedinLogin"
-              component={LinkedinLogin}
-              options={{headerShown: false}}
-            >
-            </LoggedOutStack.Screen>
-          </LoggedOutStack.Navigator>
-        )}
-        {isSignedIn && (
-          <Tab.Navigator
-            initialRouteName="Profile"
-            screenOptions={({route}) => ({
-              tabBarIcon: ({focused, color, size}) => {
-                if (route.name === 'Discover') {
-                  return (
-                    <View style={focused ? styles.focussedTabButton : {}}>
-                      <Feather
-                        name={focused ? 'compass' : 'compass'}
-                        size={size}
-                        color={color}
-                      />
-                    </View>
-                  );
-                }
-                if (route.name === 'Messages') {
-                  return (
-                    <View style={focused ? styles.focussedTabButton : {}}>
-                      <Feather
-                        name={focused ? 'message-circle' : 'message-circle'}
-                        size={size}
-                        color={color}
-                      />
-                    </View>
-                  );
-                }
-                if (route.name === 'Profile') {
-                  return (
-                    <View style={focused ? styles.focussedTabButton : {}}>
-                      <MaterialCommunityIcons
-                        name={focused ? 'account-outline' : 'account-outline'}
-                        size={size}
-                        color={color}
-                      />
-                    </View>
-                  );
-                }
-              },
-              tabBarActiveTintColor: '#F65E7E',
-              tabBarInactiveTintColor: 'gray',
-              tabBarShowLabel: false,
-            })}>
-            <Tab.Screen
-              name="Discover"
-              component={Discover}
-              options={{
-                headerShown: false
-              }}
+    <SafeAreaProvider style={{flex: 1}}>
+      <PaperProvider theme={theme}>
+        <AuthContext.Provider
+          value={{
+            isSignedIn,
+            setIsSignedIn,
+            isLoading,
+            signInWithGoogle,
+            user,
+            setUser,
+            signOut,
+          }}>
+          <NavigationContainer>
+            <StatusBar
+              barStyle={'dark-content'}
+              backgroundColor="transparent"
+              translucent={true}
             />
-            <Tab.Screen 
-              name="Messages"
-              component={Messages} 
-            />
-            <Tab.Screen 
-              name="Profile"
-              component={Profile}
-              options={{
-                headerShown: false
-              }}
-            />
-          </Tab.Navigator>
-        )}
-      </NavigationContainer>
-    </AuthContext.Provider>
+            {!isSignedIn && (
+              <LoggedOutStack.Navigator>
+                <LoggedOutStack.Screen
+                  name="GetStarted"
+                  component={GetStarted}
+                  options={{headerShown: false}}></LoggedOutStack.Screen>
+                <LoggedOutStack.Screen
+                  name="GoogleLogin"
+                  component={GoogleLogin}
+                  options={{headerShown: false}}></LoggedOutStack.Screen>
+                <LoggedOutStack.Screen
+                  name="SignUp"
+                  component={SignUp}></LoggedOutStack.Screen>
+                <LoggedOutStack.Screen
+                  name="LinkedinLogin"
+                  component={LinkedinLogin}
+                  options={{headerShown: false}}></LoggedOutStack.Screen>
+              </LoggedOutStack.Navigator>
+            )}
+            {isSignedIn && (
+              <Tab.Navigator
+                initialRouteName="Discover"
+                screenOptions={({route}) => ({
+                  tabBarIcon: ({focused, color, size}) => {
+                    if (route.name === 'Discover') {
+                      return (
+                        <View style={focused ? styles.focussedTabButton : {}}>
+                          <Feather
+                            name={focused ? 'compass' : 'compass'}
+                            size={size}
+                            color={color}
+                          />
+                        </View>
+                      );
+                    }
+                    if (route.name === 'Messages') {
+                      return (
+                        <View style={focused ? styles.focussedTabButton : {}}>
+                          <Feather
+                            name={focused ? 'message-circle' : 'message-circle'}
+                            size={size}
+                            color={color}
+                          />
+                        </View>
+                      );
+                    }
+                    if (route.name === 'Profile') {
+                      return (
+                        <View style={focused ? styles.focussedTabButton : {}}>
+                          <MaterialCommunityIcons
+                            name={
+                              focused ? 'account-outline' : 'account-outline'
+                            }
+                            size={size}
+                            color={color}
+                          />
+                        </View>
+                      );
+                    }
+                  },
+                  tabBarActiveTintColor: '#F65E7E',
+                  tabBarInactiveTintColor: 'gray',
+                  tabBarShowLabel: false,
+                })}>
+                <Tab.Screen
+                  name="Discover"
+                  component={Discover}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Tab.Screen name="Messages" component={Messages} />
+                <Tab.Screen
+                  name="Profile"
+                  component={Profile}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+              </Tab.Navigator>
+            )}
+          </NavigationContainer>
+        </AuthContext.Provider>
+      </PaperProvider>
     </SafeAreaProvider>
   );
 };

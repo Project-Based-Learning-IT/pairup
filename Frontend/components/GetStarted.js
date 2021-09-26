@@ -4,31 +4,19 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useAuth} from '../App';
 import {useNavigation} from '@react-navigation/native';
 
-function GoogleLogin() {
-  const {signInWithGoogle, setUser, setIsSignedIn} = useAuth();
+const uris = [
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCEr8EEXiRaIu57KbYy9Ivx-6bY8841MyePTF-1KmVRCch0EA&s',
+  'https://image.freepik.com/free-vector/group-college-university-students-hanging-out_74855-5251.jpg',
+  'https://image.freepik.com/free-vector/happy-diverse-students-celebrating-graduation-from-school_74855-5853.jpg',
+  'https://cdni.iconscout.com/illustration/premium/thumb/online-graduation-3280784-2801931.png',
+  'https://static.vecteezy.com/system/resources/previews/002/026/980/non_2x/congratulations-graduation-illustration-graphic-free-vector.jpg'
+];
 
+function GetStarted() {
   const navigation = useNavigation();
 
-  const signIn = async () => {
-    const user = await signInWithGoogle();
-    if (user) {
-      // TODO: make an api request to the backend check if the user is already in the database
-      // if the user exists then log in the user
-      if(false) {
-        setUser(user);
-        setIsSignedIn(true);
-      }
-
-      // else navigate to the sign up page
-      else {
-        navigation.navigate('SignUp', {
-          user: user.user
-        });
-      }
-    }
-  };
-
   return (
+    // 2840C6
     <View
       style={{
         flex: 1,
@@ -47,12 +35,9 @@ function GoogleLogin() {
         }}>
         <Image
           source={{
-            uri: 'https://pbs.twimg.com/profile_images/549084012342296576/cafXBvpk.jpeg',
+            uri: uris[3],
           }}
-          style={{
-            width: '50%',
-            height: '60%',
-          }}
+          style={{height: '100%', alignSelf: 'stretch'}}
         />
       </View>
       <View
@@ -64,22 +49,22 @@ function GoogleLogin() {
         }}>
         <Text
           style={{
-            fontSize: 24,
+            fontSize: 32,
             fontWeight: 'bold',
             color: '#001a94',
             marginBottom: 12,
             textAlign: 'center',
           }}>
-          Connect your college's GSuite email account with CollegeSpace
+          Start your journey with CollegeSpace
         </Text>
         <Text
           style={{
-            fontSize: 16,
+            fontSize: 20,
             fontWeight: 'bold',
             color: '#b0bec5',
             textAlign: 'center',
           }}>
-          We need to verify your email address before you can use CollegeSpace
+          Be around good energy. Connect with people. Learn new things. Grow.
         </Text>
       </View>
       <View
@@ -90,7 +75,7 @@ function GoogleLogin() {
         }}>
         <TouchableOpacity
           onPress={() => {
-            signIn();
+            navigation.navigate('GoogleLogin');
           }}
           style={{
             backgroundColor: '#2840C6',
@@ -117,7 +102,7 @@ function GoogleLogin() {
               fontSize: 18,
               fontWeight: 'bold',
             }}>
-            Login with Google
+            Get Started
           </Text>
           <MaterialCommunityIcons name="arrow-right" size={24} color="#fff" />
         </TouchableOpacity>
@@ -128,4 +113,4 @@ function GoogleLogin() {
   );
 }
 
-export default GoogleLogin;
+export default GetStarted;
