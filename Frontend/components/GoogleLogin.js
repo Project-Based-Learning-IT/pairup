@@ -5,9 +5,23 @@ import {
   GoogleSigninButton
 } from '@react-native-google-signin/google-signin';
 import { useAuth } from '../App';
+import { useNavigation } from '@react-navigation/native';
 
 function GoogleLogin() {
-  const { signIn } = useAuth();
+  const { signInWithGoogle } = useAuth();
+  const navigation = useNavigation();
+
+  const signIn = async () => {
+    try {
+      const user = await signInWithGoogle();
+      console.log(user);
+      if(user !== undefined) {
+        navigation.navigate('LinkedinLogin');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff'}}>

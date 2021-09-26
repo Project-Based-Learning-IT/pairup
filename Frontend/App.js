@@ -15,12 +15,18 @@ import SplashScreen from './components/SplashScreen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import GoogleLogin from './components/GoogleLogin';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import LinkedinLogin from './components/LinkedinLogin';
 
 const AuthContext = React.createContext();
 
 function useAuth() {
   return useContext(AuthContext);
 }
+
+const CLIENT_ID = '78mt8ifqn5yg9n';
+const urlEncoded = 'https%3A%2F%2Fwww.google.com';
+const redirectUrl = 'https://www.google.com';
+const CLIENT_SECRET = 'qp0rG6VQXZyB1ZoN'
 
 const Tab = createBottomTabNavigator();
 const LoggedOutStack = createNativeStackNavigator();
@@ -30,13 +36,12 @@ const App = () => {
   const [isSignedIn, setIsSignedIn] = React.useState(false);
   const [user, setUser] = React.useState({});
 
-  const signIn = async () => {
+  const signInWithGoogle = async () => {
     try {
       const userInfo = await GoogleSignin.signIn();
 
       if(userInfo.user.email.split('@')[1] === 'viit.ac.in'){
-        setUser(userInfo);
-        setIsSignedIn(true);
+        return userInfo;
       }
       else {
         GoogleSignin.revokeAccess();
@@ -45,8 +50,16 @@ const App = () => {
           'You are not a student of VIIT'
         );
       }
-
+      return undefined;
     } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const signInWithLinkedin = async (access_token) => {
+    try {
+    }
+    catch (error) {
       console.log(error);
     }
   };
@@ -100,6 +113,10 @@ const App = () => {
     }
   }, []);
 
+  // if(true) {
+  //   return <LinkedinLogin />
+  // }
+
   if(isLoading) {
     console.log('Loading')
     return (
@@ -113,7 +130,7 @@ const App = () => {
       value={{
         isSignedIn,
         isLoading,
-        signIn,
+        signInWithGoogle,
         user,
         setUser,
         signOut,
@@ -126,6 +143,12 @@ const App = () => {
             <LoggedOutStack.Screen
               name="GoogleLogin"
               component={GoogleLogin}
+              options={{headerShown: false}}
+            >
+            </LoggedOutStack.Screen>
+            <LoggedOutStack.Screen
+              name="LinkedinLogin"
+              component={LinkedinLogin}
               options={{headerShown: false}}
             >
             </LoggedOutStack.Screen>
