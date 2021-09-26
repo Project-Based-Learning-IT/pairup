@@ -35,7 +35,7 @@ Open a terminal from the current directory i.e. <code>CollegSpace/frontend</code
 Navigate to the cloned repository
 
 	cd CollegeSpace
-	cd frontend
+	cd backend
 Run the following commands one by one: 
 
     pip install virtualenv
@@ -46,6 +46,16 @@ Install requirements if not done already
     pip install flask
     pip install flask-sqlalchemy
     [Model training packages]
+ Install a python formatter in VSCode outside of virtual environment
+ <br>
+ To exit virtual environment use `deactivate`
+ <br>
+ Formatter - 
+ 1. Open pyton file and press `ctrl+shift+p` to bring up command pallet and search format format
+ 2. Click format document with and install python formatter when prompted by Vscode
+ 3. Repeat step 1 and choose default formatter to installed one
+4.  Also turn on format on save from VScode settings
+
     
 * Use SQLALCHEMY_DATABASE_URI of clever cloud after login.
 * Manage Tables, database using inbuilt phpMyAdmin of Clevercloud
