@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useTheme, TextInput} from 'react-native-paper';
 
 function SocialURL(props) {
-  const {logoName, label, value, onChange} = props;
+  const {logoName, label, value, onChangeText} = props;
   const {colors} = useTheme();
   return (
     <View
@@ -23,7 +23,7 @@ function SocialURL(props) {
         label={label}
         placeholder={`${label} Profile URL`}
         value={value}
-        onChangeText={text => setTwitterUrl(text)}></TextInput>
+        onChangeText={text => onChangeText(text)}></TextInput>
     </View>
   );
 }

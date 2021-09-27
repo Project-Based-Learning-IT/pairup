@@ -34,79 +34,68 @@ const branches = [
 
 const skillList = [
   {
-    id: 1,
-    domain: '1',
-    name: 'React',
+    domain_id: 0,
+    domain_name: 'Backend',
+    skills: [
+      {
+        skill_id: 0,
+        skill_name: 'Java',
+      },
+      {
+        skill_id: 1,
+        skill_name: 'Python',
+      },
+      {
+        skill_id: 4,
+        skill_name: 'PHP',
+      },
+      {
+        skill_id: 5,
+        skill_name: 'NodeJS',
+      },
+      {
+        skill_id: 11,
+        skill_name: 'Django',
+      },
+      {
+        skill_id: 12,
+        skill_name: 'Flask',
+      },
+      {
+        skill_id: 13,
+        skill_name: 'Spring',
+      },
+    ],
   },
   {
-    id: 2,
-    domain: '1',
-    name: 'React Native',
-  },
-  {
-    id: 3,
-    domain: '1',
-    name: 'Node.js',
-  },
-  {
-    id: 4,
-    domain: '1',
-    name: 'Express',
-  },
-  {
-    id: 5,
-    domain: '1',
-    name: 'MongoDB',
-  },
-  {
-    id: 6,
-    domain: '1',
-    name: 'Mongoose',
-  },
-  {
-    id: 7,
-    domain: '1',
-    name: 'GraphQL',
-  },
-  {
-    id: 8,
-    domain: '2',
-    name: 'Apollo',
-  },
-  {
-    id: 9,
-    domain: '2',
-    name: 'Next.js',
-  },
-  {
-    id: 10,
-    domain: '2',
-    name: 'Gatsby',
-  },
-  {
-    id: 11,
-    domain: '2',
-    name: 'Firebase',
-  },
-  {
-    id: 12,
-    domain: '2',
-    name: 'Firestore',
-  },
-  {
-    id: 13,
-    domain: '2',
-    name: 'Firebase Auth',
-  },
-  {
-    id: 14,
-    domain: '3',
-    name: 'Firebase Storage',
-  },
-  {
-    id: 15,
-    domain: '3',
-    name: 'Firebase Cloud Functions',
+    domain_id: 1,
+    domain_name: 'Frontend',
+    skills: [
+      {
+        skill_id: 6,
+        skill_name: 'React',
+      },
+      {
+        skill_id: 7,
+        skill_name: 'Angular',
+      },
+      {
+        skill_id: 5,
+        skill_name: 'NodeJS',
+      },
+      {
+        skill_id: 8,
+        skill_name: 'Vue',
+      },
+      {
+        skill_id: 9,
+        skill_name: 'HTML',
+      },
+      {
+        skill_id: 10,
+        skill_name: 'CSS',
+      },
+    ],
   },
 ];
 

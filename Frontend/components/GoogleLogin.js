@@ -3,18 +3,21 @@ import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useAuth} from '../App';
 import {useNavigation} from '@react-navigation/native';
+import {useTheme} from 'react-native-paper';
 
 function GoogleLogin() {
   const {signInWithGoogle, setUser, setIsSignedIn} = useAuth();
 
   const navigation = useNavigation();
 
+  const {colors} = useTheme();
+
   const signIn = async () => {
     const user = await signInWithGoogle();
     if (user) {
       // TODO: make an api request to the backend check if the user is already in the database
       // if the user exists then log in the user
-      if(false) {
+      if (false) {
         setUser(user);
         setIsSignedIn(true);
       }
@@ -22,7 +25,7 @@ function GoogleLogin() {
       // else navigate to the sign up page
       else {
         navigation.navigate('SignUp', {
-          user: user.user
+          user: user.user,
         });
       }
     }
@@ -66,7 +69,7 @@ function GoogleLogin() {
           style={{
             fontSize: 24,
             fontWeight: 'bold',
-            color: '#001a94',
+            color: colors.primaryDark,
             marginBottom: 12,
             textAlign: 'center',
           }}>
@@ -76,7 +79,7 @@ function GoogleLogin() {
           style={{
             fontSize: 16,
             fontWeight: 'bold',
-            color: '#b0bec5',
+            color: colors.dimText,
             textAlign: 'center',
           }}>
           We need to verify your email address before you can use CollegeSpace
@@ -93,7 +96,7 @@ function GoogleLogin() {
             signIn();
           }}
           style={{
-            backgroundColor: '#2840C6',
+            backgroundColor: colors.primary,
             borderRadius: 12,
             width: '100%',
             padding: 16,
@@ -102,7 +105,7 @@ function GoogleLogin() {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            shadowColor: '#2840C6',
+            shadowColor: colors.primary,
             shadowOffset: {
               width: 0,
               height: 12,
