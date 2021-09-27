@@ -103,3 +103,7 @@ Get URI after login
 Use PhpMyadmin
 https://console.clever-cloud.com/
 Same email and password
+
+# for making post request
+pip install requests
+https://stackoverflow.com/questions/10313001/is-it-possible-to-make-post-request-in-flask

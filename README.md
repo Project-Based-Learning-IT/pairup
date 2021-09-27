@@ -62,7 +62,8 @@ Install requirements if not done already
 * Manage Tables, database using inbuilt phpMyAdmin of Clevercloud
 https://console.clever-cloud.com/
 Same email and password
-* Documentation: https://flask-sqlalchemy.palletsprojects.com/en/2.x/
+* Documentation Flask : https://flask.palletsprojects.com/en/2.0.x/
+* Documentation SQLAlchemy: https://flask-sqlalchemy.palletsprojects.com/en/2.x/
 * To start flask server <br>
 `python app.py`
 
