@@ -16,6 +16,13 @@ Skill_Domain_M_N = db.Table('Skill_Domain_M_N',
                                 'Domains.Domain_ID'), primary_key=True)
                             )
 
+Stud_Skill_M_N = db.Table('Stud_Skill_M_N',
+                          db.Column('Student_ID', db.Integer, db.ForeignKey(
+                              'Student.Student_ID'), primary_key=True),
+                          db.Column('Skill_ID', db.Integer, db.ForeignKey(
+                              'Skills.Skill_ID'), primary_key=True)
+                          )
+
 
 class Student(db.Model):
     __tablename__ = 'Student'
@@ -32,6 +39,8 @@ class Student(db.Model):
                              unique=True, nullable=True)
     Degree_ID = db.Column(db.Integer, db.ForeignKey('Degree.Degree_ID'),
                           nullable=True)
+    skills = db.relationship('Skills', secondary=Stud_Skill_M_N, lazy='subquery',
+                             backref=db.backref('see_students', lazy=True))
 
     def __repr__(self) -> str:
         return f"{self.Student_ID} - {self.Name}"
@@ -99,8 +108,21 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 
-@app.route("/get_social_urls/<int:id>",  methods=['GET', 'POST'])
+@app.route("/get_stud_skills/<int:id>",  methods=['GET', 'POST'])
+def get_stud_skills(id):
+    student = Student.query.filter_by(Student_ID=id).first()
+    res = list()
+    for skill in student.skills:
+        curr_skill = dict()
+        curr_skill['Skill_ID'] = skill.Skill_ID
+        curr_skill['Skill_name'] = skill.Skill_name
+        res.append(curr_skill)
+    return jsonify(res), 200
+
+
+@app.route("/social_urls/<int:id>",  methods=['GET', 'POST'])
 def get_social_urls(id):
+
     student = Student.query.filter_by(Student_ID=id).first()
     res = dict()
     res['SocialURL_ID'] = student.social_urls.SocialURL_ID
@@ -113,7 +135,21 @@ def get_social_urls(id):
     return res, 200
 
 
-@app.route("/get_degree/<int:id>",  methods=['GET', 'POST'])
+@app.route("/add_degree",  methods=['POST'])
+def add_degree():
+    if request.method == "POST":
+        # Degree_ID Auto incremented
+        year = int(request.json['year'])
+        branch = str(request.json['branch'])
+        batch = str(request.json['batch'])
+        degree = Degree(year=year, branch=branch, batch=batch)
+        # Add degree data to database
+        db.session.add(degree)
+        db.session.commit()
+        return str(degree.Degree_ID), 200
+
+
+@ app.route("/get_degree/<int:id>",  methods=['GET'])
 def get_degree(id):
     student = Student.query.filter_by(Student_ID=id).first()
     res = dict()
@@ -124,7 +160,7 @@ def get_degree(id):
     return res, 200
 
 
-# @app.route("/receive_social_urls",  methods=['POST'])
+# @app.route("/create",  methods=['POSTupdate
 # def receive_social_urls():
 #     ids_domains = Domains.query.all()
 #     # name_to_update = Users.query.get_or_404(id)
@@ -148,7 +184,7 @@ def get_degree(id):
 #         return "Record not found", 400
 
 
-@app.route('/get_domains_and_its_skills', methods=['GET'])
+@ app.route('/get_domains_and_its_skills', methods=['GET'])
 def get_domains_and_its_skills():
     '''
     For direct API calls through request
