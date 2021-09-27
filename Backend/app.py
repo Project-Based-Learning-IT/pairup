@@ -17,6 +17,47 @@ Skill_Domain_M_N = db.Table('Skill_Domain_M_N',
                             )
 
 
+class Student(db.Model):
+    __tablename__ = 'Student'
+    Student_ID = db.Column(db.Integer, primary_key=True)
+    Bio = db.Column(db.String(200), nullable=True)
+    Email = db.Column(db.String(100), nullable=True)
+    Headline = db.Column(db.String(100), nullable=True)
+    Google_ID = db.Column(db.String(200), unique=True, nullable=True)
+    Image_URL = db.Column(db.String(100), nullable=True)
+    Name = db.Column(db.String(100), nullable=True)
+    Requirements = db.Column(db.String(200), nullable=True)
+    Bloom_filter = db.Column(db.LargeBinary, nullable=True)
+    SocialURL_ID = db.Column(db.Integer, db.ForeignKey('Social_URLs.SocialURL_ID'),
+                             unique=True, nullable=True)
+    Degree_ID = db.Column(db.Integer, db.ForeignKey('Degree.Degree_ID'),
+                          nullable=True)
+
+    def __repr__(self) -> str:
+        return f"{self.Student_ID} - {self.Name}"
+
+
+class Degree(db.Model):
+    __tablename__ = 'Degree'
+    Degree_ID = db.Column(db.Integer, primary_key=True)
+    year = db.Column(db.Integer, nullable=True)
+    branch = db.Column(db.String(80), nullable=True)
+    batch = db.Column(db.String(10), nullable=True)
+    students = db.relationship('Student', backref='degree', lazy=True)
+
+    def __repr__(self) -> str:
+        return f"{self.Degree_ID} - {self.year}"
+
+
+class Languages(db.Model):
+    __tablename__ = 'Languages'
+    Language_ID = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(20), nullable=False)
+
+    def __repr__(self) -> str:
+        return f"{self.Language_ID} - {self.Name}"
+
+
 class Skills(db.Model):
     __tablename__ = 'Skills'
     Skill_ID = db.Column(db.Integer, primary_key=True)
@@ -37,11 +78,74 @@ class Domains(db.Model):
         return f"{self.Domain_ID} - {self.Domain_name}"
 
 
+class Social_URLs(db.Model):
+    __tablename__ = 'Social_URLs'
+    SocialURL_ID = db.Column(db.Integer, primary_key=True)
+    codechef = db.Column(db.String(100), unique=True, nullable=True)
+    hackerrank = db.Column(db.String(100), unique=True, nullable=True)
+    leetcode = db.Column(db.String(100), unique=True, nullable=True)
+    linkedin = db.Column(db.String(100), unique=True, nullable=True)
+    github = db.Column(db.String(100), unique=True, nullable=True)
+    twitter = db.Column(db.String(100), unique=True, nullable=True)
+    student = db.relationship(
+        'Student', backref='social_urls', lazy=True, uselist=False)
+
+    def __repr__(self) -> str:
+        return f"{self.Social_URL_ID}"
+
+
 @app.route("/",  methods=['GET', 'POST'])
 def hello_world():
-    # ids_skills = Skills.query.all()
-    # print(ids_skills)
     return "<p>Hello, World!</p>"
+
+
+@app.route("/get_social_urls/<int:id>",  methods=['GET', 'POST'])
+def get_social_urls(id):
+    student = Student.query.filter_by(Student_ID=id).first()
+    res = dict()
+    res['SocialURL_ID'] = student.social_urls.SocialURL_ID
+    res['codechef'] = student.social_urls.codechef
+    res['hackerrank'] = student.social_urls.hackerrank
+    res['leetcode'] = student.social_urls.leetcode
+    res['linkedin'] = student.social_urls.linkedin
+    res['github'] = student.social_urls.github
+    res['twitter'] = student.social_urls.twitter
+    return res, 200
+
+
+@app.route("/get_degree/<int:id>",  methods=['GET', 'POST'])
+def get_degree(id):
+    student = Student.query.filter_by(Student_ID=id).first()
+    res = dict()
+    res['Degree_ID'] = student.degree.Degree_ID
+    res['year'] = student.degree.year
+    res['branch'] = student.degree.branch
+    res['batch'] = student.degree.batch
+    return res, 200
+
+
+# @app.route("/receive_social_urls",  methods=['POST'])
+# def receive_social_urls():
+#     ids_domains = Domains.query.all()
+#     # name_to_update = Users.query.get_or_404(id)
+#     if request.method == "POST":
+#         name_to_update.name = request.form['name']
+#         name_to_update.email = request.form['email']
+#         name_to_update.favorite_color = request.form['favorite_color']
+#         name_to_update.username = request.form['username']
+#         try:
+#             db.session.commit()
+#             flash("User Updated Successfully!")
+#             return render_template("dashboard.html",
+#                                    form=form,
+#                                    name_to_update=name_to_update)
+#         except:
+#             flash("Error!  Looks like there was a problem...try again!")
+#             return render_template("dashboard.html",
+#                                    form=form,
+#                                    name_to_update=name_to_update)
+#     else:
+#         return "Record not found", 400
 
 
 @app.route('/get_domains_and_its_skills', methods=['GET'])
@@ -68,7 +172,7 @@ def get_domains_and_its_skills():
             skill_in_domain['skill_name'] = s.Skill_name
             curr_id_domain['skills'].append(skill_in_domain)
         res_ids_domains_skills.append(curr_id_domain)
-    return jsonify(res_ids_domains_skills)
+    return jsonify(res_ids_domains_skills), 200
     # return jsonify(ids_skills)
 
 
