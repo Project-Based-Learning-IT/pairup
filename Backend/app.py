@@ -22,7 +22,7 @@ class Skills(db.Model):
     Skill_ID = db.Column(db.Integer, primary_key=True)
     Skill_name = db.Column(db.String(64), nullable=False, unique=True)
     domains_in_skill = db.relationship('Domains', secondary=Skill_Domain_M_N, lazy='subquery',
-                                       backref=db.backref('see_domains', lazy=True))
+                                       backref=db.backref('see_skills', lazy=True))
 
     def __repr__(self) -> str:
         return f"{self.Skill_ID} - {self.Skill_name}"
@@ -44,31 +44,31 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 
-@app.route('/get_skills', methods=['GET'])
-def get_skills():
+@app.route('/get_domains_and_its_skills', methods=['GET'])
+def get_domains_and_its_skills():
     '''
-    For direct API calls trough request
+    For direct API calls through request
     '''
 
     # For post
     # data = request.get_json(force=True)
     # prediction = model.predict([np.array(list(data.values()))])
     # output = prediction[0]
-    ids_skills = Skills.query.all()
+    ids_domains = Domains.query.all()
 
-    res_ids_skills = list()
-    for skill_obj in ids_skills:
-        curr_id_skill = dict()
-        curr_id_skill['skill_id'] = skill_obj.Skill_ID
-        curr_id_skill['skill_name'] = skill_obj.Skill_name
-        curr_id_skill['domains'] = list()
-        for d in skill_obj.domains_in_skill:
-            domains_of_skill = dict()
-            domains_of_skill['domain_id'] = d.Domain_ID
-            domains_of_skill['domain_name'] = d.Domain_name
-            curr_id_skill['domains'].append(domains_of_skill)
-        res_ids_skills.append(curr_id_skill)
-    return jsonify(res_ids_skills)
+    res_ids_domains_skills = list()
+    for domain_obj in ids_domains:
+        curr_id_domain = dict()
+        curr_id_domain['domain_id'] = domain_obj.Domain_ID
+        curr_id_domain['domain_name'] = domain_obj.Domain_name
+        curr_id_domain['skills'] = list()
+        for s in domain_obj.see_skills:
+            skill_in_domain = dict()
+            skill_in_domain['skill_id'] = s.Skill_ID
+            skill_in_domain['skill_name'] = s.Skill_name
+            curr_id_domain['skills'].append(skill_in_domain)
+        res_ids_domains_skills.append(curr_id_domain)
+    return jsonify(res_ids_domains_skills)
     # return jsonify(ids_skills)
 
 
