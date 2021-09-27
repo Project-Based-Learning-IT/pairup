@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import {useAuth} from '../App';
-import {TextInput, useTheme} from 'react-native-paper';
+import {Button, IconButton, TextInput, useTheme} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DropdownMenu from './DropdownMenu';
 import SocialURL from './SocialURL';
@@ -22,6 +22,8 @@ import Skills from './Skills';
 // "id": "104561333993171170591",
 // "name": "Siddhesh Kothadi",
 // "photo": "https://lh3.googleusercontent.com/a-/AOh14GhOuSkSfOfSEnx5ERiQON1LmGZx1jkHXZDkbv6nBg"}
+
+// TODO: remove the fake data below
 
 const branches = [
   'Computer Science',
@@ -304,6 +306,21 @@ function SignUp({route}) {
 
         <NewSection name="Skills" />
         <Skills skillList={skillList} skills={skills} setSkills={setSkills} />
+
+        <NewSection name="Languages" />
+        <View>
+          <Button>Add Language</Button>
+          <IconButton
+            icon="plus"
+            color={'#fff'}
+            style={{
+              backgroundColor: colors.primary,
+              borderRadius: 50,
+              justifySelf: 'flex-start',
+            }}
+            size={20}
+          />
+        </View>
 
         {/* Social URLs */}
         <NewSection name="Social URLs" />
