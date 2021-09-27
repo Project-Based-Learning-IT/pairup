@@ -9,12 +9,13 @@ import {
 } from 'react-native';
 import React from 'react';
 import {useAuth} from '../App';
-import {Button, IconButton, TextInput, useTheme} from 'react-native-paper';
+import {Button, TextInput, useTheme} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DropdownMenu from './DropdownMenu';
 import SocialURL from './SocialURL';
 import NewSection from './NewSection';
 import Skills from './Skills';
+import * as Keychain from 'react-native-keychain';
 
 // {"email": "siddhesh.21910416@viit.ac.in",
 // "familyName": "Kothadi",
@@ -147,6 +148,9 @@ function SignUp({route}) {
 
   const [skills, setSkills] = React.useState([]);
 
+  // TODO: add languages and projects
+  const [languages, setLanguages] = React.useState([]);
+
   const styles = StyleSheet.create({
     signUpButton: {
       position: 'absolute',
@@ -172,8 +176,36 @@ function SignUp({route}) {
     },
   });
 
-  const signUp = () => {
-    console.log('SignUp');
+  const signUp = async () => {
+    try {
+      console.log('SignUp');
+
+      // without languages and projects
+      const userData = {
+        googleId: user.id,
+        photo: user.photo,
+        email: email,
+        name: name,
+        personalEmail: personalEmail,
+        bio: bio,
+        headline: headline,
+        division: division,
+        branch: branch,
+        year: year,
+        batch: batch,
+        twitterUrl: twitterUrl,
+        githubUrl: githubUrl,
+        linkedinUrl: linkedinUrl,
+        skills: skills,
+      };
+
+      await Keychain.setGenericPassword('user', JSON.stringify(userData));
+      setUser(userData);
+
+      setIsSignedIn(true);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   React.useEffect(() => {
@@ -308,18 +340,43 @@ function SignUp({route}) {
         <Skills skillList={skillList} skills={skills} setSkills={setSkills} />
 
         <NewSection name="Languages" />
-        <View>
-          <Button>Add Language</Button>
-          <IconButton
-            icon="plus"
-            color={'#fff'}
-            style={{
-              backgroundColor: colors.primary,
-              borderRadius: 50,
-              justifySelf: 'flex-start',
-            }}
-            size={20}
-          />
+        <View
+          style={{
+            flexDirection: 'column',
+          }}>
+          {languages.map((language, index) => (
+            <View
+              key={index}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: 8,
+              }}>
+              <TextInput
+                mode="outlined"
+                label="Language"
+                placeholder="Type your language"
+                value={language.name}
+                onChangeText={text =>
+                  setLanguages(
+                    languages.map((lang, i) =>
+                      i == index ? {name: text, level: lang.level} : lang,
+                    ),
+                  )
+                }
+                style={{
+                  width: '50%',
+                }}
+              />
+            </View>
+          ))}
+          <Button
+            onPress={() => {
+              setLanguages([...languages, {name: '', level: ''}]);
+            }}>
+            Add Language
+          </Button>
         </View>
 
         {/* Social URLs */}
@@ -352,7 +409,8 @@ function SignUp({route}) {
             color: '#fff',
             fontSize: 18,
             fontWeight: 'bold',
-          }}>
+          }}
+          onPress={signUp}>
           Sign Up
         </Text>
       </TouchableOpacity>

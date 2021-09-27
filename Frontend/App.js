@@ -19,6 +19,7 @@ import LinkedinLogin from './components/LinkedinLogin';
 import GetStarted from './components/GetStarted';
 import SignUp from './components/SignUp';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
+import * as Keychain from 'react-native-keychain';
 
 const AuthContext = React.createContext();
 
@@ -70,6 +71,7 @@ const App = () => {
     try {
       await GoogleSignin.signOut();
       setIsSignedIn(false);
+      await Keychain.resetGenericPassword();
       setUser({});
     } catch (error) {
       console.log(error);
@@ -84,6 +86,13 @@ const App = () => {
       await GoogleSignin.hasPlayServices();
 
       // TODO: store user in storage
+      const credentials = await Keychain.getGenericPassword();
+
+      if (credentials) {
+        setUser(JSON.parse(credentials.password));
+        setIsSignedIn(true);
+      }
+
       // const loggedInState = await GoogleSignin.isSignedIn();
       // console.log('loggedInState', loggedInState);
 

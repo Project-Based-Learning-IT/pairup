@@ -37,7 +37,7 @@ function Profile() {
             <Image
               style={{width: 140, height: 140, borderRadius: 70}}
               source={{
-                uri: user.user.photo,
+                uri: user.photo,
               }}></Image>
             <View
               style={{
@@ -61,13 +61,15 @@ function Profile() {
           alignItems: 'center',
           padding: 16,
           borderRadius: 12,
-          marginBottom: 12
+          marginBottom: 12,
         }}
         onPress={() => {
           signOut();
         }}>
-          <Text style={{fontSize: 18, fontWeight: 'bold', color: '#fff'}}>Sign Out</Text>
-        </TouchableOpacity>
+        <Text style={{fontSize: 18, fontWeight: 'bold', color: '#fff'}}>
+          Sign Out
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
