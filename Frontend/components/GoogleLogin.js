@@ -48,15 +48,25 @@ function GoogleLogin() {
           width: '100%',
           paddingTop: StatusBar.currentHeight,
         }}>
-        <Image
-          source={{
-            uri: 'https://pbs.twimg.com/profile_images/549084012342296576/cafXBvpk.jpeg',
-          }}
+        <View
           style={{
-            width: '50%',
-            height: '60%',
-          }}
-        />
+            width: '100%',
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Image
+            source={{
+              // uri: 'https://pbs.twimg.com/profile_images/549084012342296576/cafXBvpk.jpeg',
+              uri: 'https://seeklogo.com/images/G/google-2015-logo-65BBD07B01-seeklogo.com.png',
+            }}
+            style={{
+              width: '50%',
+              height: '62%',
+              borderWidth: 1,
+            }}
+          />
+        </View>
       </View>
       <View
         style={{
@@ -73,13 +83,13 @@ function GoogleLogin() {
             marginBottom: 12,
             textAlign: 'center',
           }}>
-          Connect your college's GSuite email account with CollegeSpace
+          Connect your college's GSuite account with CollegeSpace
         </Text>
         <Text
           style={{
             fontSize: 16,
             fontWeight: 'bold',
-            color: colors.dimText,
+            color: colors.textLightBlack,
             textAlign: 'center',
           }}>
           We need to verify your email address before you can use CollegeSpace

@@ -16,6 +16,7 @@ import {
   useTheme,
   Portal,
   ActivityIndicator,
+  Title,
 } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DropdownMenu from './DropdownMenu';
@@ -132,96 +133,32 @@ const batches = [
   'D-4',
 ];
 
-function SignUp({route}) {
-  const {user} = route.params;
-
-  const {setUser, setIsSignedIn} = useAuth();
+function MyProfile() {
+  const {setUser, signOut, user} = useAuth();
   const {colors} = useTheme();
 
-  const [isSigningUp, setIsSigningUp] = React.useState(false);
+  const [isSaving, setIsSigningUp] = React.useState(false);
+  const [isSigningOut, setIsSigningOut] = React.useState(false);
 
   const [email, setEmail] = React.useState(user.email);
   const [name, setName] = React.useState(user.name);
-  const [personalEmail, setPersonalEmail] = React.useState('');
-  const [bio, setBio] = React.useState('');
-  const [headline, setHeadline] = React.useState('');
+  const [personalEmail, setPersonalEmail] = React.useState(user.personalEmail);
+  const [bio, setBio] = React.useState(user.bio);
+  const [headline, setHeadline] = React.useState(user.headline);
 
-  const [division, setDivision] = React.useState('');
-  const [branch, setBranch] = React.useState('');
-  const [year, setYear] = React.useState('');
-  const [batch, setBatch] = React.useState('');
+  const [division, setDivision] = React.useState(user.division);
+  const [branch, setBranch] = React.useState(user.branch);
+  const [year, setYear] = React.useState(user.year);
+  const [batch, setBatch] = React.useState(user.batch);
 
-  const [twitterUrl, setTwitterUrl] = React.useState('');
-  const [githubUrl, setGithubUrl] = React.useState('');
-  const [linkedinUrl, setLinkedinUrl] = React.useState('');
+  const [twitterUrl, setTwitterUrl] = React.useState(user.twitterUrl);
+  const [githubUrl, setGithubUrl] = React.useState(user.githubUrl);
+  const [linkedinUrl, setLinkedinUrl] = React.useState(user.linkedinUrl);
 
-  const [skills, setSkills] = React.useState([]);
+  const [skills, setSkills] = React.useState(user.skills);
 
   // TODO: add languages and projects
   const [languages, setLanguages] = React.useState([]);
-
-  const styles = StyleSheet.create({
-    signUpButton: {
-      position: 'absolute',
-      marginStart: 12,
-      marginEnd: 12,
-      bottom: 0,
-      backgroundColor: colors.primary,
-      width: '100%',
-      padding: 16,
-      paddingEnd: 24,
-      paddingStart: 24,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      shadowColor: colors.primary,
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowOpacity: 0.58,
-      shadowRadius: 16.0,
-      elevation: 8,
-    },
-  });
-
-  const signUp = async () => {
-    try {
-      setIsSigningUp(true);
-
-      // without languages and projects
-      const userData = {
-        googleId: user.id,
-        photo: user.photo,
-        email: email,
-        name: name,
-        personalEmail: personalEmail,
-        bio: bio,
-        headline: headline,
-        division: division,
-        branch: branch,
-        year: year,
-        batch: batch,
-        twitterUrl: twitterUrl,
-        githubUrl: githubUrl,
-        linkedinUrl: linkedinUrl,
-        skills: skills,
-      };
-
-      await Keychain.setGenericPassword('user', JSON.stringify(userData));
-      setUser(userData);
-      setIsSigningUp(false);
-
-      setIsSignedIn(true);
-    } catch (e) {
-      setIsSigningUp(false);
-      console.log(e);
-    }
-  };
-
-  React.useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   return (
     <View
@@ -232,7 +169,7 @@ function SignUp({route}) {
         backgroundColor: '#fff',
       }}>
       <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
-      {isSigningUp && (
+      {(isSaving || isSigningOut) && (
         <Portal>
           <View
             style={{
@@ -256,12 +193,21 @@ function SignUp({route}) {
           width: '100%',
           padding: 12,
         }}>
+        <Text
+          style={{
+            fontSize: 36,
+            paddingTop: 20,
+            color: colors.textHeadBlack,
+            fontWeight: 'bold',
+          }}>
+          Profile
+        </Text>
         <View
           style={{
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
-            paddingTop: 12,
+            paddingTop: 4,
           }}>
           <View
             style={{backgroundColor: '#F4F4F4', borderRadius: 500, padding: 8}}>
@@ -430,22 +376,39 @@ function SignUp({route}) {
         {/* For bottom margin */}
         <View
           style={{
-            height: 120,
+            height: 40,
+          }}></View>
+        <TouchableHighlight
+          style={{
+            backgroundColor: colors.primary,
+            padding: 16,
+            borderRadius: 14,
+            width: '90%',
+            margin: 12,
+            alignSelf: 'center',
+          }}
+          onPress={() => {
+            signOut();
+          }}>
+          <Text
+            style={{
+              color: '#fff',
+              fontWeight: 'bold',
+              fontSize: 18,
+              textAlign: 'center',
+            }}>
+            Sign Out
+          </Text>
+        </TouchableHighlight>
+
+        {/* For bottom margin */}
+        <View
+          style={{
+            height: 40,
           }}></View>
       </ScrollView>
-      <TouchableHighlight style={styles.signUpButton}>
-        <Text
-          style={{
-            color: '#fff',
-            fontSize: 18,
-            fontWeight: 'bold',
-          }}
-          onPress={signUp}>
-          Sign Up
-        </Text>
-      </TouchableHighlight>
     </View>
   );
 }
 
-export default SignUp;
+export default MyProfile;

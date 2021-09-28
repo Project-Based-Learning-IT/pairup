@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
 import {Portal, Modal, Text} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import NewSection from './NewSection';
@@ -56,11 +56,10 @@ function DropdownMenu({items, onChange, value, placeholder, label}) {
           <ScrollView>
             <NewSection name={placeholder} />
             {items.map((item, index) => (
-              <Text
+              <TouchableOpacity
                 key={index}
                 style={{
-                  color: 'black',
-                  padding: 10,
+                  padding: 18,
                   borderBottomColor: '#aaaaaa',
                   borderBottomWidth: 0.8,
                 }}
@@ -68,8 +67,14 @@ function DropdownMenu({items, onChange, value, placeholder, label}) {
                   onChange(item);
                   closeMenu();
                 }}>
-                {item}
-              </Text>
+                <Text
+                  style={{
+                    color: 'black',
+                    fontSize: 16,
+                  }}>
+                  {item}
+                </Text>
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </Modal>

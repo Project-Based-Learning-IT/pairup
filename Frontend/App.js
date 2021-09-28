@@ -2,8 +2,7 @@ import React, {useContext} from 'react';
 import {StatusBar, StyleSheet, View, Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import Discover from './components/Discover';
-import Messages from './components/Messages';
-import Profile from './components/Profile';
+import MyProfile from './components/MyProfile';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -20,6 +19,7 @@ import GetStarted from './components/GetStarted';
 import SignUp from './components/SignUp';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 import * as Keychain from 'react-native-keychain';
+import MessageSection from './components/MessageSection';
 
 const AuthContext = React.createContext();
 
@@ -33,10 +33,30 @@ const theme = {
   dark: false,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#2840C6',
-    primaryDark: '#001a94',
+    // Tinder color: #F65E7E (when bottom tab bar focussed)
+    // primary: '#F65E7E',
+
+    // Discover background: #C30F31
+    // primary: '#C30F31',
+
+    // Red from figma
+    tinderRed: '#EB5757',
+
+    // primary: '#2840C6',
+    // primary: '#EB5757',
+    // primary: '#077f7f',
+    // primary: '#000',
+    // primaryDark: '#001a94',
+
+    // primary: '#05051b',
+    primary: '#EB5757',
+    primaryDark: '#05051b',
     accent: '#f1c40f',
-    dimText: '#b0bec5',
+    textHeadBlack: '#0a243f',
+    textDarkBlack: '#131313',
+    textLightBlack: '#6b7b8a',
+    textWhite: '#fff',
+    placeholder: '#495057',
   },
 };
 
@@ -92,15 +112,6 @@ const App = () => {
         setUser(JSON.parse(credentials.password));
         setIsSignedIn(true);
       }
-
-      // const loggedInState = await GoogleSignin.isSignedIn();
-      // console.log('loggedInState', loggedInState);
-
-      // if (loggedInState) {
-      //   const userInfo = await GoogleSignin.signInSilently();
-      //   setUser(userInfo);
-      //   setIsSignedIn(loggedInState);
-      // }
 
       // TODO: Remove this fake splash screen
       setTimeout(() => {
@@ -184,7 +195,7 @@ const App = () => {
                         </View>
                       );
                     }
-                    if (route.name === 'Messages') {
+                    if (route.name === 'MessageSection') {
                       return (
                         <View style={focused ? styles.focussedTabButton : {}}>
                           <Feather
@@ -195,7 +206,7 @@ const App = () => {
                         </View>
                       );
                     }
-                    if (route.name === 'Profile') {
+                    if (route.name === 'MyProfile') {
                       return (
                         <View style={focused ? styles.focussedTabButton : {}}>
                           <MaterialCommunityIcons
@@ -220,10 +231,16 @@ const App = () => {
                     headerShown: false,
                   }}
                 />
-                <Tab.Screen name="Messages" component={Messages} />
                 <Tab.Screen
-                  name="Profile"
-                  component={Profile}
+                  name="MessageSection"
+                  component={MessageSection}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Tab.Screen
+                  name="MyProfile"
+                  component={MyProfile}
                   options={{
                     headerShown: false,
                   }}

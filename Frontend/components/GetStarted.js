@@ -1,19 +1,21 @@
 import {View, Image, StatusBar, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useAuth} from '../App';
 import {useNavigation} from '@react-navigation/native';
+import {useTheme} from 'react-native-paper';
 
 const uris = [
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCEr8EEXiRaIu57KbYy9Ivx-6bY8841MyePTF-1KmVRCch0EA&s',
   'https://image.freepik.com/free-vector/group-college-university-students-hanging-out_74855-5251.jpg',
   'https://image.freepik.com/free-vector/happy-diverse-students-celebrating-graduation-from-school_74855-5853.jpg',
   'https://cdni.iconscout.com/illustration/premium/thumb/online-graduation-3280784-2801931.png',
-  'https://static.vecteezy.com/system/resources/previews/002/026/980/non_2x/congratulations-graduation-illustration-graphic-free-vector.jpg'
+  'https://static.vecteezy.com/system/resources/previews/002/026/980/non_2x/congratulations-graduation-illustration-graphic-free-vector.jpg',
 ];
 
 function GetStarted() {
   const navigation = useNavigation();
+
+  const {colors} = useTheme();
 
   return (
     // 2840C6
@@ -49,9 +51,9 @@ function GetStarted() {
         }}>
         <Text
           style={{
-            fontSize: 32,
+            fontSize: 24,
             fontWeight: 'bold',
-            color: '#001a94',
+            color: colors.textHeadBlack,
             marginBottom: 12,
             textAlign: 'center',
           }}>
@@ -59,9 +61,9 @@ function GetStarted() {
         </Text>
         <Text
           style={{
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: 'bold',
-            color: '#b0bec5',
+            color: colors.textLightBlack,
             textAlign: 'center',
           }}>
           Be around good energy. Connect with people. Learn new things. Grow.
@@ -78,7 +80,7 @@ function GetStarted() {
             navigation.navigate('GoogleLogin');
           }}
           style={{
-            backgroundColor: '#2840C6',
+            backgroundColor: colors.primary,
             borderRadius: 12,
             width: '100%',
             padding: 16,
@@ -87,7 +89,7 @@ function GetStarted() {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            shadowColor: '#2840C6',
+            shadowColor: colors.primary,
             shadowOffset: {
               width: 0,
               height: 12,
