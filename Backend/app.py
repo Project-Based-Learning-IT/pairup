@@ -147,6 +147,32 @@ def add_degree():
         db.session.add(degree)
         db.session.commit()
         return str(degree.Degree_ID), 200
+        # Sample json body
+        # {
+        #     "year": 2021,
+        #     "branch": "Computer Engineering",
+        #     "batch": "A1"
+        # }
+
+
+@app.route("/update_degree/<int:id>",  methods=['POST'])
+def update_degree(id):
+    if request.method == "POST":
+        student = Student.query.filter_by(Student_ID=id).first()
+        # Degree_ID Auto incremented
+        student.degree.year = int(request.json['year'])
+        student.degree.branch = str(request.json['branch'])
+        student.degree.batch = str(request.json['batch'])
+        # Upgrade degree data in database
+        db.session.add(student.degree)
+        db.session.commit()
+        return str(student.degree.Degree_ID), 200
+        # Sample json body
+        # {
+        #     "year": 2022,
+        #     "branch": "Instrumentation",
+        #     "batch": "A2"
+        # }
 
 
 @ app.route("/get_degree/<int:id>",  methods=['GET'])
@@ -158,30 +184,6 @@ def get_degree(id):
     res['branch'] = student.degree.branch
     res['batch'] = student.degree.batch
     return res, 200
-
-
-# @app.route("/create",  methods=['POSTupdate
-# def receive_social_urls():
-#     ids_domains = Domains.query.all()
-#     # name_to_update = Users.query.get_or_404(id)
-#     if request.method == "POST":
-#         name_to_update.name = request.form['name']
-#         name_to_update.email = request.form['email']
-#         name_to_update.favorite_color = request.form['favorite_color']
-#         name_to_update.username = request.form['username']
-#         try:
-#             db.session.commit()
-#             flash("User Updated Successfully!")
-#             return render_template("dashboard.html",
-#                                    form=form,
-#                                    name_to_update=name_to_update)
-#         except:
-#             flash("Error!  Looks like there was a problem...try again!")
-#             return render_template("dashboard.html",
-#                                    form=form,
-#                                    name_to_update=name_to_update)
-#     else:
-#         return "Record not found", 400
 
 
 @ app.route('/get_domains_and_its_skills', methods=['GET'])
