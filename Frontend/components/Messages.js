@@ -163,7 +163,10 @@ function Messages() {
               width: '100%',
               alignItems: 'center',
               flexDirection: 'row',
-            }}>
+            }}
+            onPress={() =>
+              navigation.navigate('Chat', {userChatting: profile})
+            }>
             <Image
               source={{
                 uri: profile.picture.large,
