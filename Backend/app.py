@@ -108,21 +108,8 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 
-@app.route("/get_stud_skills/<int:id>",  methods=['GET', 'POST'])
-def get_stud_skills(id):
-    student = Student.query.filter_by(Student_ID=id).first()
-    res = list()
-    for skill in student.skills:
-        curr_skill = dict()
-        curr_skill['Skill_ID'] = skill.Skill_ID
-        curr_skill['Skill_name'] = skill.Skill_name
-        res.append(curr_skill)
-    return jsonify(res), 200
-
-
-@app.route("/social_urls/<int:id>",  methods=['GET', 'POST'])
+@app.route("/get_social_urls/<int:id>",  methods=['GET', 'POST'])
 def get_social_urls(id):
-
     student = Student.query.filter_by(Student_ID=id).first()
     res = dict()
     res['SocialURL_ID'] = student.social_urls.SocialURL_ID
@@ -133,6 +120,56 @@ def get_social_urls(id):
     res['github'] = student.social_urls.github
     res['twitter'] = student.social_urls.twitter
     return res, 200
+
+
+@app.route("/add_social_urls/",  methods=['GET', 'POST'])
+def add_social_urls():
+    codechef = str(request.json['codechef'])
+    hackerrank = str(request.json['hackerrank'])
+    leetcode = str(request.json['leetcode'])
+    linkedin = str(request.json['linkedin'])
+    github = str(request.json['github'])
+    twitter = str(request.json['twitter'])
+    # SocialURL_ID Auto incremented
+    social_ids = Social_URLs(
+        codechef=codechef, hackerrank=hackerrank, leetcode=leetcode, linkedin=linkedin, github=github, twitter=twitter)
+    # Add degree data to database
+    db.session.add(social_ids)
+    db.session.commit()
+    return str(social_ids.SocialURL_ID), 200
+    # Sample json body
+    # {
+    #     "codechef": "codechef1.com",
+    #     "hackerrank": "hackerrank2.com",
+    #     "leetcode": "leetcode1.com",
+    #     "linkedin": "linkedin1.com",
+    #     "github": "github1.com",
+    #     "twitter": "twitter1.com"
+    # }
+
+
+@app.route("/update_social_urls/<int:id>",  methods=['GET', 'POST'])
+def update_social_urls(id):
+    student = Student.query.filter_by(Student_ID=id).first()
+    student.social_urls.codechef = str(request.json['codechef'])
+    student.social_urls.hackerrank = str(request.json['hackerrank'])
+    student.social_urls.leetcode = str(request.json['leetcode'])
+    student.social_urls.linkedin = str(request.json['linkedin'])
+    student.social_urls.github = str(request.json['github'])
+    student.social_urls.twitter = str(request.json['twitter'])
+    # Update social_urls data in database
+    db.session.add(student.social_urls)
+    db.session.commit()
+    return str(student.social_urls.SocialURL_ID), 200
+    # Sample json body
+    # {
+    #     "codechef": "codechef_u.com",
+    #     "hackerrank": "hackerrank_u.com",
+    #     "leetcode": "leetcode_u.com",
+    #     "linkedin": "linkedin_u.com",
+    #     "github": "github_u.com",
+    #     "twitter": "twitter_u.com"
+    # }
 
 
 @app.route("/add_degree",  methods=['POST'])
@@ -147,6 +184,31 @@ def add_degree():
         db.session.add(degree)
         db.session.commit()
         return str(degree.Degree_ID), 200
+        # Sample json body
+        # {
+        #     "year": 2021,
+        #     "branch": "Computer Engineering",
+        #     "batch": "A1"
+        # }
+
+
+@app.route("/update_degree/<int:id>",  methods=['POST'])
+def update_degree(id):
+    if request.method == "POST":
+        student = Student.query.filter_by(Student_ID=id).first()
+        student.degree.year = int(request.json['year'])
+        student.degree.branch = str(request.json['branch'])
+        student.degree.batch = str(request.json['batch'])
+        # Upgrade degree data in database
+        db.session.add(student.degree)
+        db.session.commit()
+        return str(student.degree.Degree_ID), 200
+        # Sample json body
+        # {
+        #     "year": 2022,
+        #     "branch": "Instrumentation",
+        #     "batch": "A2"
+        # }
 
 
 @ app.route("/get_degree/<int:id>",  methods=['GET'])
@@ -160,36 +222,11 @@ def get_degree(id):
     return res, 200
 
 
-# @app.route("/create",  methods=['POSTupdate
-# def receive_social_urls():
-#     ids_domains = Domains.query.all()
-#     # name_to_update = Users.query.get_or_404(id)
-#     if request.method == "POST":
-#         name_to_update.name = request.form['name']
-#         name_to_update.email = request.form['email']
-#         name_to_update.favorite_color = request.form['favorite_color']
-#         name_to_update.username = request.form['username']
-#         try:
-#             db.session.commit()
-#             flash("User Updated Successfully!")
-#             return render_template("dashboard.html",
-#                                    form=form,
-#                                    name_to_update=name_to_update)
-#         except:
-#             flash("Error!  Looks like there was a problem...try again!")
-#             return render_template("dashboard.html",
-#                                    form=form,
-#                                    name_to_update=name_to_update)
-#     else:
-#         return "Record not found", 400
-
-
 @ app.route('/get_domains_and_its_skills', methods=['GET'])
 def get_domains_and_its_skills():
     '''
     For direct API calls through request
     '''
-
     # For post
     # data = request.get_json(force=True)
     # prediction = model.predict([np.array(list(data.values()))])
@@ -209,7 +246,51 @@ def get_domains_and_its_skills():
             curr_id_domain['skills'].append(skill_in_domain)
         res_ids_domains_skills.append(curr_id_domain)
     return jsonify(res_ids_domains_skills), 200
-    # return jsonify(ids_skills)
+
+
+@app.route("/add_student",  methods=['POST'])
+def add_student():
+    if request.method == "POST":
+        # Student_ID Auto incremented
+        Bio = str(request.json['Bio'])
+        Email = str(request.json['Email'])
+        Headline = str(request.json['Headline'])
+        Google_ID = str(request.json['google_id'])
+        Image_URL = str(request.json['Image_URl'])
+        Name = str(request.json['Name'])
+        Requirements = str(request.json['Requirements'])
+        SocialURL_ID = int(request.json['SocialURL_ID'])
+        Degree_ID = int(request.json['Degree_ID'])
+        student = Student(Bio=Bio, Email=Email, Headline=Headline,
+                          Google_ID=Google_ID, Image_URL=Image_URL, Name=Name, Requirements=Requirements, SocialURL_ID=SocialURL_ID, Degree_ID=Degree_ID)
+        # Add degree data to database
+        db.session.add(student)
+        db.session.commit()
+        return str(student.Student_ID), 200
+        # Sample json body
+        # {
+        #     "google_id": 100001,
+        #     "Image_URl": "monkey.com",
+        #     "Name": "Dummy_a",
+        #     "Headline": "head added",
+        #     "Requirements": "require added",
+        #     "Bio": "biodata added",
+        #     "Email": "abc@def.com",
+        #     "SocialURL_ID": 2,
+        #     "Degree_ID": 4
+        # }
+
+
+@app.route("/get_stud_skills/<int:id>",  methods=['GET', 'POST'])
+def get_stud_skills(id):
+    student = Student.query.filter_by(Student_ID=id).first()
+    res = list()
+    for skill in student.skills:
+        curr_skill = dict()
+        curr_skill['Skill_ID'] = skill.Skill_ID
+        curr_skill['Skill_name'] = skill.Skill_name
+        res.append(curr_skill)
+    return jsonify(res), 200
 
 
 if __name__ == "__main__":
