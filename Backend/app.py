@@ -108,18 +108,6 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 
-@app.route("/get_stud_skills/<int:id>",  methods=['GET', 'POST'])
-def get_stud_skills(id):
-    student = Student.query.filter_by(Student_ID=id).first()
-    res = list()
-    for skill in student.skills:
-        curr_skill = dict()
-        curr_skill['Skill_ID'] = skill.Skill_ID
-        curr_skill['Skill_name'] = skill.Skill_name
-        res.append(curr_skill)
-    return jsonify(res), 200
-
-
 @app.route("/get_social_urls/<int:id>",  methods=['GET', 'POST'])
 def get_social_urls(id):
     student = Student.query.filter_by(Student_ID=id).first()
@@ -258,7 +246,51 @@ def get_domains_and_its_skills():
             curr_id_domain['skills'].append(skill_in_domain)
         res_ids_domains_skills.append(curr_id_domain)
     return jsonify(res_ids_domains_skills), 200
-    # return jsonify(ids_skills)
+
+
+@app.route("/add_student",  methods=['POST'])
+def add_student():
+    if request.method == "POST":
+        # Student_ID Auto incremented
+        Bio = str(request.json['Bio'])
+        Email = str(request.json['Email'])
+        Headline = str(request.json['Headline'])
+        Google_ID = str(request.json['google_id'])
+        Image_URL = str(request.json['Image_URl'])
+        Name = str(request.json['Name'])
+        Requirements = str(request.json['Requirements'])
+        SocialURL_ID = int(request.json['SocialURL_ID'])
+        Degree_ID = int(request.json['Degree_ID'])
+        student = Student(Bio=Bio, Email=Email, Headline=Headline,
+                          Google_ID=Google_ID, Image_URL=Image_URL, Name=Name, Requirements=Requirements, SocialURL_ID=SocialURL_ID, Degree_ID=Degree_ID)
+        # Add degree data to database
+        db.session.add(student)
+        db.session.commit()
+        return str(student.Student_ID), 200
+        # Sample json body
+        # {
+        #     "google_id": 100001,
+        #     "Image_URl": "monkey.com",
+        #     "Name": "Dummy_a",
+        #     "Headline": "head added",
+        #     "Requirements": "require added",
+        #     "Bio": "biodata added",
+        #     "Email": "abc@def.com",
+        #     "SocialURL_ID": 2,
+        #     "Degree_ID": 4
+        # }
+
+
+@app.route("/get_stud_skills/<int:id>",  methods=['GET', 'POST'])
+def get_stud_skills(id):
+    student = Student.query.filter_by(Student_ID=id).first()
+    res = list()
+    for skill in student.skills:
+        curr_skill = dict()
+        curr_skill['Skill_ID'] = skill.Skill_ID
+        curr_skill['Skill_name'] = skill.Skill_name
+        res.append(curr_skill)
+    return jsonify(res), 200
 
 
 if __name__ == "__main__":
