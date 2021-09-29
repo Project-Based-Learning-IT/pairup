@@ -4,6 +4,23 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from bloom_filter2 import BloomFilter
 import pickle
+import pandas as pd
+from sklearn.externals import joblib
+from sklearn.neighbors import NearestNeighbors
+
+
+def getSimilarUsers(top_n, target):
+    df = pd.read_csv('Data.csv')
+    name_of_users = df.index
+    model = joblib.load('model.pkl', mmap_mode='r')
+    user = [df.loc[target, :].to_list()]
+    similar_users = model.kneighbors(user, top_n, return_distance=False)[0]
+    recommendedUsers = [name_of_users[i] for i in similar_users]
+    return recommendedUsers
+
+
+# getSimilarUsers(10, 'krishna purohit')
+
 
 app = Flask(__name__)
 
@@ -63,6 +80,18 @@ class Degree(db.Model):
 
     def __repr__(self) -> str:
         return f"{self.Degree_ID} - {self.year}"
+
+
+# class Projects(db.Model):
+#     __tablename__ = 'Degree'
+#     Degree_ID = db.Column(db.Integer, primary_key=True)
+#     year = db.Column(db.Integer, nullable=True)
+#     branch = db.Column(db.String(80), nullable=True)
+#     batch = db.Column(db.String(10), nullable=True)
+#     students = db.relationship('Student', backref='degree', lazy=True)
+
+#     def __repr__(self) -> str:
+#         return f"{self.Degree_ID} - {self.year}"
 
 
 class Messages(db.Model):
@@ -139,22 +168,25 @@ class Social_URLs(db.Model):
         return f"{self.Social_URL_ID}"
 
 
+# Homepage
 @app.route("/",  methods=['GET', 'POST'])
 def hello_world():
     return "<p>Hello, World!</p>"
 
 
+# Social URLs Routes
 @app.route("/get_social_urls/<int:id>",  methods=['GET', 'POST'])
 def get_social_urls(id):
     student = Student.query.filter_by(Student_ID=id).first()
     res = dict()
-    res['SocialURL_ID'] = student.social_urls.SocialURL_ID
-    res['codechef'] = student.social_urls.codechef
-    res['hackerrank'] = student.social_urls.hackerrank
-    res['leetcode'] = student.social_urls.leetcode
-    res['linkedin'] = student.social_urls.linkedin
-    res['github'] = student.social_urls.github
-    res['twitter'] = student.social_urls.twitter
+    if student.social_urls != None:
+        res['SocialURL_ID'] = student.social_urls.SocialURL_ID
+        res['codechef'] = student.social_urls.codechef
+        res['hackerrank'] = student.social_urls.hackerrank
+        res['leetcode'] = student.social_urls.leetcode
+        res['linkedin'] = student.social_urls.linkedin
+        res['github'] = student.social_urls.github
+        res['twitter'] = student.social_urls.twitter
     return res, 200
 
 
@@ -208,6 +240,7 @@ def update_social_urls(id):
     # }
 
 
+# Degree Routes
 @app.route("/add_degree",  methods=['POST'])
 def add_degree():
     if request.method == "POST":
@@ -258,6 +291,7 @@ def get_degree(id):
     return res, 200
 
 
+# Domain and its skills route
 @ app.route('/get_domains_and_its_skills', methods=['GET'])
 def get_domains_and_its_skills():
     '''
@@ -284,6 +318,7 @@ def get_domains_and_its_skills():
     return jsonify(res_ids_domains_skills), 200
 
 
+# Student Routes
 @app.route("/add_student",  methods=['POST'])
 def add_student():
     if request.method == "POST":
@@ -319,6 +354,7 @@ def add_student():
         }
 
 
+# Languages Routes
 @app.route("/add_student_languages/<int:id>",  methods=['POST'])
 def add_student_languages(id):
     if request.method == "POST":
@@ -355,6 +391,7 @@ def get_student_languages(id):
     return jsonify(res), 200
 
 
+# Skills Routes
 @app.route("/add_student_skills/<int:id>",  methods=['POST'])
 def add_student_skills(id):
     if request.method == "POST":
@@ -412,6 +449,9 @@ def get_stud_skills(id):
     return jsonify(res), 200
 
 
+# Right swipe Routes
+
+
 @app.route("/right_swipe/<int:id>",  methods=['POST'])
 def right_swipe(id):
     if request.method == "POST":
@@ -437,6 +477,7 @@ def right_swipe(id):
     # }
 
 
+# Message Route
 @ app.route("/message/<int:id>",  methods=['POST'])
 def message(id):
     if request.method == "POST":
