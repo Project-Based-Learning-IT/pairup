@@ -1,5 +1,8 @@
+# package imports
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from bloom_filter2 import BloomFilter
+import pickle
 
 app = Flask(__name__)
 
@@ -261,23 +264,70 @@ def add_student():
         Requirements = str(request.json['Requirements'])
         SocialURL_ID = int(request.json['SocialURL_ID'])
         Degree_ID = int(request.json['Degree_ID'])
+        bloom = BloomFilter(max_elements=1000, error_rate=0.001)
+        to_bytes = pickle.dumps(bloom)
         student = Student(Bio=Bio, Email=Email, Headline=Headline,
-                          Google_ID=Google_ID, Image_URL=Image_URL, Name=Name, Requirements=Requirements, SocialURL_ID=SocialURL_ID, Degree_ID=Degree_ID)
-        # Add degree data to database
+                          Google_ID=Google_ID, Image_URL=Image_URL, Name=Name, Requirements=Requirements, SocialURL_ID=SocialURL_ID, Degree_ID=Degree_ID, Bloom_filter=to_bytes)
+
         db.session.add(student)
         db.session.commit()
         return str(student.Student_ID), 200
         # Sample json body
         # {
-        #     "google_id": 100001,
-        #     "Image_URl": "monkey.com",
-        #     "Name": "Dummy_a",
+        #     "google_id": 100002,
+        #     "Image_URl": "boi.com",
+        #     "Name": "Dummy_ab",
         #     "Headline": "head added",
         #     "Requirements": "require added",
         #     "Bio": "biodata added",
-        #     "Email": "abc@def.com",
-        #     "SocialURL_ID": 2,
+        #     "Email": "daaf@def.com",
+        #     "SocialURL_ID": 3,
         #     "Degree_ID": 4
+        # }
+
+
+@app.route("/add_student_skills/<int:id>",  methods=['POST'])
+def add_student_skills(id):
+    if request.method == "POST":
+        skills_ids = list(request.json['Skills'])
+        student = Student.query.filter_by(Student_ID=id).first()
+        for skill_id in skills_ids:
+            curr_skill = Skills.query.filter_by(
+                Skill_ID=skill_id).first()
+            student.skills.append(curr_skill)
+        db.session.commit()
+        return str(student.Student_ID), 200
+        # Sample json body
+        # {
+        #     "Skills": [1, 2, 3, 4]
+        # }
+
+
+@app.route("/update_student_skills/<int:id>",  methods=['POST'])
+def update_student_skills(id):
+    if request.method == "POST":
+        skills_ids = list(request.json['Skills'])
+        student = Student.query.filter_by(Student_ID=id).first()
+        stud_skills_ids = set()
+        for added_skill in student.skills:
+            stud_skills_ids.add(added_skill.Skill_ID)
+        new_skills_id = set()
+        for skill_id in skills_ids:
+            new_skills_id.add(skill_id)
+
+        for skill_id in new_skills_id-stud_skills_ids:
+            curr_skill = Skills.query.filter_by(
+                Skill_ID=skill_id).first()
+            student.skills.append(curr_skill)
+        for skill_id in stud_skills_ids - new_skills_id:
+            curr_skill = Skills.query.filter_by(
+                Skill_ID=skill_id).first()
+            student.skills.remove(curr_skill)
+        db.session.commit()
+        return str(student.Student_ID), 200
+        # Sample json body
+        # {
+        #     "Skills": [1, 2, 3, 5]
         # }
 
 
@@ -291,6 +341,31 @@ def get_stud_skills(id):
         curr_skill['Skill_name'] = skill.Skill_name
         res.append(curr_skill)
     return jsonify(res), 200
+
+
+@app.route("/right_swipe/<int:id>",  methods=['POST'])
+def right_swipe(id):
+    if request.method == "POST":
+        swiper = Student.query.filter_by(Student_ID=id).first()
+        swiped_id = int(request.json['Swiped_Student_ID'])
+        swiped = Student.query.filter_by(Student_ID=swiped_id).first()
+
+        swiper_bloom = pickle.loads(swiper.Bloom_filter)
+        swiper_bloom.add(swiped.Student_ID)
+        to_bytes = pickle.dumps(swiper_bloom)
+        swiper.Bloom_filter = to_bytes
+        db.session.add(swiper)
+        db.session.commit()
+
+        swiped_bloom = pickle.loads(swiped.Bloom_filter)
+        if swiper.Student_ID in swiped_bloom:
+            return "Matched", 200
+        else:
+            return "Yet to Match", 200
+    # Sample json body
+    # {
+    #     "Swiped_Student_ID": 2
+    # }
 
 
 if __name__ == "__main__":
