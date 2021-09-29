@@ -1,5 +1,26 @@
+# package imports
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+from bloom_filter2 import BloomFilter
+import pickle
+import pandas as pd
+from sklearn.externals import joblib
+from sklearn.neighbors import NearestNeighbors
+
+
+def getSimilarUsers(top_n, target):
+    df = pd.read_csv('Data.csv')
+    name_of_users = df.index
+    model = joblib.load('model.pkl', mmap_mode='r')
+    user = [df.loc[target, :].to_list()]
+    similar_users = model.kneighbors(user, top_n, return_distance=False)[0]
+    recommendedUsers = [name_of_users[i] for i in similar_users]
+    return recommendedUsers
+
+
+# getSimilarUsers(10, 'krishna purohit')
+
 
 app = Flask(__name__)
 
@@ -42,6 +63,9 @@ class Student(db.Model):
     skills = db.relationship('Skills', secondary=Stud_Skill_M_N, lazy='subquery',
                              backref=db.backref('see_students', lazy=True))
 
+    languages = db.relationship(
+        "Student_Language_M_N", back_populates="student")
+
     def __repr__(self) -> str:
         return f"{self.Student_ID} - {self.Name}"
 
@@ -58,13 +82,54 @@ class Degree(db.Model):
         return f"{self.Degree_ID} - {self.year}"
 
 
+# class Projects(db.Model):
+#     __tablename__ = 'Degree'
+#     Degree_ID = db.Column(db.Integer, primary_key=True)
+#     year = db.Column(db.Integer, nullable=True)
+#     branch = db.Column(db.String(80), nullable=True)
+#     batch = db.Column(db.String(10), nullable=True)
+#     students = db.relationship('Student', backref='degree', lazy=True)
+
+#     def __repr__(self) -> str:
+#         return f"{self.Degree_ID} - {self.year}"
+
+
+class Messages(db.Model):
+    __tablename__ = 'Messages'
+    Message_ID = db.Column(db.Integer, primary_key=True)
+    Sender_ID = db.Column(db.Integer, nullable=False, unique=False)
+    Receiver_ID = db.Column(db.Integer, nullable=False, unique=False)
+    text = db.Column(db.String(200), nullable=False, unique=False)
+    timestamp = db.Column(db.DateTime, nullable=False,
+                          unique=False, default=datetime.utcnow)
+
+    def __repr__(self) -> str:
+        return f"{self.Sender_ID} - {self.Receiver_ID}"
+
+
 class Languages(db.Model):
     __tablename__ = 'Languages'
     Language_ID = db.Column(db.Integer, primary_key=True)
     Name = db.Column(db.String(20), nullable=False)
+    students = db.relationship(
+        "Student_Language_M_N", back_populates="language")
 
     def __repr__(self) -> str:
         return f"{self.Language_ID} - {self.Name}"
+
+
+class Student_Language_M_N(db.Model):
+    __tablename__ = 'Student_Language_M_N'
+    Language_ID = db.Column(db.Integer, db.ForeignKey(
+        'Languages.Language_ID'), primary_key=True)
+    Student_ID = db.Column(db.Integer, db.ForeignKey(
+        'Student.Student_ID'), primary_key=True)
+    Proficiency = db.Column(db.String(20), nullable=True, unique=False)
+    language = db.relationship("Languages", back_populates="students")
+    student = db.relationship("Student", back_populates="languages")
+
+    def __repr__(self) -> str:
+        return f"{self.Language_ID} - {self.Student_ID}"
 
 
 class Skills(db.Model):
@@ -103,22 +168,25 @@ class Social_URLs(db.Model):
         return f"{self.Social_URL_ID}"
 
 
+# Homepage
 @app.route("/",  methods=['GET', 'POST'])
 def hello_world():
     return "<p>Hello, World!</p>"
 
 
+# Social URLs Routes
 @app.route("/get_social_urls/<int:id>",  methods=['GET', 'POST'])
 def get_social_urls(id):
     student = Student.query.filter_by(Student_ID=id).first()
     res = dict()
-    res['SocialURL_ID'] = student.social_urls.SocialURL_ID
-    res['codechef'] = student.social_urls.codechef
-    res['hackerrank'] = student.social_urls.hackerrank
-    res['leetcode'] = student.social_urls.leetcode
-    res['linkedin'] = student.social_urls.linkedin
-    res['github'] = student.social_urls.github
-    res['twitter'] = student.social_urls.twitter
+    if student.social_urls != None:
+        res['SocialURL_ID'] = student.social_urls.SocialURL_ID
+        res['codechef'] = student.social_urls.codechef
+        res['hackerrank'] = student.social_urls.hackerrank
+        res['leetcode'] = student.social_urls.leetcode
+        res['linkedin'] = student.social_urls.linkedin
+        res['github'] = student.social_urls.github
+        res['twitter'] = student.social_urls.twitter
     return res, 200
 
 
@@ -172,6 +240,7 @@ def update_social_urls(id):
     # }
 
 
+# Degree Routes
 @app.route("/add_degree",  methods=['POST'])
 def add_degree():
     if request.method == "POST":
@@ -222,6 +291,7 @@ def get_degree(id):
     return res, 200
 
 
+# Domain and its skills route
 @ app.route('/get_domains_and_its_skills', methods=['GET'])
 def get_domains_and_its_skills():
     '''
@@ -248,6 +318,7 @@ def get_domains_and_its_skills():
     return jsonify(res_ids_domains_skills), 200
 
 
+# Student Routes
 @app.route("/add_student",  methods=['POST'])
 def add_student():
     if request.method == "POST":
@@ -261,23 +332,108 @@ def add_student():
         Requirements = str(request.json['Requirements'])
         SocialURL_ID = int(request.json['SocialURL_ID'])
         Degree_ID = int(request.json['Degree_ID'])
+        bloom = BloomFilter(max_elements=1000, error_rate=0.001)
+        to_bytes = pickle.dumps(bloom)
         student = Student(Bio=Bio, Email=Email, Headline=Headline,
-                          Google_ID=Google_ID, Image_URL=Image_URL, Name=Name, Requirements=Requirements, SocialURL_ID=SocialURL_ID, Degree_ID=Degree_ID)
-        # Add degree data to database
+                          Google_ID=Google_ID, Image_URL=Image_URL, Name=Name, Requirements=Requirements, SocialURL_ID=SocialURL_ID, Degree_ID=Degree_ID, Bloom_filter=to_bytes)
+
         db.session.add(student)
         db.session.commit()
         return str(student.Student_ID), 200
         # Sample json body
+        {
+            "google_id": 100002,
+            "Image_URl": "boi.com",
+            "Name": "Dummy_ab",
+            "Headline": "head added",
+            "Requirements": "require added",
+            "Bio": "biodata added",
+            "Email": "daaf@def.com",
+            "SocialURL_ID": 3,
+            "Degree_ID": 4,
+        }
+
+
+# Languages Routes
+@app.route("/add_student_languages/<int:id>",  methods=['POST'])
+def add_student_languages(id):
+    if request.method == "POST":
+        languages = dict(request.json['Languages'])
+        student = Student.query.filter_by(Student_ID=id).first()
+        for language_id, proficiency in languages.items():
+            S_L_M_N = Student_Language_M_N(Proficiency=str(proficiency))
+            curr_language = Languages.query.filter_by(
+                Language_ID=int(language_id)).first()
+            S_L_M_N.language = curr_language
+            S_L_M_N.student = student
+            student.languages.append(S_L_M_N)
+        db.session.commit()
+        return str(student.Student_ID), 200
+        # Sample json body
         # {
-        #     "google_id": 100001,
-        #     "Image_URl": "monkey.com",
-        #     "Name": "Dummy_a",
-        #     "Headline": "head added",
-        #     "Requirements": "require added",
-        #     "Bio": "biodata added",
-        #     "Email": "abc@def.com",
-        #     "SocialURL_ID": 2,
-        #     "Degree_ID": 4
+        #     "Languages": {
+        #         "1": "Native",
+        #         "2": "Professional"
+        #     }
+        # }
+
+
+@app.route("/get_student_languages/<int:id>",  methods=['GET'])
+def get_student_languages(id):
+    student = Student.query.filter_by(Student_ID=id).first()
+    res = list()
+    for S_L_M_N in student.languages:
+        curr_language = dict()
+        curr_language['Proficiency'] = S_L_M_N.Proficiency
+        curr_language['Language_ID'] = S_L_M_N.language.Language_ID
+        curr_language['Language_name'] = S_L_M_N.language.Name
+        res.append(curr_language)
+    return jsonify(res), 200
+
+
+# Skills Routes
+@app.route("/add_student_skills/<int:id>",  methods=['POST'])
+def add_student_skills(id):
+    if request.method == "POST":
+        skills_ids = list(request.json['Skills'])
+        student = Student.query.filter_by(Student_ID=id).first()
+        for skill_id in skills_ids:
+            curr_skill = Skills.query.filter_by(
+                Skill_ID=skill_id).first()
+            student.skills.append(curr_skill)
+        db.session.commit()
+        return str(student.Student_ID), 200
+        # Sample json body
+        # {
+        #     "Skills": [1, 2, 3, 4]
+        # }
+
+
+@app.route("/update_student_skills/<int:id>",  methods=['POST'])
+def update_student_skills(id):
+    if request.method == "POST":
+        skills_ids = list(request.json['Skills'])
+        student = Student.query.filter_by(Student_ID=id).first()
+        stud_skills_ids = set()
+        for added_skill in student.skills:
+            stud_skills_ids.add(added_skill.Skill_ID)
+        new_skills_id = set()
+        for skill_id in skills_ids:
+            new_skills_id.add(skill_id)
+
+        for skill_id in new_skills_id-stud_skills_ids:
+            curr_skill = Skills.query.filter_by(
+                Skill_ID=skill_id).first()
+            student.skills.append(curr_skill)
+        for skill_id in stud_skills_ids - new_skills_id:
+            curr_skill = Skills.query.filter_by(
+                Skill_ID=skill_id).first()
+            student.skills.remove(curr_skill)
+        db.session.commit()
+        return str(student.Student_ID), 200
+        # Sample json body
+        # {
+        #     "Skills": [1, 2, 3, 5]
         # }
 
 
@@ -291,6 +447,51 @@ def get_stud_skills(id):
         curr_skill['Skill_name'] = skill.Skill_name
         res.append(curr_skill)
     return jsonify(res), 200
+
+
+# Right swipe Routes
+
+
+@app.route("/right_swipe/<int:id>",  methods=['POST'])
+def right_swipe(id):
+    if request.method == "POST":
+        swiper = Student.query.filter_by(Student_ID=id).first()
+        swiped_id = int(request.json['Swiped_Student_ID'])
+        swiped = Student.query.filter_by(Student_ID=swiped_id).first()
+
+        swiper_bloom = pickle.loads(swiper.Bloom_filter)
+        swiper_bloom.add(swiped.Student_ID)
+        to_bytes = pickle.dumps(swiper_bloom)
+        swiper.Bloom_filter = to_bytes
+        db.session.add(swiper)
+        db.session.commit()
+
+        swiped_bloom = pickle.loads(swiped.Bloom_filter)
+        if swiper.Student_ID in swiped_bloom:
+            return "Matched", 200
+        else:
+            return "Yet to Match", 200
+    # Sample json body
+    # {
+    #     "Swiped_Student_ID": 2
+    # }
+
+
+# Message Route
+@ app.route("/message/<int:id>",  methods=['POST'])
+def message(id):
+    if request.method == "POST":
+        Receiver_ID = int(request.json['Receiver_ID'])
+        text = str(request.json['text'])
+        message = Messages(Sender_ID=id, Receiver_ID=Receiver_ID, text=text)
+        db.session.add(message)
+        db.session.commit()
+        return str(message.Message_ID), 200
+        # Sample json body
+        # {
+        #     "text": "Hi, this is first chat",
+        #     "Receiver_ID": 2
+        # }
 
 
 if __name__ == "__main__":
