@@ -46,6 +46,9 @@ class Student(db.Model):
     skills = db.relationship('Skills', secondary=Stud_Skill_M_N, lazy='subquery',
                              backref=db.backref('see_students', lazy=True))
 
+    languages = db.relationship(
+        "Student_Language_M_N", back_populates="student")
+
     def __repr__(self) -> str:
         return f"{self.Student_ID} - {self.Name}"
 
@@ -79,9 +82,25 @@ class Languages(db.Model):
     __tablename__ = 'Languages'
     Language_ID = db.Column(db.Integer, primary_key=True)
     Name = db.Column(db.String(20), nullable=False)
+    students = db.relationship(
+        "Student_Language_M_N", back_populates="language")
 
     def __repr__(self) -> str:
         return f"{self.Language_ID} - {self.Name}"
+
+
+class Student_Language_M_N(db.Model):
+    __tablename__ = 'Student_Language_M_N'
+    Language_ID = db.Column(db.Integer, db.ForeignKey(
+        'Languages.Language_ID'), primary_key=True)
+    Student_ID = db.Column(db.Integer, db.ForeignKey(
+        'Student.Student_ID'), primary_key=True)
+    Proficiency = db.Column(db.String(20), nullable=True, unique=False)
+    language = db.relationship("Languages", back_populates="students")
+    student = db.relationship("Student", back_populates="languages")
+
+    def __repr__(self) -> str:
+        return f"{self.Language_ID} - {self.Student_ID}"
 
 
 class Skills(db.Model):
@@ -287,17 +306,53 @@ def add_student():
         db.session.commit()
         return str(student.Student_ID), 200
         # Sample json body
+        {
+            "google_id": 100002,
+            "Image_URl": "boi.com",
+            "Name": "Dummy_ab",
+            "Headline": "head added",
+            "Requirements": "require added",
+            "Bio": "biodata added",
+            "Email": "daaf@def.com",
+            "SocialURL_ID": 3,
+            "Degree_ID": 4,
+        }
+
+
+@app.route("/add_student_languages/<int:id>",  methods=['POST'])
+def add_student_languages(id):
+    if request.method == "POST":
+        languages = dict(request.json['Languages'])
+        student = Student.query.filter_by(Student_ID=id).first()
+        for language_id, proficiency in languages.items():
+            S_L_M_N = Student_Language_M_N(Proficiency=str(proficiency))
+            curr_language = Languages.query.filter_by(
+                Language_ID=int(language_id)).first()
+            S_L_M_N.language = curr_language
+            S_L_M_N.student = student
+            student.languages.append(S_L_M_N)
+        db.session.commit()
+        return str(student.Student_ID), 200
+        # Sample json body
         # {
-        #     "google_id": 100002,
-        #     "Image_URl": "boi.com",
-        #     "Name": "Dummy_ab",
-        #     "Headline": "head added",
-        #     "Requirements": "require added",
-        #     "Bio": "biodata added",
-        #     "Email": "daaf@def.com",
-        #     "SocialURL_ID": 3,
-        #     "Degree_ID": 4
+        #     "Languages": {
+        #         "1": "Native",
+        #         "2": "Professional"
+        #     }
         # }
+
+
+@app.route("/get_student_languages/<int:id>",  methods=['GET'])
+def get_student_languages(id):
+    student = Student.query.filter_by(Student_ID=id).first()
+    res = list()
+    for S_L_M_N in student.languages:
+        curr_language = dict()
+        curr_language['Proficiency'] = S_L_M_N.Proficiency
+        curr_language['Language_ID'] = S_L_M_N.language.Language_ID
+        curr_language['Language_name'] = S_L_M_N.language.Name
+        res.append(curr_language)
+    return jsonify(res), 200
 
 
 @app.route("/add_student_skills/<int:id>",  methods=['POST'])
