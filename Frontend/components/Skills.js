@@ -58,7 +58,7 @@ function Skills({skillList, skills, setSkills}) {
           style={{
             marginEnd: 8,
             marginBottom: 8,
-            borderWidth: index < 3 ? 1 : 0,
+            borderWidth: index < 3 ? 2 : 0,
             borderColor: colors.primary,
           }}
           icon="close-circle-outline"

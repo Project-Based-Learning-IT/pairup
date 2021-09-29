@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  StatusBar,
 } from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -13,30 +12,167 @@ import Card from './Card';
 import Swiper from 'react-native-deck-swiper';
 import OverlayLabel from './OverlayLabel';
 import FocusAwareStatusBar from './FocusAwareStatusBar';
+import {useTheme} from 'react-native-paper';
 
 // TODO: Delete the following data
 const cards = [
   {
     id: 1,
     title: 'Title 1',
+    name: 'Rohini Dutta',
+    photo:
+      'https://upload.wikimedia.org/wikipedia/commons/5/5c/Ananya_Panday_snapped_in_Andheri.jpg',
+    info: 'BTech | IT | B2',
+    headline: 'AI | ML | Web Development',
+    requirements:
+      'Looking for a python developer who is comfortable with numpy and pandas. Someone who is capable of extracting insights from the given data. Someone with an X Factor.',
+    skills: [
+      'Web Development',
+      'Java',
+      'Python',
+      'Machine Learning',
+      'AI',
+      'MERN',
+      'Flutter',
+    ],
+    links: {
+      linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
+      github: 'https://www.github.com/siddheshkothadi',
+      twitter: 'https://twitter.com/siddheshkothadi',
+    },
   },
   {
     id: 2,
     title: 'Title 2',
+    name: 'Rohini Dutta',
+    photo:
+      'https://upload.wikimedia.org/wikipedia/commons/5/5c/Ananya_Panday_snapped_in_Andheri.jpg',
+    info: 'BTech | IT | B2',
+    headline: 'AI | ML | Web Development',
+    requirements:
+      'Looking for a python developer who is comfortable with numpy and pandas. Someone who is capable of extracting insights from the given data. Someone with an X Factor.',
+    skills: [
+      'Web Development',
+      'Java',
+      'Python',
+      'Machine Learning',
+      'AI',
+      'MERN',
+      'Flutter',
+    ],
+    links: {
+      linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
+      github: 'https://www.github.com/siddheshkothadi',
+      twitter: 'https://twitter.com/siddheshkothadi',
+    },
   },
   {
     id: 3,
     title: 'Title 3',
+    name: 'Rohini Dutta',
+    photo:
+      'https://upload.wikimedia.org/wikipedia/commons/5/5c/Ananya_Panday_snapped_in_Andheri.jpg',
+    info: 'BTech | IT | B2',
+    headline: 'AI | ML | Web Development',
+    requirements:
+      'Looking for a python developer who is comfortable with numpy and pandas. Someone who is capable of extracting insights from the given data. Someone with an X Factor.',
+    skills: [
+      'Web Development',
+      'Java',
+      'Python',
+      'Machine Learning',
+      'AI',
+      'MERN',
+      'Flutter',
+    ],
+    links: {
+      linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
+      github: 'https://www.github.com/siddheshkothadi',
+      twitter: 'https://twitter.com/siddheshkothadi',
+    },
   },
   {
     id: 4,
     title: 'Title 4',
+    name: 'Rohini Dutta',
+    photo:
+      'https://upload.wikimedia.org/wikipedia/commons/5/5c/Ananya_Panday_snapped_in_Andheri.jpg',
+    info: 'BTech | IT | B2',
+    headline: 'AI | ML | Web Development',
+    requirements:
+      'Looking for a python developer who is comfortable with numpy and pandas. Someone who is capable of extracting insights from the given data. Someone with an X Factor.',
+    skills: [
+      'Web Development',
+      'Java',
+      'Python',
+      'Machine Learning',
+      'AI',
+      'MERN',
+      'Flutter',
+    ],
+    links: {
+      linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
+      github: 'https://www.github.com/siddheshkothadi',
+      twitter: 'https://twitter.com/siddheshkothadi',
+    },
+  },
+  {
+    id: 5,
+    title: 'Title 5',
+    name: 'Rohini Dutta',
+    photo:
+      'https://upload.wikimedia.org/wikipedia/commons/5/5c/Ananya_Panday_snapped_in_Andheri.jpg',
+    info: 'BTech | IT | B2',
+    headline: 'AI | ML | Web Development',
+    requirements:
+      'Looking for a python developer who is comfortable with numpy and pandas. Someone who is capable of extracting insights from the given data. Someone with an X Factor.',
+    skills: [
+      'Web Development',
+      'Java',
+      'Python',
+      'Machine Learning',
+      'AI',
+      'MERN',
+      'Flutter',
+    ],
+    links: {
+      linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
+      github: 'https://www.github.com/siddheshkothadi',
+      twitter: 'https://twitter.com/siddheshkothadi',
+    },
+  },
+  {
+    id: 6,
+    title: 'Title 6',
+    name: 'Rohini Dutta',
+    photo:
+      'https://upload.wikimedia.org/wikipedia/commons/5/5c/Ananya_Panday_snapped_in_Andheri.jpg',
+    info: 'BTech | IT | B2',
+    headline: 'AI | ML | Web Development',
+    requirements:
+      'Looking for a python developer who is comfortable with numpy and pandas. Someone who is capable of extracting insights from the given data. Someone with an X Factor.',
+    skills: [
+      'Web Development',
+      'Java',
+      'Python',
+      'Machine Learning',
+      'AI',
+      'MERN',
+      'Flutter',
+    ],
+    links: {
+      linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
+      github: 'https://www.github.com/siddheshkothadi',
+      twitter: 'https://twitter.com/siddheshkothadi',
+    },
   },
 ];
 
 function Discover() {
   const navigation = useNavigation();
   const swiperRef = React.useRef();
+
+  const {colors} = useTheme();
 
   const [index, setIndex] = React.useState(0);
   const [swipedAll, setSwipedAll] = React.useState(cards.length === 0);
@@ -64,7 +200,7 @@ function Discover() {
   return (
     <View style={styles.container}>
       {/* A status bar which changes color based on the tab selected */}
-      <FocusAwareStatusBar backgroundColor="#C30F31" barStyle="light-content" />
+      <FocusAwareStatusBar backgroundColor="#b3202e" barStyle="light-content" />
 
       {/* Absolute positioned discover background (which is supposed to use gradient) */}
       <View style={styles.discoverBackground}></View>
@@ -87,7 +223,7 @@ function Discover() {
           cards={cards}
           cardIndex={index}
           renderCard={card => <Card card={card} />}
-          stackSize={5}
+          stackSize={cards.length}
           stackScale={4}
           stackSeparation={8}
           disableBottomSwipe
@@ -184,7 +320,8 @@ const styles = StyleSheet.create({
     top: 0,
     width: '100%',
     height: '45%',
-    backgroundColor: '#C30F31',
+    // backgroundColor: '#C30F31',
+    backgroundColor: '#b3202e',
     borderBottomLeftRadius: 39,
     borderBottomRightRadius: 39,
   },
