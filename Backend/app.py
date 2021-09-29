@@ -1,6 +1,7 @@
 # package imports
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 from bloom_filter2 import BloomFilter
 import pickle
 
@@ -59,6 +60,19 @@ class Degree(db.Model):
 
     def __repr__(self) -> str:
         return f"{self.Degree_ID} - {self.year}"
+
+
+class Messages(db.Model):
+    __tablename__ = 'Messages'
+    Message_ID = db.Column(db.Integer, primary_key=True)
+    Sender_ID = db.Column(db.Integer, nullable=False, unique=False)
+    Receiver_ID = db.Column(db.Integer, nullable=False, unique=False)
+    text = db.Column(db.String(200), nullable=False, unique=False)
+    timestamp = db.Column(db.DateTime, nullable=False,
+                          unique=False, default=datetime.utcnow)
+
+    def __repr__(self) -> str:
+        return f"{self.Sender_ID} - {self.Receiver_ID}"
 
 
 class Languages(db.Model):
@@ -366,6 +380,22 @@ def right_swipe(id):
     # {
     #     "Swiped_Student_ID": 2
     # }
+
+
+@ app.route("/message/<int:id>",  methods=['POST'])
+def message(id):
+    if request.method == "POST":
+        Receiver_ID = int(request.json['Receiver_ID'])
+        text = str(request.json['text'])
+        message = Messages(Sender_ID=id, Receiver_ID=Receiver_ID, text=text)
+        db.session.add(message)
+        db.session.commit()
+        return str(message.Message_ID), 200
+        # Sample json body
+        # {
+        #     "text": "Hi, this is first chat",
+        #     "Receiver_ID": 2
+        # }
 
 
 if __name__ == "__main__":
