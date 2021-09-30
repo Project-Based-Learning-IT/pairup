@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Card from './Card';
 import Swiper from 'react-native-deck-swiper';
@@ -210,6 +211,7 @@ function Discover() {
       {/* Discover text */}
       <View style={styles.discoverContainer}>
         <Text style={styles.discoverText}>Discover</Text>
+        <Ionicons name="options" size={28} color={'#fff'}></Ionicons>
       </View>
 
       {/* Main content with swipe cards */}
@@ -335,6 +337,9 @@ const styles = StyleSheet.create({
     paddingStart: 16,
     paddingTop: 8,
     paddingBottom: 8,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
 
   discoverText: {
