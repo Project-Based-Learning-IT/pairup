@@ -51,6 +51,7 @@ Install requirements if not done already
     pip install scikit-learn
     pip install flask-jwt-extended
     pip install python-dotenv
+    pip install python-dateutil
     [Model training packages]
  Install a python formatter in VSCode outside of virtual environment
  <br>

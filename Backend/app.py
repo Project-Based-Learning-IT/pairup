@@ -4,6 +4,7 @@ from flask.templating import DispatchingJinjaLoader
 from flask_sqlalchemy import SQLAlchemy
 # DateTime
 from datetime import datetime
+from dateutil import parser
 from bloom_filter2 import BloomFilter
 import pickle
 # ML packages
@@ -691,7 +692,7 @@ def message():
         # }
 
 
-@app.route("/get_all_chats/",  methods=['GET', 'POST'])
+@app.route("/get_all_chats",  methods=['GET', 'POST'])
 @jwt_required()
 def get_all_chats():
     id = get_jwt_identity()
@@ -709,27 +710,26 @@ def get_all_chats():
     return jsonify(res), 200
 
 
-# @app.route("/get_chats_after_last_cached",  methods=['GET', 'POST'])
-# @jwt_required()
-# def get_chats_after_last_cached():
-#     if request.method == "POST":
-#         id = get_jwt_identity()
-#         str_last_date_time = request.json['DateTime']
-#         last_date_time = datetime.Parse(str_last_date_time).ToUniversalTime()
+@app.route("/get_chats_after_last_cached",  methods=['GET', 'POST'])
+@jwt_required()
+def get_chats_after_last_cached():
+    if request.method == "POST":
+        id = get_jwt_identity()
+        str_last_date_time = request.json['DateTime']
+        last_date_time = parser.parse(str_last_date_time)
 
-#         chats = Messages.query.filter((Messages.Sender_ID == id) | (
-#             Messages.Receiver_ID == id)).filter_by(Messages.timestamp > last_date_time).order_by(Messages.timestamp.asc())
-#         res = list()
-#         for message in chats:
-#             curr_message = dict()
-#             curr_message['Message_ID'] = message.Message_ID
-#             curr_message['Sender_ID'] = message.Sender_ID
-#             curr_message['Receiver_ID'] = message.Receiver_ID
-#             curr_message['text'] = message.text
-#             curr_message['timestamp'] = message.timestamp
-#             res.append(curr_message)
-#         return jsonify(res), 200
-
+        chats = Messages.query.filter(((Messages.Sender_ID == id) | (
+            Messages.Receiver_ID == id)) & (Messages.timestamp > last_date_time)).order_by(Messages.timestamp.asc())
+        res = list()
+        for message in chats:
+            curr_message = dict()
+            curr_message['Message_ID'] = message.Message_ID
+            curr_message['Sender_ID'] = message.Sender_ID
+            curr_message['Receiver_ID'] = message.Receiver_ID
+            curr_message['text'] = message.text
+            curr_message['timestamp'] = message.timestamp
+            res.append(curr_message)
+        return jsonify(res), 200
 
 # Sample json body
 # {
