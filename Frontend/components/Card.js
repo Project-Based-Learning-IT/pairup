@@ -10,6 +10,7 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {Chip, useTheme} from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import SkillSlider from './SkillSlider';
 
 const {height} = Dimensions.get('window');
 
@@ -63,6 +64,8 @@ function Card(props) {
               width: 75,
               borderRadius: 50,
               resizeMode: 'cover',
+              // borderColor: colors.primary,
+              // borderWidth: 1,
             }}
           />
         </View>
@@ -79,16 +82,21 @@ function Card(props) {
         </Text>
         <View
           style={{
-            backgroundColor: '#fff',
-            borderRadius: 10,
-            padding: 10,
-            margin: 12,
+            backgroundColor: '#432828',
+            borderRadius: 8,
+            padding: 12,
+            marginLeft: 18,
+            marginRight: 18,
+            // marginBottom: 16,
+            marginTop: 8,
+            elevation: 4,
           }}>
           <Text
-            numberOfLines={3}
+            numberOfLines={4}
             style={{
               fontSize: 14,
               fontWeight: 'bold',
+              color: '#e4e4e4',
             }}>
             {props.card.requirements}
           </Text>
@@ -96,18 +104,20 @@ function Card(props) {
 
         <View
           style={{
+            flex: 1,
             flexDirection: 'row',
             flexWrap: 'wrap',
-            justifyContent: 'flex-start',
+            justifyContent: 'center',
+            alignItems: 'center',
             paddingStart: 4,
             paddingBottom: 12,
             alignItems: 'center',
-            padding: 10,
-            paddingLeft: 20,
-            paddingRight: 20,
+            // padding: 10,
+            paddingLeft: 12,
+            paddingRight: 12,
           }}>
           {/* {skills} */}
-          {props.card.skills
+          {/* {props.card.skills
             .filter((e, i) => {
               return i < 4;
             })
@@ -128,7 +138,9 @@ function Card(props) {
                 }}>
                 {skill}
               </Chip>
-            ))}
+            ))} */}
+
+          <SkillSlider />
         </View>
       </View>
 
@@ -170,7 +182,7 @@ function Card(props) {
         style={{
           width: '100%',
           padding: 12,
-          backgroundColor: colors.primary,
+          backgroundColor: '#b3202e',
           borderRadius: 12,
           borderTopLeftRadius: 0,
           borderTopRightRadius: 0,
@@ -194,7 +206,7 @@ const styles = StyleSheet.create({
     height: height - 300,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#282828fe',
+    backgroundColor: '#2f1111',
     borderRadius: 5,
     shadowColor: 'black',
     shadowOffset: {

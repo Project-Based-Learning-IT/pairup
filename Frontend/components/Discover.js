@@ -19,7 +19,9 @@ const cards = [
   {
     id: 1,
     title: 'Title 1',
+    // location: 'Andheri',
     name: 'Rohini Dutta',
+    // a good looking indian snap from wikimedia
     photo:
       'https://upload.wikimedia.org/wikipedia/commons/5/5c/Ananya_Panday_snapped_in_Andheri.jpg',
     info: 'BTech | IT | B2',
@@ -229,32 +231,33 @@ function Discover() {
           disableBottomSwipe
           disableTopSwipe
           animateCardOpacity
-          animateOverlayLabelsOpacity
+          // animateOverlayLabelsOpacity
           containerStyle={{
             flex: 1,
             justifyContent: 'space-between',
             marginTop: 10,
           }}
-          overlayLabels={{
-            left: {
-              title: 'NOPE',
-              element: <OverlayLabel label="NOPE" color="#E5566D" />,
-              style: {
-                wrapper: styles.overlayWrapper,
-              },
-            },
-            right: {
-              title: 'LIKE',
-              element: <OverlayLabel label="LIKE" color="#4CCC93" />,
-              style: {
-                wrapper: {
-                  ...styles.overlayWrapper,
-                  alignItems: 'flex-start',
-                  marginLeft: 30,
-                },
-              },
-            },
-          }}></Swiper>
+          // overlayLabels={{
+          //   left: {
+          //     title: 'NOPE',
+          //     element: <OverlayLabel label="NOPE" color="#E5566D" />,
+          //     style: {
+          //       wrapper: styles.overlayWrapper,
+          //     },
+          //   },
+          //   right: {
+          //     title: 'LIKE',
+          //     element: <OverlayLabel label="LIKE" color="#4CCC93" />,
+          //     style: {
+          //       wrapper: {
+          //         ...styles.overlayWrapper,
+          //         alignItems: 'flex-start',
+          //         marginLeft: 30,
+          //       },
+          //     },
+          //   },
+          // }}
+        ></Swiper>
       </View>
 
       <View style={styles.bottomOptionsContainer}>
