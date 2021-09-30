@@ -47,6 +47,10 @@ Install requirements if not done already
     pip install flask-sqlalchemy
     pip install mysqlclient
     pip install bloom-filter2
+    pip install pandas
+    pip install scikit-learn
+    pip install flask-jwt-extended
+    pip install python-dotenv
     [Model training packages]
  Install a python formatter in VSCode outside of virtual environment
  <br>
@@ -77,6 +81,7 @@ Inside Procfile:
     web: gunicorn <main_file_name>:<flask_app_name>
 
 * Login to heroku and deploy from Repository after creating new app
+* Set config vars in settings from .env file
 <br>
 
 For errors
