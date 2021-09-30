@@ -204,7 +204,7 @@ function Discover() {
     <View style={styles.container}>
       {/* A status bar which changes color based on the tab selected */}
       <FocusAwareStatusBar
-        backgroundColor={colors.primary}
+        backgroundColor={colors.secondaryDark}
         barStyle="light-content"
       />
 
@@ -330,7 +330,9 @@ const styles = StyleSheet.create({
     height: '45%',
     // backgroundColor: '#C30F31',
     // backgroundColor: '#077f7f',
-    backgroundColor: '#0a243f',
+    // 0D4F4F
+    // backgroundColor: '#0a243f',
+    backgroundColor: '#0D4F4F',
     borderBottomLeftRadius: 39,
     borderBottomRightRadius: 39,
   },
