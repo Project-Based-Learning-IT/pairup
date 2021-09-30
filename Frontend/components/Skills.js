@@ -82,7 +82,9 @@ function Skills({skillList, skills, setSkills}) {
           onPress={() => showModal(true)}
         />
       ) : (
-        <Button onPress={() => showModal(true)}>Add skills</Button>
+        <Button color={colors.secondary} onPress={() => showModal(true)}>
+          Add skills
+        </Button>
       )}
       <Portal>
         <Modal

@@ -28,7 +28,7 @@ function NewSection(props) {
           flex: 1,
           borderBottomWidth: 1.4,
           marginStart: 24,
-          borderColor: colors.primary,
+          borderColor: colors.secondary,
         }}></View>
     </View>
   );

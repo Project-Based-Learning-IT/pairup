@@ -222,7 +222,7 @@ function MyProfile() {
                 bottom: 10,
                 right: 8,
                 padding: 8,
-                backgroundColor: '#587CF499',
+                backgroundColor: `${colors.secondary}99`,
                 borderRadius: 500,
               }}>
               <MaterialCommunityIcons name="camera" size={20} color="#fff" />
@@ -348,6 +348,7 @@ function MyProfile() {
             </View>
           ))}
           <Button
+            color={colors.secondary}
             onPress={() => {
               setLanguages([...languages, {name: '', level: ''}]);
             }}>

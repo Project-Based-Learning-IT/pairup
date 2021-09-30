@@ -44,12 +44,12 @@ const theme = {
 
     // primary: '#2840C6',
     // primary: '#EB5757',
-    // primary: '#077f7f',
+    secondary: '#077f7f',
     // primary: '#000',
     // primaryDark: '#001a94',
 
-    // primary: '#05051b',
-    primary: '#EB5757',
+    primary: '#05051b',
+    // primary: '#EB5757',
     primaryDark: '#05051b',
     accent: '#f1c40f',
     textHeadBlack: '#0a243f',
