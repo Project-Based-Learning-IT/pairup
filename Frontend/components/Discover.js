@@ -203,7 +203,10 @@ function Discover() {
   return (
     <View style={styles.container}>
       {/* A status bar which changes color based on the tab selected */}
-      <FocusAwareStatusBar backgroundColor="#b3202e" barStyle="light-content" />
+      <FocusAwareStatusBar
+        backgroundColor={colors.secondaryDark}
+        barStyle="light-content"
+      />
 
       {/* Absolute positioned discover background (which is supposed to use gradient) */}
       <View style={styles.discoverBackground}></View>
@@ -326,7 +329,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '45%',
     // backgroundColor: '#C30F31',
-    backgroundColor: '#b3202e',
+    // backgroundColor: '#077f7f',
+    // 0D4F4F
+    // backgroundColor: '#0a243f',
+    backgroundColor: '#0D4F4F',
     borderBottomLeftRadius: 39,
     borderBottomRightRadius: 39,
   },

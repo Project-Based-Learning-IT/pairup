@@ -35,28 +35,29 @@ const theme = {
     ...DefaultTheme.colors,
     // Tinder color: #F65E7E (when bottom tab bar focussed)
     // primary: '#F65E7E',
-
     // Discover background: #C30F31
     // primary: '#C30F31',
-
     // Red from figma
-    tinderRed: '#EB5757',
+    // tinderRed: '#EB5757',
 
-    // primary: '#2840C6',
-    // primary: '#EB5757',
-    // primary: '#077f7f',
-    // primary: '#000',
-    // primaryDark: '#001a94',
-
-    // primary: '#05051b',
-    primary: '#EB5757',
+    primary: '#0a243f',
     primaryDark: '#05051b',
-    accent: '#f1c40f',
-    textHeadBlack: '#0a243f',
+    secondary: '#077f7f',
+    secondaryDark: '#0D4F4F',
+
+    gray: '#343A40',
+    lightGray: '#6C757D',
+
+    warning: '#F88634',
+    info: '#17A2B8',
+    danger: '#FF5A5F',
+    success: '#30D158',
+
+    textHeadBlack: '#0a243f', // Same as primary
     textDarkBlack: '#131313',
+    placeholderText: '#495057',
     textLightBlack: '#6b7b8a',
-    textWhite: '#fff',
-    placeholder: '#495057',
+    textWhite: '#F8F9FA',
   },
 };
 
@@ -220,7 +221,7 @@ const App = () => {
                       );
                     }
                   },
-                  tabBarActiveTintColor: '#F65E7E',
+                  tabBarActiveTintColor: theme.colors.primary,
                   tabBarInactiveTintColor: 'gray',
                   tabBarShowLabel: false,
                 })}>

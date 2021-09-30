@@ -77,7 +77,7 @@ function Messages() {
       <Text
         style={{
           padding: 10,
-          color: colors.tinderRed,
+          color: colors.primary,
           fontSize: 18,
           fontWeight: 'bold',
         }}>
@@ -117,9 +117,9 @@ function Messages() {
               <View
                 style={{
                   position: 'absolute',
-                  right: 5,
+                  right: 3,
                   top: 50,
-                  backgroundColor: colors.tinderRed,
+                  backgroundColor: colors.success,
                   padding: 0,
                   borderWidth: 2,
                   borderColor: '#fff',
@@ -143,7 +143,7 @@ function Messages() {
       <Text
         style={{
           padding: 10,
-          color: colors.tinderRed,
+          color: colors.primary,
           fontSize: 20,
           fontWeight: 'bold',
         }}>
@@ -207,7 +207,7 @@ function Messages() {
               <View
                 style={{
                   borderRadius: 50,
-                  backgroundColor: colors.tinderRed,
+                  backgroundColor: colors.secondary,
                   height: 24,
                   width: 24,
                   alignItems: 'center',

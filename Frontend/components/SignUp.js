@@ -402,6 +402,7 @@ function SignUp({route}) {
             </View>
           ))}
           <Button
+            color={colors.secondary}
             onPress={() => {
               setLanguages([...languages, {name: '', level: ''}]);
             }}>

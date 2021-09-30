@@ -199,8 +199,7 @@ function Chat(props) {
                   <Text
                     selectable={true}
                     style={{
-                      color:
-                        chat.senderId === 'me' ? '#fff' : colors.textHeadBlack,
+                      color: chat.senderId === 'me' ? '#fff' : colors.primary,
                     }}>
                     {chat.message}
                   </Text>
@@ -240,7 +239,7 @@ function Chat(props) {
           value={chatText}
           onChangeText={text => setChatText(text)}
           style={{
-            color: colors.textHeadBlack,
+            color: colors.primary,
             fontSize: 16,
             flex: 1,
             paddingLeft: 10,
