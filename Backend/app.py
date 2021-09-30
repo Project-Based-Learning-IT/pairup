@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify
 from flask.templating import DispatchingJinjaLoader
 from flask_sqlalchemy import SQLAlchemy
+# DateTime
 from datetime import datetime
 from bloom_filter2 import BloomFilter
 import pickle
@@ -239,7 +240,7 @@ def protected():
 # Social URLs Routes
 
 
-@app.route("/get_social_urls/",  methods=['GET', 'POST'])
+@app.route("/get_social_urls",  methods=['GET', 'POST'])
 @jwt_required()
 def get_social_urls():
     id = get_jwt_identity()
@@ -256,7 +257,7 @@ def get_social_urls():
     return res, 200
 
 
-@app.route("/add_social_urls/",  methods=['GET', 'POST'])
+@app.route("/add_social_urls",  methods=['GET', 'POST'])
 @jwt_required()
 def add_social_urls():
     codechef = str(request.json['codechef'])
@@ -283,7 +284,7 @@ def add_social_urls():
     # }
 
 
-@app.route("/update_social_urls/",  methods=['GET', 'POST'])
+@app.route("/update_social_urls",  methods=['GET', 'POST'])
 @jwt_required()
 def update_social_urls():
     id = get_jwt_identity()
@@ -338,7 +339,7 @@ def add_degree():
         # }
 
 
-@app.route("/update_degree/",  methods=['POST'])
+@app.route("/update_degree",  methods=['POST'])
 @jwt_required()
 def update_degree():
     if request.method == "POST":
@@ -364,7 +365,7 @@ def update_degree():
         # 1
 
 
-@ app.route("/get_degree/",  methods=['GET'])
+@ app.route("/get_degree",  methods=['GET'])
 @jwt_required()
 def get_degree():
     id = get_jwt_identity()
@@ -523,7 +524,7 @@ def update_student_profile():
 
 
 # Languages Routes
-@app.route("/get_all_languages/",  methods=['GET'])
+@app.route("/get_all_languages",  methods=['GET'])
 @jwt_required()
 def get_all_languages():
     languages = Languages.query.all()
@@ -562,7 +563,7 @@ def add_student_languages():
         # }
 
 
-@app.route("/get_student_languages/",  methods=['GET'])
+@app.route("/get_student_languages",  methods=['GET'])
 @jwt_required()
 def get_student_languages():
     id = get_jwt_identity()
@@ -578,7 +579,7 @@ def get_student_languages():
 
 
 # Skills Routes
-@app.route("/add_student_skills/",  methods=['POST'])
+@app.route("/add_student_skills",  methods=['POST'])
 @jwt_required()
 def add_student_skills():
     if request.method == "POST":
@@ -597,7 +598,7 @@ def add_student_skills():
         # }
 
 
-@app.route("/update_student_skills/",  methods=['POST'])
+@app.route("/update_student_skills",  methods=['POST'])
 @jwt_required()
 def update_student_skills():
     if request.method == "POST":
@@ -627,9 +628,9 @@ def update_student_skills():
         # }
 
 
-@app.route("/get_stud_skills/",  methods=['GET', 'POST'])
+@app.route("/get_stud_skills",  methods=['GET', 'POST'])
 @jwt_required()
-def get_stud_skills(id):
+def get_stud_skills():
     id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     res = list()
@@ -644,7 +645,7 @@ def get_stud_skills(id):
 # Right swipe Routes
 
 
-@app.route("/right_swipe/",  methods=['POST'])
+@app.route("/right_swipe",  methods=['POST'])
 @jwt_required()
 def right_swipe():
     if request.method == "POST":
@@ -672,7 +673,7 @@ def right_swipe():
 
 
 # Message Route
-@ app.route("/message/",  methods=['POST'])
+@ app.route("/message",  methods=['POST'])
 @jwt_required()
 def message():
     if request.method == "POST":
@@ -688,6 +689,52 @@ def message():
         #     "text": "Hi, this is first chat",
         #     "Receiver_ID": 2
         # }
+
+
+@app.route("/get_all_chats/",  methods=['GET', 'POST'])
+@jwt_required()
+def get_all_chats():
+    id = get_jwt_identity()
+    chats = Messages.query.filter((Messages.Sender_ID == id) | (
+        Messages.Receiver_ID == id)).order_by(Messages.timestamp.asc())
+    res = list()
+    for message in chats:
+        curr_message = dict()
+        curr_message['Message_ID'] = message.Message_ID
+        curr_message['Sender_ID'] = message.Sender_ID
+        curr_message['Receiver_ID'] = message.Receiver_ID
+        curr_message['text'] = message.text
+        curr_message['timestamp'] = message.timestamp
+        res.append(curr_message)
+    return jsonify(res), 200
+
+
+# @app.route("/get_chats_after_last_cached",  methods=['GET', 'POST'])
+# @jwt_required()
+# def get_chats_after_last_cached():
+#     if request.method == "POST":
+#         id = get_jwt_identity()
+#         str_last_date_time = request.json['DateTime']
+#         last_date_time = datetime.Parse(str_last_date_time).ToUniversalTime()
+
+#         chats = Messages.query.filter((Messages.Sender_ID == id) | (
+#             Messages.Receiver_ID == id)).filter_by(Messages.timestamp > last_date_time).order_by(Messages.timestamp.asc())
+#         res = list()
+#         for message in chats:
+#             curr_message = dict()
+#             curr_message['Message_ID'] = message.Message_ID
+#             curr_message['Sender_ID'] = message.Sender_ID
+#             curr_message['Receiver_ID'] = message.Receiver_ID
+#             curr_message['text'] = message.text
+#             curr_message['timestamp'] = message.timestamp
+#             res.append(curr_message)
+#         return jsonify(res), 200
+
+
+# Sample json body
+# {
+#     "DateTime": "2021-09-29 09:35:52"
+# }
 
 
 if __name__ == "__main__":
