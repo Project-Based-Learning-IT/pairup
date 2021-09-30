@@ -1,6 +1,8 @@
 # package imports
 from flask import Flask, request, jsonify
+from flask.templating import DispatchingJinjaLoader
 from flask_sqlalchemy import SQLAlchemy
+# DateTime
 from datetime import datetime
 from bloom_filter2 import BloomFilter
 import pickle
@@ -84,6 +86,7 @@ class Student(db.Model):
 
     languages = db.relationship(
         "Student_Language_M_N", back_populates="student")
+    projects = db.relationship('Projects', backref='student', lazy=True)
 
     def __repr__(self) -> str:
         return f"{self.Student_ID} - {self.Name}"
@@ -101,16 +104,17 @@ class Degree(db.Model):
         return f"{self.Degree_ID} - {self.year}"
 
 
-# class Projects(db.Model):
-#     __tablename__ = 'Degree'
-#     Degree_ID = db.Column(db.Integer, primary_key=True)
-#     year = db.Column(db.Integer, nullable=True)
-#     branch = db.Column(db.String(80), nullable=True)
-#     batch = db.Column(db.String(10), nullable=True)
-#     students = db.relationship('Student', backref='degree', lazy=True)
+class Projects(db.Model):
+    __tablename__ = 'Projects'
+    Project_ID = db.Column(db.Integer, primary_key=True)
+    Title = db.Column(db.String(20), nullable=True)
+    Description = db.Column(db.String(200), nullable=True)
+    URL = db.Column(db.String(100), nullable=True)
+    Student_ID = db.Column(db.Integer, db.ForeignKey('Student.Student_ID'),
+                           nullable=True)
 
-#     def __repr__(self) -> str:
-#         return f"{self.Degree_ID} - {self.year}"
+    def __repr__(self) -> str:
+        return f"{self.Project_ID} - {self.Student_ID}"
 
 
 class Messages(db.Model):
@@ -236,7 +240,7 @@ def protected():
 # Social URLs Routes
 
 
-@app.route("/get_social_urls/",  methods=['GET', 'POST'])
+@app.route("/get_social_urls",  methods=['GET', 'POST'])
 @jwt_required()
 def get_social_urls():
     id = get_jwt_identity()
@@ -253,7 +257,7 @@ def get_social_urls():
     return res, 200
 
 
-@app.route("/add_social_urls/",  methods=['GET', 'POST'])
+@app.route("/add_social_urls",  methods=['GET', 'POST'])
 @jwt_required()
 def add_social_urls():
     codechef = str(request.json['codechef'])
@@ -280,7 +284,7 @@ def add_social_urls():
     # }
 
 
-@app.route("/update_social_urls/",  methods=['GET', 'POST'])
+@app.route("/update_social_urls",  methods=['GET', 'POST'])
 @jwt_required()
 def update_social_urls():
     id = get_jwt_identity()
@@ -312,10 +316,17 @@ def update_social_urls():
 def add_degree():
     if request.method == "POST":
         # Degree_ID Auto incremented
+
+        # Send -1 for year if it is not specified
         year = int(request.json['year'])
         branch = str(request.json['branch'])
         batch = str(request.json['batch'])
-        degree = Degree(year=year, branch=branch, batch=batch)
+
+        if year == -1:
+            degree = Degree(branch=branch, batch=batch)
+        else:
+            degree = Degree(year=year, branch=branch, batch=batch)
+
         # Add degree data to database
         db.session.add(degree)
         db.session.commit()
@@ -328,13 +339,16 @@ def add_degree():
         # }
 
 
-@app.route("/update_degree/",  methods=['POST'])
+@app.route("/update_degree",  methods=['POST'])
 @jwt_required()
 def update_degree():
     if request.method == "POST":
         id = get_jwt_identity()
         student = Student.query.filter_by(Student_ID=id).first()
-        student.degree.year = int(request.json['year'])
+        # Send -1 for year if it is not specified
+        year = int(request.json['year'])
+        if year != -1:
+            student.degree.year = year
         student.degree.branch = str(request.json['branch'])
         student.degree.batch = str(request.json['batch'])
         # Upgrade degree data in database
@@ -347,9 +361,11 @@ def update_degree():
         #     "branch": "Instrumentation",
         #     "batch": "A2"
         # }
+        # Sample output
+        # 1
 
 
-@ app.route("/get_degree/",  methods=['GET'])
+@ app.route("/get_degree",  methods=['GET'])
 @jwt_required()
 def get_degree():
     id = get_jwt_identity()
@@ -388,9 +404,90 @@ def get_domains_and_its_skills():
             curr_id_domain['skills'].append(skill_in_domain)
         res_ids_domains_skills.append(curr_id_domain)
     return jsonify(res_ids_domains_skills), 200
+    # output is list of domains dictionaries which has domian id,name and skills list with skill dictionaries with skill id,name
 
+
+# Project routes
+@app.route("/add_project",  methods=['POST'])
+@jwt_required()
+def add_project():
+    if request.method == "POST":
+        id = get_jwt_identity()
+        project = request.json
+
+        new_project = Projects(
+            Title=str(project['Title']), Description=(project['Description']), URL=(project['URL']), Student_ID=id)
+        db.session.add(new_project)
+        db.session.commit()
+
+        return str(new_project.Project_ID), 200
+    # Sample json body
+    # {
+    #     "Title": "Tommy",
+    #     "Description": "This translated dogs language into human form",
+    #     "URL": "bho.com"
+    # }
+
+
+@app.route("/update_project/<int:project_id>",  methods=['POST'])
+@jwt_required()
+def update_project(project_id):
+    if request.method == "POST":
+        project = Projects.query.filter_by(Project_ID=project_id).first()
+        project.Title = str(request.json['Title'])
+        project.Description = str(request.json['Description'])
+        project.URL = str(request.json['URL'])
+        db.session.commit()
+
+        return str(project.Project_ID), 200
+    # Sample json body
+    # {
+    #     "Title": "Shoppy",
+    #     "Description": "This site sells dogs",
+    #     "URL": "doggy.com"
+    # }
 
 # Student Routes
+
+
+@app.route("/get_student_profile",  methods=['GET'])
+@jwt_required()
+def get_student_profile():
+    id = get_jwt_identity()
+    res = dict()
+    student = Student.query.filter_by(Student_ID=id).first()
+    res['Bio'] = student.Bio
+    res['Email'] = student.Email
+    res['Headline'] = student.Headline
+    res['google_id'] = student.Google_ID
+    res['Image_URl'] = student.Image_URL
+    res['Name'] = student.Name
+    res['Requirements'] = student.Requirements
+    res['SocialURL_ID'] = student.SocialURL_ID
+    res['Degree_ID'] = student.Degree_ID
+    res['Projects'] = list()
+    for project in student.projects:
+        curr_project = dict()
+        curr_project['Project_ID'] = project.Project_ID
+        curr_project['Description'] = project.Description
+        curr_project['Title'] = project.Title
+        curr_project['URL'] = project.URL
+        res['Projects'].append(curr_project)
+    return res, 200
+    # Sample output
+    # {
+    #     "Bio": "biodata added",
+    #     "Degree_ID": 4,
+    #     "Email": "daaf@def.com",
+    #     "Headline": "with jwt head added",
+    #     "Image_URl": "boi.com",
+    #     "Name": "Dummy_ab",
+    #     "Requirements": "require added",
+    #     "SocialURL_ID": 3,
+    #     "google_id": "100002"
+    # }
+
+
 @app.route("/update_student_profile",  methods=['POST'])
 @jwt_required()
 def update_student_profile():
@@ -404,14 +501,11 @@ def update_student_profile():
         student.Image_URL = str(request.json['Image_URl'])
         student.Name = str(request.json['Name'])
         student.Requirements = str(request.json['Requirements'])
+
         student.SocialURL_ID = int(request.json['SocialURL_ID'])
         student.Degree_ID = int(request.json['Degree_ID'])
         bloom = BloomFilter(max_elements=1000, error_rate=0.001)
         student.Bloom_filter = pickle.dumps(bloom)
-        # student = Student(Bio=Bio, Email=Email, Headline=Headline,
-        #                   Google_ID=Google_ID, Image_URL=Image_URL, Name=Name, Requirements=Requirements, SocialURL_ID=SocialURL_ID, Degree_ID=Degree_ID, Bloom_filter=to_bytes)
-
-        # db.session.add(student)
         db.session.commit()
 
         return "Profile Updated", 200
@@ -430,12 +524,28 @@ def update_student_profile():
 
 
 # Languages Routes
-@app.route("/add_student_languages/",  methods=['POST'])
+@app.route("/get_all_languages",  methods=['GET'])
+@jwt_required()
+def get_all_languages():
+    languages = Languages.query.all()
+    res = dict()
+    for lang in languages:
+        res[lang.Language_ID] = lang.Name
+    return jsonify(res), 200
+    # Sample output
+    # {
+    #     "1": "English",
+    #     "2": "Hindi",
+    #     "3": "Marathi"
+    # }
+
+
+@app.route("/add_student_languages",  methods=['POST'])
 @jwt_required()
 def add_student_languages():
     if request.method == "POST":
         id = get_jwt_identity()
-        languages = dict(request.json['Languages'])
+        languages = dict(request.json)
         student = Student.query.filter_by(Student_ID=id).first()
         for language_id, proficiency in languages.items():
             S_L_M_N = Student_Language_M_N(Proficiency=str(proficiency))
@@ -448,14 +558,12 @@ def add_student_languages():
         return str(student.Student_ID), 200
         # Sample json body
         # {
-        #     "Languages": {
         #         "1": "Native",
         #         "2": "Professional"
-        #     }
         # }
 
 
-@app.route("/get_student_languages/",  methods=['GET'])
+@app.route("/get_student_languages",  methods=['GET'])
 @jwt_required()
 def get_student_languages():
     id = get_jwt_identity()
@@ -471,9 +579,9 @@ def get_student_languages():
 
 
 # Skills Routes
-@app.route("/add_student_skills/",  methods=['POST'])
+@app.route("/add_student_skills",  methods=['POST'])
 @jwt_required()
-def add_student_skills(id):
+def add_student_skills():
     if request.method == "POST":
         id = get_jwt_identity()
         skills_ids = list(request.json['Skills'])
@@ -490,7 +598,7 @@ def add_student_skills(id):
         # }
 
 
-@app.route("/update_student_skills/",  methods=['POST'])
+@app.route("/update_student_skills",  methods=['POST'])
 @jwt_required()
 def update_student_skills():
     if request.method == "POST":
@@ -520,9 +628,9 @@ def update_student_skills():
         # }
 
 
-@app.route("/get_stud_skills/",  methods=['GET', 'POST'])
+@app.route("/get_stud_skills",  methods=['GET', 'POST'])
 @jwt_required()
-def get_stud_skills(id):
+def get_stud_skills():
     id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     res = list()
@@ -537,7 +645,7 @@ def get_stud_skills(id):
 # Right swipe Routes
 
 
-@app.route("/right_swipe/",  methods=['POST'])
+@app.route("/right_swipe",  methods=['POST'])
 @jwt_required()
 def right_swipe():
     if request.method == "POST":
@@ -565,7 +673,7 @@ def right_swipe():
 
 
 # Message Route
-@ app.route("/message/",  methods=['POST'])
+@ app.route("/message",  methods=['POST'])
 @jwt_required()
 def message():
     if request.method == "POST":
@@ -581,6 +689,52 @@ def message():
         #     "text": "Hi, this is first chat",
         #     "Receiver_ID": 2
         # }
+
+
+@app.route("/get_all_chats/",  methods=['GET', 'POST'])
+@jwt_required()
+def get_all_chats():
+    id = get_jwt_identity()
+    chats = Messages.query.filter((Messages.Sender_ID == id) | (
+        Messages.Receiver_ID == id)).order_by(Messages.timestamp.asc())
+    res = list()
+    for message in chats:
+        curr_message = dict()
+        curr_message['Message_ID'] = message.Message_ID
+        curr_message['Sender_ID'] = message.Sender_ID
+        curr_message['Receiver_ID'] = message.Receiver_ID
+        curr_message['text'] = message.text
+        curr_message['timestamp'] = message.timestamp
+        res.append(curr_message)
+    return jsonify(res), 200
+
+
+# @app.route("/get_chats_after_last_cached",  methods=['GET', 'POST'])
+# @jwt_required()
+# def get_chats_after_last_cached():
+#     if request.method == "POST":
+#         id = get_jwt_identity()
+#         str_last_date_time = request.json['DateTime']
+#         last_date_time = datetime.Parse(str_last_date_time).ToUniversalTime()
+
+#         chats = Messages.query.filter((Messages.Sender_ID == id) | (
+#             Messages.Receiver_ID == id)).filter_by(Messages.timestamp > last_date_time).order_by(Messages.timestamp.asc())
+#         res = list()
+#         for message in chats:
+#             curr_message = dict()
+#             curr_message['Message_ID'] = message.Message_ID
+#             curr_message['Sender_ID'] = message.Sender_ID
+#             curr_message['Receiver_ID'] = message.Receiver_ID
+#             curr_message['text'] = message.text
+#             curr_message['timestamp'] = message.timestamp
+#             res.append(curr_message)
+#         return jsonify(res), 200
+
+
+# Sample json body
+# {
+#     "DateTime": "2021-09-29 09:35:52"
+# }
 
 
 if __name__ == "__main__":
