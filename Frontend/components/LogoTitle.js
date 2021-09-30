@@ -45,7 +45,7 @@ function LogoTitle({userChatting}) {
         <Text
           style={{
             fontSize: 12,
-            color: colors.placeholder,
+            color: colors.placeholderText,
           }}>
           online
         </Text>

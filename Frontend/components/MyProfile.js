@@ -197,7 +197,7 @@ function MyProfile() {
           style={{
             fontSize: 36,
             paddingTop: 20,
-            color: colors.textHeadBlack,
+            color: colors.primary,
             fontWeight: 'bold',
           }}>
           Profile

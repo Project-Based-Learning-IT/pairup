@@ -53,7 +53,7 @@ function GetStarted() {
           style={{
             fontSize: 24,
             fontWeight: 'bold',
-            color: colors.textHeadBlack,
+            color: colors.primary,
             marginBottom: 12,
             textAlign: 'center',
           }}>
