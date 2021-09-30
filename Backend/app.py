@@ -4,9 +4,20 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from bloom_filter2 import BloomFilter
 import pickle
+# ML packages
 import pandas as pd
-from sklearn.externals import joblib
+# from sklearn.externals import joblib
+import joblib
 from sklearn.neighbors import NearestNeighbors
+# JWT
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
+# dotenv import
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 
 def getSimilarUsers(top_n, target):
@@ -23,9 +34,17 @@ def getSimilarUsers(top_n, target):
 
 
 app = Flask(__name__)
+app.config["JWT_SECRET_KEY"] = os.getenv(
+    'JWT_SECRET_KEY')
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
+# from datetime import timedelta
+# timedelta(hours=1)
+# If set to False tokens will never expire. This is dangerous and should be avoided in most case
+jwt = JWTManager(app)
 
 # MYSQL URI
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqldb://ug2xdng9tcws15hn:2cojtTBDv60lWweLpr9z@bdnnizsbskzwayamyrkk-mysql.services.clever-cloud.com:3306/bdnnizsbskzwayamyrkk'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+    'SQLALCHEMY_DATABASE_URI')
 
 db = SQLAlchemy(app)
 
@@ -173,10 +192,54 @@ class Social_URLs(db.Model):
 def hello_world():
     return "<p>Hello, World!</p>"
 
+# Login
+# Create a route to authenticate your users and return JWTs. The
+# create_access_token() function is used to actually generate the JWT.
+
+
+@app.route("/signup_and_login", methods=["POST"])
+def signup_and_login():
+    username = str(request.json["username"])
+    student = Student.query.filter_by(
+        Name=username.strip().lower()).first()
+    if student is None:  # signup or register
+        student = Student()  # Student_ID Auto incremented
+
+    # To access a jwt_required protected view you need to send in the JWT with each request.
+    # By default, this is done with an authorization header that looks like:
+    # Authorization: Bearer <access_token>
+    access_token = create_access_token(identity=student.Student_ID)
+    return jsonify(access_token=access_token), 200
+    # Sample json body
+    # {
+    #     "username": "Dummy_a"
+    # }
+    # Sample Response
+    # {
+    #     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzMjk4OTYyNywianRpIjoiNmE0ZTIzZjgtOTNiZS00YWI4LWIxMDEtZDhlY2U1NTIxM2Q0IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MiwibmJmIjoxNjMyOTg5NjI3fQ.ptPtQDU0Fxb1B0kWyazceO_DlIdAL_NlJfQXxfOFWyQ"
+    # }
+
+# Protect a route with jwt_required, which will kick out requests
+# without a valid JWT present.
+
+# Check JWT
+
+
+@app.route("/protected", methods=["GET"])
+@jwt_required()
+def protected():
+    # Access the identity of the current user with get_jwt_identity
+    current_user = get_jwt_identity()
+    return jsonify(Student_ID=current_user), 200
+
 
 # Social URLs Routes
-@app.route("/get_social_urls/<int:id>",  methods=['GET', 'POST'])
-def get_social_urls(id):
+
+
+@app.route("/get_social_urls/",  methods=['GET', 'POST'])
+@jwt_required()
+def get_social_urls():
+    id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     res = dict()
     if student.social_urls != None:
@@ -191,6 +254,7 @@ def get_social_urls(id):
 
 
 @app.route("/add_social_urls/",  methods=['GET', 'POST'])
+@jwt_required()
 def add_social_urls():
     codechef = str(request.json['codechef'])
     hackerrank = str(request.json['hackerrank'])
@@ -216,8 +280,10 @@ def add_social_urls():
     # }
 
 
-@app.route("/update_social_urls/<int:id>",  methods=['GET', 'POST'])
-def update_social_urls(id):
+@app.route("/update_social_urls/",  methods=['GET', 'POST'])
+@jwt_required()
+def update_social_urls():
+    id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     student.social_urls.codechef = str(request.json['codechef'])
     student.social_urls.hackerrank = str(request.json['hackerrank'])
@@ -242,6 +308,7 @@ def update_social_urls(id):
 
 # Degree Routes
 @app.route("/add_degree",  methods=['POST'])
+@jwt_required()
 def add_degree():
     if request.method == "POST":
         # Degree_ID Auto incremented
@@ -261,9 +328,11 @@ def add_degree():
         # }
 
 
-@app.route("/update_degree/<int:id>",  methods=['POST'])
-def update_degree(id):
+@app.route("/update_degree/",  methods=['POST'])
+@jwt_required()
+def update_degree():
     if request.method == "POST":
+        id = get_jwt_identity()
         student = Student.query.filter_by(Student_ID=id).first()
         student.degree.year = int(request.json['year'])
         student.degree.branch = str(request.json['branch'])
@@ -280,8 +349,10 @@ def update_degree(id):
         # }
 
 
-@ app.route("/get_degree/<int:id>",  methods=['GET'])
-def get_degree(id):
+@ app.route("/get_degree/",  methods=['GET'])
+@jwt_required()
+def get_degree():
+    id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     res = dict()
     res['Degree_ID'] = student.degree.Degree_ID
@@ -293,6 +364,7 @@ def get_degree(id):
 
 # Domain and its skills route
 @ app.route('/get_domains_and_its_skills', methods=['GET'])
+@jwt_required()
 def get_domains_and_its_skills():
     '''
     For direct API calls through request
@@ -319,45 +391,50 @@ def get_domains_and_its_skills():
 
 
 # Student Routes
-@app.route("/add_student",  methods=['POST'])
-def add_student():
+@app.route("/update_student_profile",  methods=['POST'])
+@jwt_required()
+def update_student_profile():
     if request.method == "POST":
-        # Student_ID Auto incremented
-        Bio = str(request.json['Bio'])
-        Email = str(request.json['Email'])
-        Headline = str(request.json['Headline'])
-        Google_ID = str(request.json['google_id'])
-        Image_URL = str(request.json['Image_URl'])
-        Name = str(request.json['Name'])
-        Requirements = str(request.json['Requirements'])
-        SocialURL_ID = int(request.json['SocialURL_ID'])
-        Degree_ID = int(request.json['Degree_ID'])
+        id = get_jwt_identity()
+        student = Student.query.filter_by(Student_ID=id).first()
+        student.Bio = str(request.json['Bio'])
+        student.Email = str(request.json['Email'])
+        student.Headline = str(request.json['Headline'])
+        student.Google_ID = str(request.json['google_id'])
+        student.Image_URL = str(request.json['Image_URl'])
+        student.Name = str(request.json['Name'])
+        student.Requirements = str(request.json['Requirements'])
+        student.SocialURL_ID = int(request.json['SocialURL_ID'])
+        student.Degree_ID = int(request.json['Degree_ID'])
         bloom = BloomFilter(max_elements=1000, error_rate=0.001)
-        to_bytes = pickle.dumps(bloom)
-        student = Student(Bio=Bio, Email=Email, Headline=Headline,
-                          Google_ID=Google_ID, Image_URL=Image_URL, Name=Name, Requirements=Requirements, SocialURL_ID=SocialURL_ID, Degree_ID=Degree_ID, Bloom_filter=to_bytes)
+        student.Bloom_filter = pickle.dumps(bloom)
+        # student = Student(Bio=Bio, Email=Email, Headline=Headline,
+        #                   Google_ID=Google_ID, Image_URL=Image_URL, Name=Name, Requirements=Requirements, SocialURL_ID=SocialURL_ID, Degree_ID=Degree_ID, Bloom_filter=to_bytes)
 
-        db.session.add(student)
+        # db.session.add(student)
         db.session.commit()
-        return str(student.Student_ID), 200
-        # Sample json body
-        {
-            "google_id": 100002,
-            "Image_URl": "boi.com",
-            "Name": "Dummy_ab",
-            "Headline": "head added",
-            "Requirements": "require added",
-            "Bio": "biodata added",
-            "Email": "daaf@def.com",
-            "SocialURL_ID": 3,
-            "Degree_ID": 4,
-        }
+
+        return "Profile Updated", 200
+    # Sample json body
+    # {
+    #     "google_id": 100002,
+    #     "Image_URl": "boi.com",
+    #     "Name": "Dummy_ab",
+    #     "Headline": "head added",
+    #     "Requirements": "require added",
+    #     "Bio": "biodata added",
+    #     "Email": "daaf@def.com",
+    #     "SocialURL_ID": 3,
+    #     "Degree_ID": 4
+    # }
 
 
 # Languages Routes
-@app.route("/add_student_languages/<int:id>",  methods=['POST'])
-def add_student_languages(id):
+@app.route("/add_student_languages/",  methods=['POST'])
+@jwt_required()
+def add_student_languages():
     if request.method == "POST":
+        id = get_jwt_identity()
         languages = dict(request.json['Languages'])
         student = Student.query.filter_by(Student_ID=id).first()
         for language_id, proficiency in languages.items():
@@ -378,8 +455,10 @@ def add_student_languages(id):
         # }
 
 
-@app.route("/get_student_languages/<int:id>",  methods=['GET'])
-def get_student_languages(id):
+@app.route("/get_student_languages/",  methods=['GET'])
+@jwt_required()
+def get_student_languages():
+    id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     res = list()
     for S_L_M_N in student.languages:
@@ -392,9 +471,11 @@ def get_student_languages(id):
 
 
 # Skills Routes
-@app.route("/add_student_skills/<int:id>",  methods=['POST'])
+@app.route("/add_student_skills/",  methods=['POST'])
+@jwt_required()
 def add_student_skills(id):
     if request.method == "POST":
+        id = get_jwt_identity()
         skills_ids = list(request.json['Skills'])
         student = Student.query.filter_by(Student_ID=id).first()
         for skill_id in skills_ids:
@@ -409,9 +490,11 @@ def add_student_skills(id):
         # }
 
 
-@app.route("/update_student_skills/<int:id>",  methods=['POST'])
-def update_student_skills(id):
+@app.route("/update_student_skills/",  methods=['POST'])
+@jwt_required()
+def update_student_skills():
     if request.method == "POST":
+        id = get_jwt_identity()
         skills_ids = list(request.json['Skills'])
         student = Student.query.filter_by(Student_ID=id).first()
         stud_skills_ids = set()
@@ -437,8 +520,10 @@ def update_student_skills(id):
         # }
 
 
-@app.route("/get_stud_skills/<int:id>",  methods=['GET', 'POST'])
+@app.route("/get_stud_skills/",  methods=['GET', 'POST'])
+@jwt_required()
 def get_stud_skills(id):
+    id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     res = list()
     for skill in student.skills:
@@ -452,9 +537,11 @@ def get_stud_skills(id):
 # Right swipe Routes
 
 
-@app.route("/right_swipe/<int:id>",  methods=['POST'])
-def right_swipe(id):
+@app.route("/right_swipe/",  methods=['POST'])
+@jwt_required()
+def right_swipe():
     if request.method == "POST":
+        id = get_jwt_identity()
         swiper = Student.query.filter_by(Student_ID=id).first()
         swiped_id = int(request.json['Swiped_Student_ID'])
         swiped = Student.query.filter_by(Student_ID=swiped_id).first()
@@ -478,9 +565,11 @@ def right_swipe(id):
 
 
 # Message Route
-@ app.route("/message/<int:id>",  methods=['POST'])
-def message(id):
+@ app.route("/message/",  methods=['POST'])
+@jwt_required()
+def message():
     if request.method == "POST":
+        id = get_jwt_identity()
         Receiver_ID = int(request.json['Receiver_ID'])
         text = str(request.json['text'])
         message = Messages(Sender_ID=id, Receiver_ID=Receiver_ID, text=text)
