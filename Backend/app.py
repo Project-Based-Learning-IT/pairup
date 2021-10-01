@@ -524,6 +524,28 @@ def update_student_profile():
     # }
 
 
+# To add dataset
+# Stud_Id_Name_Skills_list_627 = pd.read_csv(
+#     '627_Stud_Id_Name_Skills_list.csv')
+
+
+# @app.route("/add_dataset",  methods=['POST'])
+# def add_dataset():
+#     if request.method == "POST":
+#         for ind in Stud_Id_Name_Skills_list_627.index:
+#             curr_stud_id = Stud_Id_Name_Skills_list_627['Student_ID'][ind]
+#             curr_stud_name = Stud_Id_Name_Skills_list_627['Names'][ind]
+
+#             bloom = BloomFilter(max_elements=1000, error_rate=0.001)
+
+#             student = Student(
+#                 Student_ID=curr_stud_id, Name=curr_stud_name, Bloom_filter=pickle.dumps(bloom))
+
+#             db.session.add(student)
+#             db.session.commit()
+#         return "Dataset added", 200
+
+
 # Languages Routes
 @app.route("/get_all_languages",  methods=['GET'])
 @jwt_required()

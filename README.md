@@ -40,7 +40,7 @@ Run the following commands one by one:
 
     pip install virtualenv
 	virtualenv env 
-	 .\env\Scripts\activate.bat
+	 .\env\Scripts\activate.bat (For subsequent run)
 Install requirements if not done already
 
     pip install flask
@@ -52,7 +52,6 @@ Install requirements if not done already
     pip install flask-jwt-extended
     pip install python-dotenv
     pip install python-dateutil
-    [Model training packages]
  Install a python formatter in VSCode outside of virtual environment
  <br>
  To exit virtual environment use `deactivate`
@@ -61,7 +60,7 @@ Install requirements if not done already
  1. Open pyton file and press `ctrl+shift+p` to bring up command pallet and search format format
  2. Click format document with and install python formatter when prompted by Vscode
  3. Repeat step 1 and choose default formatter to installed one
-4.  Also turn on format on save from VScode settings
+ 4.  Also turn on format on save from VScode settings
 
     
 * Use SQLALCHEMY_DATABASE_URI of clever cloud after login.
