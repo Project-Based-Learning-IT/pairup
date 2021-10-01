@@ -26,7 +26,20 @@ Open a terminal from the current directory i.e. <code>CollegSpace/frontend</code
 <li>
 [Android] Let Metro Bundler of previous step run in its own terminal. Open a new terminal inside from the current directory i.e. <code>CollegSpace/frontend</code>. Run the following:
 <p><code>npx react-native run-android</code></p>
-</li>
+    <p>[Make sure to use<code>yarn install</code> if there are errors]</p>
+  </li>
+  <li>
+  [Errors and solutions]
+  <p>Error: mergeLibDexDebug FAILED </p>
+  <p>Solution: fixed by enabling the multiDex in the /android/app/build.gradle file.
+  <br /> 
+  android { <br /> 
+    defaultConfig { <br /> 
+    ....... <br /> 
+    multiDexEnabled true <br /> 
+  } <br /> 
+  ......<br /> 
+}</p>
 </ol>
 
 
