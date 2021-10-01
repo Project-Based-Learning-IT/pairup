@@ -82,6 +82,7 @@ https://console.clever-cloud.com/
 Same email and password
 * Documentation Flask : https://flask.palletsprojects.com/en/2.0.x/
 * Documentation SQLAlchemy: https://flask-sqlalchemy.palletsprojects.com/en/2.x/
+* Documentation JWT: https://flask-jwt-extended.readthedocs.io/en/stable/basic_usage/
 * To start flask server <br>
 `python app.py`
 
