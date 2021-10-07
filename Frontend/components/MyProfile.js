@@ -190,13 +190,13 @@ function MyProfile() {
       )}
       <ScrollView
         style={{
+          paddingTop: StatusBar.currentHeight,
           width: '100%',
           padding: 12,
         }}>
         <Text
           style={{
             fontSize: 36,
-            paddingTop: 20,
             color: colors.primary,
             fontWeight: 'bold',
           }}>
@@ -214,7 +214,7 @@ function MyProfile() {
             <Image
               style={{width: 120, height: 120, borderRadius: 70}}
               source={{
-                uri: user.photo,
+                uri: user.photo? user.photo : 'https://www.xeus.com/wp-content/uploads/2014/09/One_User_Orange.png',
               }}></Image>
             <View
               style={{
@@ -384,8 +384,9 @@ function MyProfile() {
             backgroundColor: colors.primary,
             padding: 16,
             borderRadius: 14,
-            width: '90%',
-            margin: 12,
+            width: '96%',
+            // margin: 12,
+            marginBottom: 24,
             alignSelf: 'center',
           }}
           onPress={() => {
