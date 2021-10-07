@@ -39,7 +39,7 @@ function GetStarted() {
           source={{
             uri: uris[3],
           }}
-          style={{height: '100%', alignSelf: 'stretch'}}
+          style={{height: '100%', resizeMode: 'contain', alignSelf: 'stretch'}}
         />
       </View>
       <View

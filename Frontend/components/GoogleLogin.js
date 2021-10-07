@@ -61,9 +61,9 @@ function GoogleLogin() {
               uri: 'https://seeklogo.com/images/G/google-2015-logo-65BBD07B01-seeklogo.com.png',
             }}
             style={{
-              width: '50%',
-              height: '62%',
-              borderWidth: 1,
+              width: '40%',
+              height: '100%',
+              resizeMode: 'contain',
             }}
           />
         </View>
