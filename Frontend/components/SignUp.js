@@ -247,7 +247,7 @@ function SignUp({route}) {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <ActivityIndicator size={'large'} color={colors.primary} />
+            <ActivityIndicator size={'large'} color={'white'} />
           </View>
         </Portal>
       )}
@@ -266,9 +266,9 @@ function SignUp({route}) {
           <View
             style={{backgroundColor: '#F4F4F4', borderRadius: 500, padding: 8}}>
             <Image
-              style={{width: 120, height: 120, borderRadius: 70}}
+              style={{width: 120, height: 120, borderRadius: 70, resizeMode: 'contain'}}
               source={{
-                uri: user.photo,
+                uri: user.photo ? user.photo : 'https://www.xeus.com/wp-content/uploads/2014/09/One_User_Orange.png',
               }}></Image>
             <View
               style={{
@@ -295,8 +295,8 @@ function SignUp({route}) {
         />
         <TextInput
           mode="outlined"
-          label="First Name"
-          placeholder="Type your first name"
+          label="Name"
+          placeholder="Type your name"
           value={name}
           onChangeText={text => setName(text)}
           style={{
