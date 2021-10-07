@@ -84,7 +84,7 @@ function FlipProfileCardBack(props) {
               <Text
                 style={{
                   color: colors.textLightBlack,
-                  fontSize: 16,
+                  fontSize: 20,
                   fontWeight: '600',
                   lineHeight: 24,
                   letterSpacing: 0.24,
