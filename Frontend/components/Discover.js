@@ -9,11 +9,11 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Card from './Card';
 import Swiper from 'react-native-deck-swiper';
 import OverlayLabel from './OverlayLabel';
 import FocusAwareStatusBar from './FocusAwareStatusBar';
 import {useTheme} from 'react-native-paper';
+import FlipProfileCard from './FlipProfileCard';
 
 // TODO: Delete the following data
 const cards = [
@@ -229,7 +229,7 @@ function Discover() {
           backgroundColor="transparent"
           cards={cards}
           cardIndex={index}
-          renderCard={card => <Card card={card} />}
+          renderCard={card => <FlipProfileCard card={card} />}
           stackSize={cards.length}
           stackScale={4}
           stackSeparation={8}

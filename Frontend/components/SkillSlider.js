@@ -30,10 +30,9 @@ function SkillSlider() {
       }}>
       <IconButton
         icon="chevron-left"
-        color={'#fff'}
         size={30}
         style={{
-          backgroundColor: '#432828',
+          backgroundColor: '#fafafa',
           elevation: 4,
         }}
         onPress={() => {
@@ -45,11 +44,8 @@ function SkillSlider() {
         }}
       />
       <Text
-        // entering={OpacityIn.delay(600).duration(3000)}
-        // exiting={OpacityOut.duration(3000)}
         style={{
           flex: 1,
-          color: '#fff',
           fontSize: 20,
           fontWeight: 'bold',
           textAlign: 'center',
@@ -58,10 +54,9 @@ function SkillSlider() {
       </Text>
       <IconButton
         icon="chevron-right"
-        color={'#fff'}
         size={30}
         style={{
-          backgroundColor: '#432828',
+          backgroundColor: '#fafafa',
           elevation: 4,
         }}
         onPress={() => {
