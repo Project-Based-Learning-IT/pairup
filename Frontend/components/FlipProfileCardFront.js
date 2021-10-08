@@ -69,13 +69,15 @@ function FlipProfileCardFront(props) {
 
         <Text
           style={{
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: '500',
             textAlign: 'center',
+            padding: 16,
             paddingTop: 4,
+            paddingBottom: 0,
             color: colors.textHeadBlack,
           }}
-          numberOfLines={1}
+          numberOfLines={2}
         >
           {props.card.headline}
         </Text>

@@ -41,7 +41,6 @@ function FlipProfileCardBack(props) {
       <View
         style={{
           paddingTop: 12,
-          width: '100%',
           height: '100%',
           justifyContent: 'center',
           alignItems: 'center',
@@ -78,7 +77,7 @@ function FlipProfileCardBack(props) {
               style={{
                 flex: 1,
                 borderRadius: 24,
-                justifyContent: 'center',
+                justifyContent: 'space-evenly',
               }}
             > 
               <Text

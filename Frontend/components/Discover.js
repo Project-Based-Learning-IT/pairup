@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  TouchableHighlight,
 } from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -12,8 +13,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Swiper from 'react-native-deck-swiper';
 import OverlayLabel from './OverlayLabel';
 import FocusAwareStatusBar from './FocusAwareStatusBar';
-import {useTheme} from 'react-native-paper';
+import {IconButton, useTheme} from 'react-native-paper';
 import FlipProfileCard from './FlipProfileCard';
+import Filter from './Filter';
 
 // TODO: Delete the following data
 const cards = [
@@ -21,22 +23,21 @@ const cards = [
     id: 1,
     title: 'Title 1',
     // location: 'Andheri',
-    name: 'Rohini Dutta',
+    name: 'Tanya Agrawal',
     // a good looking indian snap from wikimedia
     photo:
-      'https://upload.wikimedia.org/wikipedia/commons/5/5c/Ananya_Panday_snapped_in_Andheri.jpg',
+      'https://media-exp1.licdn.com/dms/image/C5103AQFKbyGxKxMYGA/profile-displayphoto-shrink_200_200/0/1539165110959?e=1638403200&v=beta&t=c93WpMen-FJ1jheRQ2DAhVzHWU06ocZHHvjp1BH2jSM',
     info: 'BTech | IT | B2',
-    headline: 'AI | ML | Web Development',
+    headline: 'Student at VIIT | Passionate about NodeJS, Angular and iOS',
     requirements:
-      'Looking for a python developer who is comfortable with numpy and pandas. Someone who is capable of extracting insights from the given data. Someone with an X Factor.',
+      'Looking for a python developer who is comfortable with numpy and pandas. Need someone who is capable of extracting insights from the given data. Knowledge of iOS development or Web Development is a plus.',
     skills: [
       'Web Development',
-      'Java',
-      'Python',
-      'Machine Learning',
-      'AI',
-      'MERN',
-      'Flutter',
+      'iOS App Development',
+      'NodeJS',
+      'Angular',
+      'Swift',
+      'Objective-C',
     ],
     links: {
       linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
@@ -203,7 +204,7 @@ function Discover() {
       },
       shadowRadius: 6,
       shadowOpacity: 0.3,
-      elevation: 2,
+      elevation: 4,
     },
 
     discoverBackground: {
@@ -252,6 +253,7 @@ function Discover() {
 
   const [index, setIndex] = React.useState(0);
   const [swipedAll, setSwipedAll] = React.useState(cards.length === 0);
+  const [isFilterModalVisible, setIsFilterModalVisible] = React.useState(false);
 
   const onSwipedLeft = index => {
     console.log(index, 'Left');
@@ -278,7 +280,7 @@ function Discover() {
       {/* A status bar which changes color based on the tab selected */}
       <FocusAwareStatusBar
         backgroundColor={colors.primary}
-        barStyle="light-content"
+        barStyle={"light-content"}
       />
 
       {/* Absolute positioned discover background (which is supposed to use gradient) */}
@@ -287,7 +289,13 @@ function Discover() {
       {/* Discover text */}
       <View style={styles.discoverContainer}>
         <Text style={styles.discoverText}>Discover</Text>
-        <Ionicons name="options" size={28} color={'#fff'}></Ionicons>
+          <IconButton
+            icon="filter-variant"
+            size={24}
+            color={colors.textWhite}
+            onPress={() => setIsFilterModalVisible(true)}
+          />
+        {isFilterModalVisible && <Filter close={setIsFilterModalVisible}/>}
       </View>
 
       {/* Main content with swipe cards */}
@@ -342,13 +350,13 @@ function Discover() {
         <TouchableOpacity
           style={styles.bottomOption}
           onPress={() => index < cards.length && swiperRef.current.swipeLeft()}>
-          <MaterialCommunityIcons name="close" size={36} color="gray" />
+          <MaterialCommunityIcons name="close-thick" size={36} color="gray" />
         </TouchableOpacity>
         {swipedAll && (
           <TouchableOpacity
             style={styles.bottomOption}
             onPress={() => index > 0 && undo(swiperRef)}>
-            <MaterialCommunityIcons name="refresh" size={36} color="#FF9500" />
+            <MaterialCommunityIcons name="refresh" size={36} color={colors.warning} />
           </TouchableOpacity>
         )}
         <TouchableOpacity
@@ -356,7 +364,7 @@ function Discover() {
           onPress={() =>
             index < cards.length && swiperRef.current.swipeRight()
           }>
-          <MaterialCommunityIcons name="heart" size={36} color="#FF375F" />
+          <MaterialCommunityIcons name="check-bold" size={36} color={colors.success} />
         </TouchableOpacity>
       </View>
     </View>

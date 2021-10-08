@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Text, View, Animated} from 'react-native';
 import {IconButton, useTheme} from 'react-native-paper';
 
 function SkillSlider(props) {
@@ -8,6 +8,46 @@ function SkillSlider(props) {
   const {skills} = props;
 
   const [skillIndex, setSkillIndex] = React.useState(0);
+
+  const slideAnimation = React.useRef(new Animated.Value(0)).current;
+
+  const slideLeft = () => {
+    slideAnimation.setValue(0);
+    Animated.timing(slideAnimation, {
+      toValue: -500,
+      duration: 100,
+      useNativeDriver: true,
+    }).start(() => {
+      if (skillIndex > 0) {
+        setSkillIndex(skillIndex - 1);
+      } else {
+        setSkillIndex(skills.length - 1);
+      }
+      slideAnimation.setValue(200);
+      Animated.spring(slideAnimation, {
+        toValue: 0,
+        friction: 6,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
+
+  const slideRight = () => {
+    slideAnimation.setValue(0);
+    Animated.timing(slideAnimation, {
+      toValue: 500,
+      duration: 100,
+      useNativeDriver: true,
+    }).start(() => {
+      setSkillIndex((skillIndex + 1) % skills.length);
+      slideAnimation.setValue(-200);
+      Animated.spring(slideAnimation, {
+        toValue: 0,
+        friction: 6,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
 
   return (
     <View
@@ -27,23 +67,22 @@ function SkillSlider(props) {
           backgroundColor: colors.textWhite,
           elevation: 4,
         }}
-        onPress={() => {
-          if (skillIndex > 0) {
-            setSkillIndex(skillIndex - 1);
-          } else {
-            setSkillIndex(skills.length - 1);
-          }
-        }}
+        onPress={slideLeft}
       />
-      <Text
+      <Animated.Text
         style={{
           flex: 1,
           fontSize: 20,
           fontWeight: 'bold',
           textAlign: 'center',
+          transform: [
+            {
+              translateX: slideAnimation,
+            },
+          ],
         }}>
         {skills[skillIndex]}
-      </Text>
+      </Animated.Text>
       <IconButton
         icon="chevron-right"
         size={30}
@@ -52,9 +91,7 @@ function SkillSlider(props) {
           backgroundColor: colors.textWhite,
           elevation: 4,
         }}
-        onPress={() => {
-          setSkillIndex((skillIndex + 1) % skills.length);
-        }}
+        onPress={slideRight}
       />
     </View>
   );
