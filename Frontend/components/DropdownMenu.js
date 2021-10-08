@@ -1,13 +1,29 @@
 import React from 'react';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
-import {Portal, Modal, Text} from 'react-native-paper';
+import {
+  Portal,
+  Modal,
+  Text,
+  Button,
+  IconButton,
+  useTheme,
+} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import NewSection from './NewSection';
 
-function DropdownMenu({items, onChange, value, placeholder, label}) {
+function DropdownMenu({
+  items,
+  onChange,
+  value,
+  placeholder,
+  label,
+  removeFunction = null,
+}) {
   const [visible, setVisible] = React.useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+
+  const {colors} = useTheme();
 
   const containerStyle = {backgroundColor: 'white', padding: 20};
 
@@ -15,33 +31,50 @@ function DropdownMenu({items, onChange, value, placeholder, label}) {
     <View>
       <View
         style={{
-          borderWidth: 0.8,
-          borderColor: '#484848',
-          borderRadius: 6,
-          padding: 12,
-          paddingTop: 16,
-          paddingBottom: 16,
-          marginBottom: 20,
-          backgroundColor: '#fafafa',
           flexDirection: 'row',
+          justifyContent: 'space-evenly',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          paddingBottom: 20,
         }}>
-        <Text
+        <View
           style={{
-            fontSize: 16,
-            color: value === '' ? 'gray' : '#000',
-            flex: 1,
-          }}
-          onPress={openMenu}>
-          {value === '' ? placeholder : value}
-        </Text>
-        <MaterialCommunityIcons
-          name="chevron-down"
-          size={24}
-          style={{marginLeft: 10, marginRight: 4}}
-          onPress={openMenu}
-        />
+            flex: removeFunction == null ? 1 : 0.9,
+            borderWidth: 0.8,
+            borderColor: '#484848',
+            borderRadius: 6,
+            padding: 12,
+            paddingTop: 16,
+            paddingBottom: 16,
+            backgroundColor: '#fafafa',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: value === '' ? 'gray' : '#000',
+              flex: 1,
+            }}
+            onPress={openMenu}>
+            {value === '' ? placeholder : value}
+          </Text>
+          <MaterialCommunityIcons
+            name="chevron-down"
+            size={24}
+            style={{marginLeft: 10, marginRight: 4}}
+            onPress={openMenu}
+          />
+        </View>
+        {removeFunction != null && 
+          <IconButton
+            icon="delete"
+            color={colors.danger}
+            size={24}
+            onPress={removeFunction}
+            style={{marginRight: 10}}
+          />
+        }
       </View>
       <Portal>
         <Modal

@@ -2,19 +2,10 @@ import React from 'react';
 import {Text, View} from 'react-native';
 import {IconButton, useTheme} from 'react-native-paper';
 
-const skills = [
-  'Web Development',
-  'Java',
-  'Python',
-  'Machine Learning',
-  'AI',
-  'MERN',
-  'Flutter',
-  'Firebase Authentication Database',
-];
-
-function SkillSlider() {
+function SkillSlider(props) {
   const {colors} = useTheme();
+
+  const {skills} = props;
 
   const [skillIndex, setSkillIndex] = React.useState(0);
 

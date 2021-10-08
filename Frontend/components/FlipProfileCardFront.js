@@ -104,7 +104,7 @@ function FlipProfileCardFront(props) {
           paddingLeft: 12,
           paddingRight: 12,
         }}>
-        <SkillSlider />
+        <SkillSlider skills={props.card.skills}/>
       </View>
 
       <View

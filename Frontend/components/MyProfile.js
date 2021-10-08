@@ -17,6 +17,7 @@ import {
   Portal,
   ActivityIndicator,
   Title,
+  IconButton,
 } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DropdownMenu from './DropdownMenu';
@@ -42,6 +43,58 @@ const branches = [
   'Civil',
   'AI-DS',
 ];
+
+const languageList = [
+  'English',
+  'Hindi',
+  'Marathi',
+  'Bengali',
+  'Gujarati',
+  'Punjabi',
+  'Kannada',
+  'Tamil',
+  'Telugu',
+  'Malayalam',
+  'Odia',
+  'Urdu',
+  'Konkani',
+  'Sindhi',
+  'Assamese',
+  'Kashmiri',
+  'Nepali',
+  'Sanskrit',
+
+  'German',
+  'French',
+  'Spanish',
+  'Italian',
+  'Portuguese',
+  'Russian',
+  'Japanese',
+  'Chinese',
+  'Korean',
+  'Arabic',
+  'Turkish',
+  'Thai',
+  'Vietnamese',
+  'Indonesian',
+  'Malay',
+  'Polish',
+  'Cantonese',
+  'Hakka',
+  'Klingon',
+  'Kazakh',
+  'Kyrgyz',
+  'Tagalog',
+  'Farsi',
+  'Hmong',
+  'Khmer',
+  'Laotian',
+  'Malagasy',
+  'Mongolian',
+  'Burmese',
+  'Somali',
+]
 
 const skillList = [
   {
@@ -316,44 +369,39 @@ function MyProfile() {
         <Skills skillList={skillList} skills={skills} setSkills={setSkills} />
 
         <NewSection name="Languages" />
-        <View
-          style={{
-            flexDirection: 'column',
-          }}>
+        <View>
           {languages.map((language, index) => (
-            <View
+            <DropdownMenu
               key={index}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: 8,
-              }}>
-              <TextInput
-                mode="outlined"
-                label="Language"
-                placeholder="Type your language"
-                value={language.name}
-                onChangeText={text =>
-                  setLanguages(
-                    languages.map((lang, i) =>
-                      i == index ? {name: text, level: lang.level} : lang,
-                    ),
-                  )
-                }
-                style={{
-                  width: '50%',
-                }}
-              />
-            </View>
+              items={languageList.filter(  
+                lang => !languages.includes(lang)
+              )}
+              onChange={item => {
+                setLanguages(
+                  languages
+                  .map(lang => {
+                    if (lang == language) {
+                      return item;
+                    }
+                    return lang;
+                  })
+                );
+              }}
+              value={language}
+              placeholder="Select your language"
+              label="Language"
+              removeFunction={() => {
+                setLanguages(languages.filter(lang => lang != language))
+              }}
+            >
+            </DropdownMenu>
           ))}
           <Button
             color={colors.secondary}
             onPress={() => {
-              setLanguages([...languages, {name: '', level: ''}]);
-            }}>
-            Add Language
-          </Button>
+              setLanguages(languages.concat(''))
+            }}
+          >Add Language</Button>
         </View>
 
         {/* Social URLs */}
