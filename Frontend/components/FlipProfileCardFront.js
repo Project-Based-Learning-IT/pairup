@@ -3,6 +3,7 @@ import {Image, View, Text, TouchableOpacity} from 'react-native';
 import SkillSlider from './SkillSlider';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { IconButton, useTheme } from 'react-native-paper';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 function FlipProfileCardFront(props) {
   const {colors} = useTheme();
@@ -19,7 +20,7 @@ function FlipProfileCardFront(props) {
         style={{
           position: 'absolute',
           top: -50,
-          shadowColor: 'black',
+          shadowColor: colors.secondary,
           shadowOffset: {
             width: 0,
             height: 2,
@@ -35,8 +36,10 @@ function FlipProfileCardFront(props) {
             height: 100,
             width: 100,
             borderRadius: 50,
+            borderColor: colors.secondary,
           }}
-          source={{uri: props.card.photo}}></Image>
+          source={{uri: props.card.photo}}>
+        </Image>
       </TouchableOpacity>
 
       <View
@@ -66,13 +69,14 @@ function FlipProfileCardFront(props) {
 
         <Text
           style={{
-            fontSize: 16,
-            fontWeight: 'bold',
+            fontSize: 14,
+            fontWeight: '500',
             textAlign: 'center',
-            padding: 0,
-            color: colors.textLightBlack,
+            paddingTop: 4,
+            color: colors.textHeadBlack,
           }}
-          numberOfLines={1}>
+          numberOfLines={1}
+        >
           {props.card.headline}
         </Text>
       </View>
@@ -111,26 +115,29 @@ function FlipProfileCardFront(props) {
           flexDirection: 'row',
           paddingBottom: 4,
         }}>
-        <FontAwesome
-          name="twitter"
-          size={24}
-          style={{
-            padding: 10,
-          }}
-        />
-        <FontAwesome
-          name="linkedin"
-          size={24}
+        <Entypo
+          name="twitter-with-circle"
+          size={32}
+          color={colors.twitter}
           style={{
             padding: 10,
           }}
         />
         <FontAwesome
           name="github"
+          color={colors.github}
           style={{
             padding: 10,
           }}
-          size={24}
+          size={32}
+        />
+        <Entypo
+          name="linkedin-with-circle"
+          color={colors.linkedin}
+          size={32}
+          style={{
+            padding: 10,
+          }}
         />
       </View>
     </View>

@@ -58,6 +58,10 @@ const theme = {
     placeholderText: '#495057',
     textLightBlack: '#6b7b8a',
     textWhite: '#F8F9FA',
+
+    github: '#333',
+    linkedin: '#0077B5',
+    twitter: '#1DA1F2',
   },
 };
 
