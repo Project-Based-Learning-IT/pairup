@@ -172,10 +172,83 @@ const cards = [
 ];
 
 function Discover() {
+  const {colors} = useTheme();
+  const {height} = Dimensions.get('window');
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#FFF',
+    },
+
+    bottomOptionsContainer: {
+      width: '100%',
+      padding: 16,
+      flexDirection: 'row',
+      justifyContent: 'space-evenly',
+    },
+
+    bottomOption: {
+      borderColor: '#efebe9',
+      borderWidth: 1,
+      borderRadius: 50,
+      backgroundColor: '#fff',
+      padding: 8,
+      shadowColor: 'black',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowRadius: 6,
+      shadowOpacity: 0.3,
+      elevation: 2,
+    },
+
+    discoverBackground: {
+      position: 'absolute',
+      top: 0,
+      width: '100%',
+      height: '45%',
+      // backgroundColor: '#C30F31',
+      // backgroundColor: '#077f7f',
+      // 0D4F4F
+      // backgroundColor: '#0a243f',
+      // backgroundColor: '#0D4F4F',
+      backgroundColor: colors.primary,
+      borderBottomLeftRadius: 39,
+      borderBottomRightRadius: 39,
+    },
+
+    discoverContainer: {
+      width: '100%',
+      paddingEnd: 16,
+      paddingStart: 16,
+      paddingTop: 8,
+      paddingBottom: 8,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexDirection: 'row',
+    },
+
+    discoverText: {
+      fontSize: 32,
+      color: '#fff',
+      fontWeight: 'bold',
+    },
+
+    overlayWrapper: {
+      flexDirection: 'column',
+      alignItems: 'flex-end',
+      justifyContent: 'flex-start',
+      marginTop: 30,
+      marginLeft: -30,
+    },
+  });
+
   const navigation = useNavigation();
   const swiperRef = React.useRef();
-
-  const {colors} = useTheme();
 
   const [index, setIndex] = React.useState(0);
   const [swipedAll, setSwipedAll] = React.useState(cards.length === 0);
@@ -204,7 +277,7 @@ function Discover() {
     <View style={styles.container}>
       {/* A status bar which changes color based on the tab selected */}
       <FocusAwareStatusBar
-        backgroundColor={colors.secondaryDark}
+        backgroundColor={colors.primary}
         barStyle="light-content"
       />
 
@@ -289,78 +362,5 @@ function Discover() {
     </View>
   );
 }
-
-const {height} = Dimensions.get('window');
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-  },
-
-  bottomOptionsContainer: {
-    width: '100%',
-    padding: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-  },
-
-  bottomOption: {
-    borderColor: '#efebe9',
-    borderWidth: 1,
-    borderRadius: 50,
-    backgroundColor: '#fff',
-    padding: 8,
-    shadowColor: 'black',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowRadius: 6,
-    shadowOpacity: 0.3,
-    elevation: 2,
-  },
-
-  discoverBackground: {
-    position: 'absolute',
-    top: 0,
-    width: '100%',
-    height: '45%',
-    // backgroundColor: '#C30F31',
-    // backgroundColor: '#077f7f',
-    // 0D4F4F
-    // backgroundColor: '#0a243f',
-    backgroundColor: '#0D4F4F',
-    borderBottomLeftRadius: 39,
-    borderBottomRightRadius: 39,
-  },
-
-  discoverContainer: {
-    width: '100%',
-    paddingEnd: 16,
-    paddingStart: 16,
-    paddingTop: 8,
-    paddingBottom: 8,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-
-  discoverText: {
-    fontSize: 32,
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-
-  overlayWrapper: {
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-start',
-    marginTop: 30,
-    marginLeft: -30,
-  },
-});
 
 export default Discover;
