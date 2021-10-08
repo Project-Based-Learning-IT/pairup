@@ -104,29 +104,6 @@ function extractURL(text) {
   return null;
 }
 
-function getLinkPreview(url) {
-  const res = {
-    author: null,
-    date: "2018-03-01T12:00:00.000Z",
-    description: "Online payment processing for internet businesses. Stripe is a suite of payment APIs that powers commerce for online businesses of all sizes, including fraud prevention, and subscription management. Use Stripe’s payment platform to accept and process payments online for easy-to-use commerce solution…",
-    image: "https://images.ctfassets.net/fzn2n1nzq965/3AGidihOJl4nH9D1vDjM84/9540155d584be52fc54c443b6efa4ae6/homepage.png?q=80",
-    logo: "https://logo.clearbit.com/stripe.com",
-    publisher: "Stripe",
-    title: "Online payment processing for internet businesses - Stripe",
-    url: "https://stripe.com/en-in"
-  };
-
-  return res;
-
-  // const response = await fetch(
-  //   `https://v1.nocodeapi.com/siddheshkothadi/link_preview/ziLmWtRKBcPxdvJJ?url=${url}`
-  // );
-
-  // const data = await response.json();
-
-  // return data;
-}
-
 function Chat(props) {
   const scrollViewRef = React.useRef();
 
