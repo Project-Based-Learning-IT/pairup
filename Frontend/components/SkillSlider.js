@@ -31,9 +31,9 @@ function SkillSlider() {
       <IconButton
         icon="chevron-left"
         size={30}
-        color={colors.textWhite}
+        color={colors.primary}
         style={{
-          backgroundColor: colors.primary,
+          backgroundColor: colors.textWhite,
           elevation: 4,
         }}
         onPress={() => {
@@ -56,9 +56,9 @@ function SkillSlider() {
       <IconButton
         icon="chevron-right"
         size={30}
-        color={colors.textWhite}
+        color={colors.primary}
         style={{
-          backgroundColor: colors.primary,
+          backgroundColor: colors.textWhite,
           elevation: 4,
         }}
         onPress={() => {
