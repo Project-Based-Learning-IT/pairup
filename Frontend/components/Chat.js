@@ -6,12 +6,14 @@ import {
   TextInput,
   TouchableHighlight,
   ImageBackground,
+  Image
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
 import Ioncions from 'react-native-vector-icons/Ionicons';
 import Hyperlink from 'react-native-hyperlink';
 import {Linking} from 'react-native';
 import {useAuth} from '../App';
+import LinkPreview from './LinkPreview';
 
 // TODO: remove the chats below
 
@@ -88,6 +90,41 @@ https://stripe.com/docs`,
   ];
 
   return chats;
+}
+
+function extractURL(text) {
+  var urlRegex = /(https?:\/\/[^\s]+)/g;
+
+  const res = urlRegex.exec(text);
+
+  if (res) {
+    return res[0];
+  }
+
+  return null;
+}
+
+function getLinkPreview(url) {
+  const res = {
+    author: null,
+    date: "2018-03-01T12:00:00.000Z",
+    description: "Online payment processing for internet businesses. Stripe is a suite of payment APIs that powers commerce for online businesses of all sizes, including fraud prevention, and subscription management. Use Stripe’s payment platform to accept and process payments online for easy-to-use commerce solution…",
+    image: "https://images.ctfassets.net/fzn2n1nzq965/3AGidihOJl4nH9D1vDjM84/9540155d584be52fc54c443b6efa4ae6/homepage.png?q=80",
+    logo: "https://logo.clearbit.com/stripe.com",
+    publisher: "Stripe",
+    title: "Online payment processing for internet businesses - Stripe",
+    url: "https://stripe.com/en-in"
+  };
+
+  return res;
+
+  // const response = await fetch(
+  //   `https://v1.nocodeapi.com/siddheshkothadi/link_preview/ziLmWtRKBcPxdvJJ?url=${url}`
+  // );
+
+  // const data = await response.json();
+
+  // return data;
 }
 
 function Chat(props) {
@@ -171,7 +208,7 @@ function Chat(props) {
               <View
                 key={index}
                 style={{
-                  padding: 12,
+                  padding: 6,
                   maxWidth: '70%',
                   borderRadius: 14,
                   borderTopRightRadius:
@@ -188,7 +225,6 @@ function Chat(props) {
                   linkStyle={{
                     color: chat.senderId === 'me' ? '#d3ffff' : '#007bff',
                     fontWeight: 'bold',
-                    // underline the link
                     textDecorationLine: 'underline',
                   }}
                   onPress={(url, text) => {
@@ -196,9 +232,13 @@ function Chat(props) {
                       console.warn('An error occurred: ', error),
                     );
                   }}>
+                  {extractURL(chat.message) && (
+                    <LinkPreview link={extractURL(chat.message)} isSent={chat.senderId !== 'me'} />
+                  )}
                   <Text
                     selectable={true}
                     style={{
+                      padding: 6,
                       color: chat.senderId === 'me' ? '#fff' : colors.primary,
                     }}>
                     {chat.message}
