@@ -11,21 +11,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {IconButton, Portal, useTheme} from 'react-native-paper';
-import SearchBox from './SearchBox';
+import { leftOptions } from '../staticStore';
+import { skillList } from '../staticStore';
+import SkillSection from './SkillSection';
 
 const {height} = Dimensions.get('window');
-
-const leftOptions = [
-  'Skills',
-  'Language',
-  'Year',
-  'Branch',
-  'Division',
-  'Batch',
-  'Social Media',
-];
-
-
 
 function Filter(props) {
   const {close} = props;
@@ -35,6 +25,14 @@ function Filter(props) {
   const springAnim = React.useRef(new Animated.Value(1000)).current;
 
   const [selectedLeftIndex, setSelectedLeftIndex] = React.useState(0);
+
+  const [filterSkills, setFilterSkills] = React.useState([]);
+  const [filterLanguages, setFilterLanguages] = React.useState([]);
+  const [filterYears, setFilterYears] = React.useState([]);
+  const [filterBranches, setFilterBranches] = React.useState([]);
+  const [filterDivisions, setFilterDivisions] = React.useState([]);
+  const [filterBatches, setFilterBatches] = React.useState([]);
+  const [filterSocialMedia, setFilterSocialMedia] = React.useState([]);
 
   React.useEffect(() => {
     const slideIn = () => {
@@ -72,8 +70,8 @@ function Filter(props) {
       <Animated.View
         style={{
           position: 'absolute',
-          top: StatusBar.currentHeight+16, // for full screen
-          // top: StatusBar.currentHeight + 100,
+          top: StatusBar.currentHeight+12, // for full screen
+          // top: StatusBar.currentHeight + height/10,
           left: 0,
           right: 0,
           bottom: 0,
@@ -157,10 +155,10 @@ function Filter(props) {
               padding: 10,
             }}
           >
-            <SearchBox 
-              onChangeText={() => console.log('onChangeText')}
-              value={''}
-              placeholder={'skills'}
+            <SkillSection
+              skills={filterSkills}
+              setSkills={setFilterSkills}
+              skillList={skillList}
             />
           </View>
         </View>

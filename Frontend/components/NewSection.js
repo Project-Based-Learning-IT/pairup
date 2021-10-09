@@ -19,7 +19,7 @@ function NewSection(props) {
         style={{
           fontSize: 16,
           fontWeight: 'bold',
-          color: '#000',
+          color: colors.gray,
         }}>
         {name}
       </Text>

@@ -227,13 +227,10 @@ https://stripe.com/docs`,
 const cards = [
   {
     id: 1,
-    title: 'Title 1',
-    // location: 'Andheri',
     name: 'Tanya Agrawal',
-    // a good looking indian snap from wikimedia
     photo:
       'https://media-exp1.licdn.com/dms/image/C5103AQFKbyGxKxMYGA/profile-displayphoto-shrink_200_200/0/1539165110959?e=1638403200&v=beta&t=c93WpMen-FJ1jheRQ2DAhVzHWU06ocZHHvjp1BH2jSM',
-    info: 'BTech | IT | B2',
+    info: 'BTech | CS | A1',
     headline: 'Student at VIIT | Passionate about NodeJS, Angular and iOS',
     requirements:
       'Looking for a python developer who is comfortable with numpy and pandas. Need someone who is capable of extracting insights from the given data. Knowledge of iOS development or Web Development is a plus.',
@@ -253,22 +250,17 @@ const cards = [
   },
   {
     id: 2,
-    title: 'Title 2',
-    name: 'Rohini Dutta',
+    name: 'Mayank Sahu',
     photo:
-      'https://upload.wikimedia.org/wikipedia/commons/5/5c/Ananya_Panday_snapped_in_Andheri.jpg',
+      'https://media-exp1.licdn.com/dms/image/C5103AQGEwJJ_uuCE9w/profile-displayphoto-shrink_800_800/0/1585890211566?e=1639008000&v=beta&t=z-wLnNPFVKuNtIMkAAbYxi4N006lk8qoQSLD2eBnEKM',
     info: 'BTech | IT | B2',
-    headline: 'AI | ML | Web Development',
+    headline: 'Web Development Enthusiast | MERN Developer |Freelancer | Programmer | Looking for Internship in Web Development',
     requirements:
-      'Looking for a python developer who is comfortable with numpy and pandas. Someone who is capable of extracting insights from the given data. Someone with an X Factor.',
+      'Hello All, I am Mayank Sahu pursuing B.Tech in IT, highly passionate to be a web developer. My belief is that Web development is not about writing code but more of craftsmanship. This belief has driven me towards choosing my career in this field.',
     skills: [
-      'Web Development',
-      'Java',
       'Python',
-      'Machine Learning',
-      'AI',
-      'MERN',
-      'Flutter',
+      'Javascript',
+      'Web Development'
     ],
     links: {
       linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
@@ -278,22 +270,17 @@ const cards = [
   },
   {
     id: 3,
-    title: 'Title 3',
-    name: 'Rohini Dutta',
+    name: 'Sidhant Khamankar',
     photo:
-      'https://upload.wikimedia.org/wikipedia/commons/5/5c/Ananya_Panday_snapped_in_Andheri.jpg',
+      'https://media-exp1.licdn.com/dms/image/D5635AQHY87navBQIxA/profile-framedphoto-shrink_800_800/0/1628069175615?e=1633849200&v=beta&t=gWJ4jWPytePBQIbpfvQkv26ofOG7N-8BcUMm0l8Re_8',
     info: 'BTech | IT | B2',
-    headline: 'AI | ML | Web Development',
+    headline: 'Aspiring Software Engineer | 2⭐ Leetcode | Web Development | B.Tech IT\'23 | Shining Humans | VEC',
     requirements:
-      'Looking for a python developer who is comfortable with numpy and pandas. Someone who is capable of extracting insights from the given data. Someone with an X Factor.',
+      'Looking for Software Engineering Intern role. I love to build and scale softwares and apps. Skilled in Data Structures and Algorithms, C++ 2⭐ on Leetcode',
     skills: [
-      'Web Development',
-      'Java',
-      'Python',
-      'Machine Learning',
-      'AI',
-      'MERN',
-      'Flutter',
+      'Data Structures',
+      'Algorithms',
+      'C++',
     ],
     links: {
       linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
@@ -303,22 +290,17 @@ const cards = [
   },
   {
     id: 4,
-    title: 'Title 4',
-    name: 'Rohini Dutta',
+    name: 'Atharva Parikh',
     photo:
-      'https://upload.wikimedia.org/wikipedia/commons/5/5c/Ananya_Panday_snapped_in_Andheri.jpg',
+      'https://media-exp1.licdn.com/dms/image/C4D03AQGWBaarNoZmRQ/profile-displayphoto-shrink_800_800/0/1630302510756?e=1639008000&v=beta&t=h-WOITyvTFg03o1MJX5D-E5VSx52I4dfC1JDlY_dC_E',
     info: 'BTech | IT | B2',
-    headline: 'AI | ML | Web Development',
+    headline: 'FinTech | Data Science | TY IT VIIT',
     requirements:
-      'Looking for a python developer who is comfortable with numpy and pandas. Someone who is capable of extracting insights from the given data. Someone with an X Factor.',
+      'I am a TY Information Technology student at VIIT Pune. I have keen interest in Data Science 📊 & Finance 📈📉. Exploring opportunities..',
     skills: [
-      'Web Development',
-      'Java',
+      'C++',
       'Python',
-      'Machine Learning',
-      'AI',
-      'MERN',
-      'Flutter',
+      'Data Structures'
     ],
     links: {
       linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
@@ -328,47 +310,19 @@ const cards = [
   },
   {
     id: 5,
-    title: 'Title 5',
-    name: 'Rohini Dutta',
+    name: 'Siddhesh Kothadi',
     photo:
-      'https://upload.wikimedia.org/wikipedia/commons/5/5c/Ananya_Panday_snapped_in_Andheri.jpg',
+      'https://media-exp1.licdn.com/dms/image/C5603AQGN_bsNHXjP6A/profile-displayphoto-shrink_800_800/0/1595991445474?e=1639008000&v=beta&t=P2y9a7eAjgy7qWYUX1u_xM71a7MKoO34Q9ZNDoeTJws',
     info: 'BTech | IT | B2',
-    headline: 'AI | ML | Web Development',
+    headline: 'Android Developer at DSC VIIT Pune',
     requirements:
-      'Looking for a python developer who is comfortable with numpy and pandas. Someone who is capable of extracting insights from the given data. Someone with an X Factor.',
+      'Self-motivated and hardworking undergrad student with an ability to provide simple solutions to complex problems. Passionate about developing new projects and learning new skills. Proficient in C++, Android Development and Web Development with intuitive problem-solving skills.',
     skills: [
+      'C++',
+      'Android Development',
+      'Kotlin',
       'Web Development',
-      'Java',
-      'Python',
-      'Machine Learning',
-      'AI',
-      'MERN',
-      'Flutter',
-    ],
-    links: {
-      linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
-      github: 'https://www.github.com/siddheshkothadi',
-      twitter: 'https://twitter.com/siddheshkothadi',
-    },
-  },
-  {
-    id: 6,
-    title: 'Title 6',
-    name: 'Rohini Dutta',
-    photo:
-      'https://upload.wikimedia.org/wikipedia/commons/5/5c/Ananya_Panday_snapped_in_Andheri.jpg',
-    info: 'BTech | IT | B2',
-    headline: 'AI | ML | Web Development',
-    requirements:
-      'Looking for a python developer who is comfortable with numpy and pandas. Someone who is capable of extracting insights from the given data. Someone with an X Factor.',
-    skills: [
-      'Web Development',
-      'Java',
-      'Python',
-      'Machine Learning',
-      'AI',
-      'MERN',
-      'Flutter',
+      'React Native',
     ],
     links: {
       linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
@@ -384,14 +338,36 @@ const chats = [
   'Good bye',
   'Never say never',
   "I'm not sure",
-  'Working on Chat App',
-  'Come to bay area',
+  'Working on a Chat App',
+  'Bay area',
   'Visit once',
   'LOL!',
   'Will meet you soon!',
-  "You're genius",
-  "I'm impressed",
-  '3000!',
+  "You're a genius",
+  'Cool!',
+  'Hello',
+  'Have a nice day',
+  'No',
+  'Proc at 5 move away from Knull, keep doing this',
+  'Jira',
+  'Make it responsive now',
+  'Great going',
+  '7 javascript frameworks to learn',
+  'I created a time machine',
+  'Back to the future',
+  'I am a time machine',
+  'This is worth watching',
+  'You should attend the webinar'
+];
+
+const leftOptions = [
+  'Skills',
+  'Language',
+  'Year',
+  'Branch',
+  'Division',
+  'Batch',
+  'Social Media',
 ];
 
 export {
@@ -404,4 +380,5 @@ export {
   getBoilerplateChats,
   cards,
   chats,
+  leftOptions,
 };
