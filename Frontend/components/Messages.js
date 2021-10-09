@@ -10,23 +10,7 @@ import * as React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import FocusAwareStatusBar from './FocusAwareStatusBar';
 import {useTheme} from 'react-native-paper';
-
-// TODO: remove the mockdata
-const chats = [
-  'Hey',
-  "I wasn't expecting that!",
-  'Good bye',
-  'Never say never',
-  "I'm not sure",
-  'Working on Chat App',
-  'Come to bay area',
-  'Visit once',
-  'LOL!',
-  'Will meet you soon!',
-  "You're genius",
-  "I'm impressed",
-  '3000!',
-];
+import { chats } from '../staticStore';
 
 function Messages() {
   const navigation = useNavigation();

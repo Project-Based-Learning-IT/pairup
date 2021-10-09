@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {IconButton, Portal, useTheme} from 'react-native-paper';
+import SearchBox from './SearchBox';
 
 const {height} = Dimensions.get('window');
 
@@ -23,6 +24,8 @@ const leftOptions = [
   'Batch',
   'Social Media',
 ];
+
+
 
 function Filter(props) {
   const {close} = props;
@@ -69,8 +72,8 @@ function Filter(props) {
       <Animated.View
         style={{
           position: 'absolute',
-          // top: StatusBar.currentHeight+16, // for full screen
-          top: StatusBar.currentHeight + 100,
+          top: StatusBar.currentHeight+16, // for full screen
+          // top: StatusBar.currentHeight + 100,
           left: 0,
           right: 0,
           bottom: 0,
@@ -147,6 +150,19 @@ function Filter(props) {
               ))}
             </ScrollView>
           </View>
+          <View
+            style={{
+              flex: 0.7,
+              height: '100%',
+              padding: 10,
+            }}
+          >
+            <SearchBox 
+              onChangeText={() => console.log('onChangeText')}
+              value={''}
+              placeholder={'skills'}
+            />
+          </View>
         </View>
         <View
           style={{
@@ -190,6 +206,7 @@ function Filter(props) {
               <Text
                 style={{
                   fontSize: 16,
+                  fontWeight: 'bold',
                   color: colors.textWhite,
                 }}
               >Apply</Text>
