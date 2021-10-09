@@ -5,7 +5,7 @@ import { Checkbox } from "react-native-paper";
 function FilterSection(props) {
   const {items, setItems, itemList} = props;
 
-  const [areAllChecked, setAreAllChecked] = React.useState(false);
+  const [areAllChecked, setAreAllChecked] = React.useState(items.length === itemList.length);
 
   return (
     <View
