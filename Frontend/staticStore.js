@@ -370,6 +370,12 @@ const leftOptions = [
   'Social Media',
 ];
 
+const socialMedia = [
+  "Twitter",
+  "LinkedIn",
+  "Github",
+];
+
 export {
   branches,
   languageList,
@@ -381,4 +387,5 @@ export {
   cards,
   chats,
   leftOptions,
+  socialMedia,
 };

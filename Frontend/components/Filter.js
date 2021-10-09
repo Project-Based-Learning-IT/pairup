@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 import {IconButton, Portal, useTheme} from 'react-native-paper';
 import { leftOptions } from '../staticStore';
-import { skillList } from '../staticStore';
+import { skillList, languageList, years, branches, divisions, batches, socialMedia } from '../staticStore';
+import FilterSection from './FilterSection';
 import SkillSection from './SkillSection';
 
 const {height} = Dimensions.get('window');
@@ -155,11 +156,51 @@ function Filter(props) {
               padding: 10,
             }}
           >
-            <SkillSection
+            {selectedLeftIndex == 0 && <SkillSection
               skills={filterSkills}
               setSkills={setFilterSkills}
               skillList={skillList}
-            />
+            />}
+            {selectedLeftIndex == 1 && <FilterSection
+              items={filterLanguages}
+              setItems={setFilterLanguages}
+              itemList={languageList}
+            />}
+            {
+              selectedLeftIndex == 2 && <FilterSection
+                items={filterYears}
+                setItems={setFilterYears}
+                itemList={years}
+              />
+            }
+            {
+              selectedLeftIndex == 3 && <FilterSection
+                items={filterBranches}
+                setItems={setFilterBranches}
+                itemList={branches}
+              />
+            }
+            {
+              selectedLeftIndex == 4 && <FilterSection
+                items={filterDivisions}
+                setItems={setFilterDivisions}
+                itemList={divisions}
+              />
+            }
+            {
+              selectedLeftIndex == 5 && <FilterSection
+                items={filterBatches}
+                setItems={setFilterBatches}
+                itemList={batches}
+              />
+            }
+            {
+              selectedLeftIndex == 6 && <FilterSection
+                items={filterSocialMedia}
+                setItems={setFilterSocialMedia}
+                itemList={socialMedia}
+              />
+            }
           </View>
         </View>
         <View
@@ -179,6 +220,7 @@ function Filter(props) {
             padding: 18,
             paddingLeft: 12,
             paddingRight: 12,
+              // backgroundColor: colors.primary,
           }}>
           <View>
             <Text
