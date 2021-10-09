@@ -162,6 +162,7 @@ function Discover() {
           stackSeparation={8}
           disableBottomSwipe
           disableTopSwipe
+          // showSecondCard={false}
           animateCardOpacity
           // animateOverlayLabelsOpacity
           containerStyle={{

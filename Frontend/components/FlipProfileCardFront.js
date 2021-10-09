@@ -2,7 +2,7 @@ import React from 'react';
 import {Image, View, Text, TouchableOpacity} from 'react-native';
 import SkillSlider from './SkillSlider';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { IconButton, useTheme } from 'react-native-paper';
+import { Button, IconButton, useTheme } from 'react-native-paper';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 function FlipProfileCardFront(props) {
@@ -82,15 +82,27 @@ function FlipProfileCardFront(props) {
           {props.card.headline}
         </Text>
       </View>
-
-      <IconButton
-        icon="rotate-3d-variant"
-        size={24}
+      
+      <View
         style={{
-          paddingTop: 4
+          flexDirection: 'row',
+          alignItems: 'center',
         }}
-        color={colors.secondary}
-      />
+      >
+        <IconButton
+          icon="rotate-3d-variant"
+          size={24}
+          color={colors.secondary}
+        />
+        <Button
+          onPress={() => console.log('pressed')}
+        >View Profile</Button>
+        <IconButton
+          icon="rotate-3d-variant"
+          size={24}
+          color={colors.secondary}
+        />
+      </View>
 
       <View
         style={{
