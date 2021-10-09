@@ -63,7 +63,7 @@ function Discover() {
       // 0D4F4F
       // backgroundColor: '#0a243f',
       // backgroundColor: '#0D4F4F',
-      backgroundColor: colors.primary,
+      backgroundColor: colors.secondaryDark,
       borderBottomLeftRadius: 39,
       borderBottomRightRadius: 39,
     },
@@ -125,7 +125,7 @@ function Discover() {
     <View style={styles.container}>
       {/* A status bar which changes color based on the tab selected */}
       <FocusAwareStatusBar
-        backgroundColor={colors.primary}
+        backgroundColor={colors.secondaryDark}
         barStyle={"light-content"}
       />
 
@@ -210,7 +210,7 @@ function Discover() {
           onPress={() =>
             index < cards.length && swiperRef.current.swipeRight()
           }>
-          <MaterialCommunityIcons name="check-bold" size={36} color={colors.success} />
+          <MaterialCommunityIcons name="check-bold" size={36} color={colors.secondary} />
         </TouchableOpacity>
       </View>
     </View>

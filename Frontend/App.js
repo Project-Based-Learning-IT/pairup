@@ -225,7 +225,7 @@ const App = () => {
                       );
                     }
                   },
-                  tabBarActiveTintColor: theme.colors.primary,
+                  tabBarActiveTintColor: theme.colors.secondary,
                   tabBarInactiveTintColor: 'gray',
                   tabBarShowLabel: false,
                 })}>
