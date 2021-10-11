@@ -5,7 +5,12 @@ module.exports = {
   parser: 'babel-eslint',
   plugins: ['prettier'],
   rules: {
-    'prettier/prettier': 'error',
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
   },
   extends: ['plugin:prettier/recommended'],
 };
