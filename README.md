@@ -86,6 +86,7 @@ multiDexEnabled true <br  />
 [https://reactnavigation.org/](https://reactnavigation.org/) <br>
 https://www.npmjs.com/package/react-native-deck-swiper <br>
 https://www.npmjs.com/package/react-native-flip-card <br>
+https://www.npmjs.com/package/react-native-hyperlink <br>
 <br>
 
   

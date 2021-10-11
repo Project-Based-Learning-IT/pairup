@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableHighlight,
   ImageBackground,
-  Image
+  Image,
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
 import Ioncions from 'react-native-vector-icons/Ionicons';
@@ -14,7 +14,7 @@ import Hyperlink from 'react-native-hyperlink';
 import {Linking} from 'react-native';
 import {useAuth} from '../App';
 import LinkPreview from './LinkPreview';
-import {getBoilerplateChats} from '../staticStore'
+import {getBoilerplateChats} from '../staticStore';
 
 function extractURL(text) {
   var urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -93,7 +93,7 @@ function Chat(props) {
           ref={scrollViewRef}
           contentContainerStyle={{
             paddingTop: 12,
-            paddingBottom: 140,
+            paddingBottom: 75,
             paddingLeft: '4%',
             paddingRight: '4%',
           }}
@@ -134,7 +134,10 @@ function Chat(props) {
                     );
                   }}>
                   {extractURL(chat.message) && (
-                    <LinkPreview link={extractURL(chat.message)} isSent={chat.senderId !== 'me'} />
+                    <LinkPreview
+                      link={extractURL(chat.message)}
+                      isSent={chat.senderId !== 'me'}
+                    />
                   )}
                   <Text
                     selectable={true}
@@ -184,7 +187,8 @@ function Chat(props) {
             fontSize: 16,
             flex: 1,
             paddingLeft: 10,
-          }}></TextInput>
+          }}
+          onFocus={() => scrollViewRef.current.scrollToEnd()}></TextInput>
         <TouchableHighlight
           style={{
             backgroundColor: colors.primary,
