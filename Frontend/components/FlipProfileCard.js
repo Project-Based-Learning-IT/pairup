@@ -34,6 +34,7 @@ function FlipProfileCard(props) {
     >
       <FlipCard 
         flipHorizontal={true}
+        flipVertical={false}
         useNativeDriver={true}
       >
         {/* Face Side */}

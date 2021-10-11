@@ -84,6 +84,8 @@ multiDexEnabled true <br  />
 [https://reactnative.dev/](https://reactnative.dev/) <br>
 [https://callstack.github.io/react-native-paper/](https://callstack.github.io/react-native-paper/) <br>
 [https://reactnavigation.org/](https://reactnavigation.org/) <br>
+https://www.npmjs.com/package/react-native-deck-swiper <br>
+https://www.npmjs.com/package/react-native-flip-card <br>
 <br>
 
   
