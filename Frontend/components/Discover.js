@@ -89,7 +89,7 @@ function Discover() {
       flexDirection: 'column',
       alignItems: 'flex-end',
       justifyContent: 'flex-start',
-      marginTop: 30,
+      marginTop: 60,
       marginLeft: -30,
     },
   });
@@ -100,6 +100,7 @@ function Discover() {
   const [index, setIndex] = React.useState(0);
   const [swipedAll, setSwipedAll] = React.useState(cards.length === 0);
   const [isFilterModalVisible, setIsFilterModalVisible] = React.useState(false);
+  const [isSwiping, setIsSwiping] = React.useState(false);
 
   const onSwipedLeft = index => {
     console.log(index, 'Left');
@@ -153,66 +154,88 @@ function Discover() {
           onSwipedAll={onSwipedAll}
           cardVerticalMargin={0}
           cardHorizontalMargin={12}
+          stackAnimationFriction={2}
+          stackAnimationTension={100}
           backgroundColor="transparent"
           cards={cards}
-          cardIndex={index}
           renderCard={card => <FlipProfileCard card={card} />}
           stackSize={cards.length}
           stackScale={4}
           stackSeparation={8}
           disableBottomSwipe
           disableTopSwipe
-          // showSecondCard={false}
           animateCardOpacity
-          // animateOverlayLabelsOpacity
+          animateOverlayLabelsOpacity
           containerStyle={{
             flex: 1,
             justifyContent: 'space-between',
             marginTop: 10,
           }}
-          // overlayLabels={{
-          //   left: {
-          //     title: 'NOPE',
-          //     element: <OverlayLabel label="NOPE" color="#E5566D" />,
-          //     style: {
-          //       wrapper: styles.overlayWrapper,
-          //     },
-          //   },
-          //   right: {
-          //     title: 'LIKE',
-          //     element: <OverlayLabel label="LIKE" color="#4CCC93" />,
-          //     style: {
-          //       wrapper: {
-          //         ...styles.overlayWrapper,
-          //         alignItems: 'flex-start',
-          //         marginLeft: 30,
-          //       },
-          //     },
-          //   },
-          // }}
+          overlayLabels={{
+            left: {
+              title: 'NOPE',
+              element: <OverlayLabel label="NOPE" color="#E5566D" />,
+              style: {
+                wrapper: styles.overlayWrapper,
+              },
+            },
+            right: {
+              title: 'LIKE',
+              element: <OverlayLabel label="LIKE" color="#4CCC93" />,
+              style: {
+                wrapper: {
+                  ...styles.overlayWrapper,
+                  alignItems: 'flex-start',
+                  marginLeft: 30,
+                },
+              },
+            },
+          }}
         ></Swiper>
       </View>
 
       <View style={styles.bottomOptionsContainer}>
+        {!swipedAll &&
         <TouchableOpacity
           style={styles.bottomOption}
-          onPress={() => index < cards.length && swiperRef.current.swipeLeft()}>
+          onPress={() => {
+            if(!isSwiping && index < cards.length)
+            {
+              setIsSwiping(true);
+              swiperRef.current.swipeLeft();
+              setTimeout(() => {
+                setIsSwiping(false);
+              }, 350);
+            }
+          }}>
           <MaterialCommunityIcons name="close-thick" size={36} color="gray" />
         </TouchableOpacity>
+        }
         {swipedAll && (
           <TouchableOpacity
             style={styles.bottomOption}
-            onPress={() => index > 0 && undo(swiperRef)}>
+            onPress={() => {
+              undo(swiperRef)
+            }}>
             <MaterialCommunityIcons name="refresh" size={36} color={colors.warning} />
           </TouchableOpacity>
         )}
+        {!swipedAll &&
         <TouchableOpacity
           style={styles.bottomOption}
-          onPress={() =>
-            index < cards.length && swiperRef.current.swipeRight()
-          }>
+          onPress={() => {
+            if(!isSwiping && index < cards.length)
+            {
+              setIsSwiping(true);
+              swiperRef.current.swipeRight();
+              setTimeout(() => {
+                setIsSwiping(false);
+              }, 350);
+            }
+          }}>
           <MaterialCommunityIcons name="check-bold" size={36} color={colors.secondary} />
         </TouchableOpacity>
+        }
       </View>
     </View>
   );
