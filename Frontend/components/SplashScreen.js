@@ -3,13 +3,13 @@ import * as React from 'react';
 
 function SplashScreen() {
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#9BC4FF'}}>
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#9AC4FF'}}>
       <StatusBar barStyle={'dark-content'} backgroundColor={'#9BC4FF'} />
       <Image
         style={
           {
-            width: 200,
-            height: 200,
+            width: 400,
+            height: 300,
           }
         }
         source={{
