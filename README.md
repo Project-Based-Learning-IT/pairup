@@ -1,8 +1,6 @@
 # PairUp
 
-<li>
-
-Clone the repository using following command or github desktop
+<li> Clone the repository using following command or github desktop
 
 <p><code>git clone https://github.com/Project-Based-Learning-IT/CollegeSpace.git</code></p>
 
@@ -112,27 +110,7 @@ virtualenv env
 
 .\env\Scripts\activate.bat (For subsequent run)
 
-Install requirements if not done already
-
-  
-
-pip install flask
-
-pip install flask-sqlalchemy
-
-pip install mysqlclient
-
-pip install bloom-filter2
-
-pip install pandas
-
-pip install scikit-learn
-
-pip install flask-jwt-extended
-
-pip install python-dotenv
-
-pip install python-dateutil
+Install requirements if not done already - `pip install -r requirements.txt`
 
 Install a python formatter in VSCode outside of virtual environment
 
