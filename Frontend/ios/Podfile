@@ -3,7 +3,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '11.0'
 
-target 'CollegeSpace' do
+target 'PairUp' do
   config = use_native_modules!
 
   use_react_native!(
@@ -12,7 +12,7 @@ target 'CollegeSpace' do
     :hermes_enabled => false
   )
 
-  target 'CollegeSpaceTests' do
+  target 'PairUpTests' do
     inherit! :complete
     # Pods for testing
   end

@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface CollegeSpaceTests : XCTestCase
+@interface PairUpTests : XCTestCase
 
 @end
 
-@implementation CollegeSpaceTests
+@implementation PairUpTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL(^)(UIView *view))test
 {

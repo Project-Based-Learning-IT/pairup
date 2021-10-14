@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "CollegeSpace.app"
-               BlueprintName = "CollegeSpace"
-               ReferencedContainer = "container:CollegeSpace.xcodeproj">
+               BuildableName = "PairUp.app"
+               BlueprintName = "PairUp"
+               ReferencedContainer = "container:PairUp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "CollegeSpaceTests.xctest"
-               BlueprintName = "CollegeSpaceTests"
-               ReferencedContainer = "container:CollegeSpace.xcodeproj">
+               BuildableName = "PairUpTests.xctest"
+               BlueprintName = "PairUpTests"
+               ReferencedContainer = "container:PairUp.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "CollegeSpace.app"
-            BlueprintName = "CollegeSpace"
-            ReferencedContainer = "container:CollegeSpace.xcodeproj">
+            BuildableName = "PairUp.app"
+            BlueprintName = "PairUp"
+            ReferencedContainer = "container:PairUp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "CollegeSpace.app"
-            BlueprintName = "CollegeSpace"
-            ReferencedContainer = "container:CollegeSpace.xcodeproj">
+            BuildableName = "PairUp.app"
+            BlueprintName = "PairUp"
+            ReferencedContainer = "container:PairUp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
