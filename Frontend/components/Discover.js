@@ -127,7 +127,7 @@ function Discover() {
       {/* A status bar which changes color based on the tab selected */}
       <FocusAwareStatusBar
         backgroundColor={colors.secondaryDark}
-        barStyle={"light-content"}
+        barStyle={'light-content'}
       />
 
       {/* Absolute positioned discover background (which is supposed to use gradient) */}
@@ -136,13 +136,13 @@ function Discover() {
       {/* Discover text */}
       <View style={styles.discoverContainer}>
         <Text style={styles.discoverText}>Discover</Text>
-          <IconButton
-            icon="filter-variant"
-            size={24}
-            color={colors.textWhite}
-            onPress={() => setIsFilterModalVisible(true)}
-          />
-        {isFilterModalVisible && <Filter close={setIsFilterModalVisible}/>}
+        <IconButton
+          icon="filter-variant"
+          size={24}
+          color={colors.textWhite}
+          onPress={() => setIsFilterModalVisible(true)}
+        />
+        {isFilterModalVisible && <Filter close={setIsFilterModalVisible} />}
       </View>
 
       {/* Main content with swipe cards */}
@@ -190,52 +190,57 @@ function Discover() {
                 },
               },
             },
-          }}
-        ></Swiper>
+          }}></Swiper>
       </View>
 
       <View style={styles.bottomOptionsContainer}>
-        {!swipedAll &&
-        <TouchableOpacity
-          style={styles.bottomOption}
-          onPress={() => {
-            if(!isSwiping && index < cards.length)
-            {
-              setIsSwiping(true);
-              swiperRef.current.swipeLeft();
-              setTimeout(() => {
-                setIsSwiping(false);
-              }, 350);
-            }
-          }}>
-          <MaterialCommunityIcons name="close-thick" size={36} color="gray" />
-        </TouchableOpacity>
-        }
+        {!swipedAll && (
+          <TouchableOpacity
+            style={styles.bottomOption}
+            onPress={() => {
+              if (!isSwiping && index < cards.length) {
+                setIsSwiping(true);
+                swiperRef.current.swipeLeft();
+                setTimeout(() => {
+                  setIsSwiping(false);
+                }, 350);
+              }
+            }}>
+            <MaterialCommunityIcons name="close-thick" size={36} color="gray" />
+          </TouchableOpacity>
+        )}
         {swipedAll && (
           <TouchableOpacity
             style={styles.bottomOption}
             onPress={() => {
-              undo(swiperRef)
+              undo(swiperRef);
             }}>
-            <MaterialCommunityIcons name="refresh" size={36} color={colors.warning} />
+            <MaterialCommunityIcons
+              name="refresh"
+              size={36}
+              color={colors.warning}
+            />
           </TouchableOpacity>
         )}
-        {!swipedAll &&
-        <TouchableOpacity
-          style={styles.bottomOption}
-          onPress={() => {
-            if(!isSwiping && index < cards.length)
-            {
-              setIsSwiping(true);
-              swiperRef.current.swipeRight();
-              setTimeout(() => {
-                setIsSwiping(false);
-              }, 350);
-            }
-          }}>
-          <MaterialCommunityIcons name="check-bold" size={36} color={colors.secondary} />
-        </TouchableOpacity>
-        }
+        {!swipedAll && (
+          <TouchableOpacity
+            style={styles.bottomOption}
+            onPress={() => {
+              if (!isSwiping && index < cards.length) {
+                setIsSwiping(true);
+                swiperRef.current.swipeRight();
+                setTimeout(() => {
+                  setIsSwiping(false);
+                }, 350);
+              }
+            }}>
+            <MaterialCommunityIcons
+              name="check-bold"
+              size={36}
+              color={colors.secondary}
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
