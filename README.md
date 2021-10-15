@@ -26,9 +26,21 @@ Open a terminal from the current directory i.e. <code>CollegeSpace/frontend</cod
 <p><code>npx react-native run-android</code></p>
 <p>[Make sure to use<code>yarn install</code> if there are errors]</p>
 </li>
-<li>
 
-[Errors and solutions]
+### Physical device wireless connection
+To find the devices: `adb devices`
+1.  Make sure your laptop and your phone are on the  **same**  Wi-Fi network.
+2.  Open your React Native app on your device.
+3.  You'll see a  [red screen with an error](https://reactnative.dev/docs/debugging#in-app-errors-and-warnings). This is OK. The following steps will fix that.
+4.  Open the in-app  [Developer menu]
+(https://reactnative.dev/docs/debugging#accessing-the-in-app-developer-menu).
+To open the dev menu: `adb shell input keyevent 82`
+5.  Go to  **Dev Settings**  →  **Debug server host & port for device**.
+6.  Type in your machine's IP address and the port of the local dev server (e.g. 10.0.1.1:8081).
+`ipconfig` to find your machine's IP address
+8.  Go back to the  **Developer menu**  and select  **Reload JS**.
+
+### Errors and solutions
 <p>Error: mergeLibDexDebug FAILED </p>
 <p>Solution: fixed by enabling the multiDex in the </p>
 
