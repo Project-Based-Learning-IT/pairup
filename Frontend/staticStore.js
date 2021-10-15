@@ -57,7 +57,7 @@ const languageList = [
   'Mongolian',
   'Burmese',
   'Somali',
-]
+];
 
 const skillList = [
   {
@@ -193,13 +193,13 @@ function getBoilerplateChats(userChatting, user) {
       senderId: userChatting.cell,
       receiverId: 'me',
     },
-    {
-      id: 200,
-      message: `I was reading the Stripe documentation at 
-https://stripe.com/docs`,
-      senderId: userChatting.cell,
-      receiverId: 'me',
-    },
+    //     {
+    //       id: 200,
+    //       message: `I was reading the Stripe documentation at
+    // https://stripe.com/docs`,
+    //       senderId: userChatting.cell,
+    //       receiverId: 'me',
+    //     },
     {
       id: 8,
       message: "Let's catch up at 4 pm today",
@@ -212,13 +212,13 @@ https://stripe.com/docs`,
       senderId: userChatting.cell,
       receiverId: 'me',
     },
-    {
-      id: 10,
-      message:
-        'Join the meeting by clicking the link https://meet.google.com/inf-jscp-uck',
-      senderId: 'me',
-      receiverId: userChatting.cell,
-    },
+    // {
+    //   id: 10,
+    //   message:
+    //     'Join the meeting by clicking the link https://meet.google.com/inf-jscp-uck',
+    //   senderId: 'me',
+    //   receiverId: userChatting.cell,
+    // },
   ];
 
   return chats;
@@ -254,14 +254,11 @@ const cards = [
     photo:
       'https://media-exp1.licdn.com/dms/image/C5103AQGEwJJ_uuCE9w/profile-displayphoto-shrink_800_800/0/1585890211566?e=1639008000&v=beta&t=z-wLnNPFVKuNtIMkAAbYxi4N006lk8qoQSLD2eBnEKM',
     info: 'BTech | IT | B2',
-    headline: 'Web Development Enthusiast | MERN Developer |Freelancer | Programmer | Looking for Internship in Web Development',
+    headline:
+      'Web Development Enthusiast | MERN Developer |Freelancer | Programmer | Looking for Internship in Web Development',
     requirements:
       'Hello All, I am Mayank Sahu pursuing B.Tech in IT, highly passionate to be a web developer. My belief is that Web development is not about writing code but more of craftsmanship. This belief has driven me towards choosing my career in this field.',
-    skills: [
-      'Python',
-      'Javascript',
-      'Web Development'
-    ],
+    skills: ['Python', 'Javascript', 'Web Development'],
     links: {
       linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
       github: 'https://www.github.com/siddheshkothadi',
@@ -274,14 +271,11 @@ const cards = [
     photo:
       'https://media-exp1.licdn.com/dms/image/D5635AQHY87navBQIxA/profile-framedphoto-shrink_800_800/0/1628069175615?e=1633849200&v=beta&t=gWJ4jWPytePBQIbpfvQkv26ofOG7N-8BcUMm0l8Re_8',
     info: 'BTech | IT | B2',
-    headline: 'Aspiring Software Engineer | 2⭐ Leetcode | Web Development | B.Tech IT\'23 | Shining Humans | VEC',
+    headline:
+      "Aspiring Software Engineer | 2⭐ Leetcode | Web Development | B.Tech IT'23 | Shining Humans | VEC",
     requirements:
       'Looking for Software Engineering Intern role. I love to build and scale softwares and apps. Skilled in Data Structures and Algorithms, C++ 2⭐ on Leetcode',
-    skills: [
-      'Data Structures',
-      'Algorithms',
-      'C++',
-    ],
+    skills: ['Data Structures', 'Algorithms', 'C++'],
     links: {
       linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
       github: 'https://www.github.com/siddheshkothadi',
@@ -297,11 +291,7 @@ const cards = [
     headline: 'FinTech | Data Science | TY IT VIIT',
     requirements:
       'I am a TY Information Technology student at VIIT Pune. I have keen interest in Data Science 📊 & Finance 📈📉. Exploring opportunities..',
-    skills: [
-      'C++',
-      'Python',
-      'Data Structures'
-    ],
+    skills: ['C++', 'Python', 'Data Structures'],
     links: {
       linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
       github: 'https://www.github.com/siddheshkothadi',
@@ -357,7 +347,7 @@ const chats = [
   'Back to the future',
   'I am a time machine',
   'This is worth watching',
-  'You should attend the webinar'
+  'You should attend the webinar',
 ];
 
 const leftOptions = [
@@ -370,11 +360,7 @@ const leftOptions = [
   'Social Media',
 ];
 
-const socialMedia = [
-  "Twitter",
-  "LinkedIn",
-  "Github",
-];
+const socialMedia = ['Twitter', 'LinkedIn', 'Github'];
 
 export {
   branches,
