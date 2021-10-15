@@ -2,12 +2,15 @@ import React from 'react';
 import {Image, View, Text, TouchableOpacity} from 'react-native';
 import SkillSlider from './SkillSlider';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { Button, IconButton, useTheme } from 'react-native-paper';
+import {Button, IconButton, useTheme} from 'react-native-paper';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {useNavigation} from '@react-navigation/native';
 
 function FlipProfileCardFront(props) {
+  const navigation = useNavigation();
   const {colors} = useTheme();
 
+  const {card} = props;
   return (
     <View
       style={[
@@ -38,8 +41,7 @@ function FlipProfileCardFront(props) {
             borderRadius: 50,
             borderColor: colors.secondary,
           }}
-          source={{uri: props.card.photo}}>
-        </Image>
+          source={{uri: props.card.photo}}></Image>
       </TouchableOpacity>
 
       <View
@@ -77,26 +79,28 @@ function FlipProfileCardFront(props) {
             paddingBottom: 0,
             color: colors.textHeadBlack,
           }}
-          numberOfLines={2}
-        >
+          numberOfLines={2}>
           {props.card.headline}
         </Text>
       </View>
-      
+
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-        }}
-      >
+        }}>
         <IconButton
           icon="rotate-3d-variant"
           size={24}
           color={colors.secondary}
         />
         <Button
-          onPress={() => console.log('pressed')}
-        >View Profile</Button>
+          onPress={() => {
+            console.log('ViewProfile pressed');
+            navigation.navigate('ViewProfile', {user: card});
+          }}>
+          View Profile
+        </Button>
         <IconButton
           icon="rotate-3d-variant"
           size={24}
@@ -118,7 +122,7 @@ function FlipProfileCardFront(props) {
           paddingLeft: 12,
           paddingRight: 12,
         }}>
-        <SkillSlider skills={props.card.skills}/>
+        <SkillSlider skills={props.card.skills} />
       </View>
 
       <View

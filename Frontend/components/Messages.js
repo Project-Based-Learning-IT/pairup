@@ -10,7 +10,7 @@ import * as React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import FocusAwareStatusBar from './FocusAwareStatusBar';
 import {useTheme} from 'react-native-paper';
-import { chats } from '../staticStore';
+import {chats} from '../staticStore';
 
 function Messages() {
   const navigation = useNavigation();
@@ -83,9 +83,11 @@ function Messages() {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            onPress={() =>
-              navigation.navigate('Chat', {userChatting: profile})
-            }>
+            onPress={() => {
+              profile.photo = profile.picture.medium;
+              profile.name = profile.name.first;
+              navigation.navigate('ViewProfileRightSwipedU', {user: profile});
+            }}>
             <Image
               source={{
                 uri: profile.picture.large,

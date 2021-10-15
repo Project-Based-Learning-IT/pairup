@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import {StatusBar, StyleSheet, View, Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import Discover from './components/Discover';
+import DiscoverSection from './components/DiscoverSection';
 import MyProfile from './components/MyProfile';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Feather from 'react-native-vector-icons/Feather';
@@ -186,10 +187,10 @@ const App = () => {
             )}
             {isSignedIn && (
               <Tab.Navigator
-                initialRouteName="Discover"
+                initialRouteName="DiscoverSection"
                 screenOptions={({route}) => ({
                   tabBarIcon: ({focused, color, size}) => {
-                    if (route.name === 'Discover') {
+                    if (route.name === 'DiscoverSection') {
                       return (
                         <View style={focused ? styles.focussedTabButton : {}}>
                           <Feather
@@ -230,8 +231,8 @@ const App = () => {
                   tabBarShowLabel: false,
                 })}>
                 <Tab.Screen
-                  name="Discover"
-                  component={Discover}
+                  name="DiscoverSection"
+                  component={DiscoverSection}
                   options={{
                     headerShown: false,
                   }}
