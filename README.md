@@ -52,6 +52,23 @@ To open the dev menu: `adb shell input keyevent 82`
     } 
     ......
     }
+Network Error of Axios:
+
+Solution:
+added these to my `/android/app/src/main/AndroidManifest.xml`
+```
+<manifest ...>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
+        ...
+        android:usesCleartextTraffic="true"  // <-- added this 
+        ...>
+        ...
+    </application>
+</manifest>
+```
+and localhost (http://127.0.0.1:8000/) is replaced by
+http://10.0.2.2:8000/
 </ol>
 
 ### Frontend References
@@ -71,6 +88,7 @@ https://www.npmjs.com/package/react-native-hyperlink
 https://www.npmjs.com/package/react-native-dotenv
 
 https://www.npmjs.com/package/react-native-axios
+
 
 ## Backend
 
@@ -119,6 +137,7 @@ Same email and password
 * Documentation Flask : https://flask.palletsprojects.com/en/2.0.x/  
 * Documentation SQLAlchemy: https://flask-sqlalchemy.palletsprojects.com/en/2.x/
 * Documentation JWT: https://flask-jwt-extended.readthedocs.io/en/stable/basic_usage/
+* https://pypi.org/project/Flask-Cors/
 
 * To start flask server <br>
 `python app.py`
