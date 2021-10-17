@@ -1,5 +1,6 @@
 # package imports
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from flask.templating import DispatchingJinjaLoader
 from flask_sqlalchemy import SQLAlchemy
 # DateTime
@@ -27,7 +28,7 @@ def getSimilarUsers(top_n, target):
     df = pd.read_csv('Data.csv')
     name_of_users = df.index
     model = joblib.load('model.pkl', mmap_mode='r')
-    user = [df[df['Name']==target].loc[0,1:].values]
+    user = [df[df['Name'] == target].loc[0, 1:].values]
     similar_users = model.kneighbors(user, top_n, return_distance=False)[0]
     recommendedUsers = [name_of_users[i] for i in similar_users]
     return recommendedUsers
@@ -37,6 +38,7 @@ def getSimilarUsers(top_n, target):
 
 
 app = Flask(__name__)
+CORS(app)
 app.config["JWT_SECRET_KEY"] = os.getenv(
     'JWT_SECRET_KEY')
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
@@ -524,7 +526,7 @@ def update_student_profile():
     # }
 
 
-# To add dataset
+# NOTE To add dataset
 # Stud_Id_Name_Skills_list_627 = pd.read_csv(
 #     '627_Stud_Id_Name_Skills_list.csv')
 
