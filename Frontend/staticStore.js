@@ -228,9 +228,16 @@ const cards = [
   {
     id: 1,
     name: 'Tanya Agrawal',
+    email: 'abc@viit.ac.in',
+    personalEmail: 'lol@lol.com',
+    bio: 'Common man',
     photo:
       'https://media-exp1.licdn.com/dms/image/C5103AQFKbyGxKxMYGA/profile-displayphoto-shrink_200_200/0/1539165110959?e=1638403200&v=beta&t=c93WpMen-FJ1jheRQ2DAhVzHWU06ocZHHvjp1BH2jSM',
     info: 'BTech | CS | A1',
+    year: '2023',
+    division: 'A',
+    batch: 'A1',
+    branch: 'Information Technology',
     headline: 'Student at VIIT | Passionate about NodeJS, Angular and iOS',
     requirements:
       'Looking for a python developer who is comfortable with numpy and pandas. Need someone who is capable of extracting insights from the given data. Knowledge of iOS development or Web Development is a plus.',
@@ -243,17 +250,28 @@ const cards = [
       'Objective-C',
     ],
     links: {
-      linkedin: 'https://www.linkedin.com/in/rohini-dutta-b9a8a817b/',
-      github: 'https://www.github.com/siddheshkothadi',
-      twitter: 'https://twitter.com/siddheshkothadi',
+      // https://www.linkedin.com/in/
+      linkedin: 'rohini-dutta-b9a8a817b',
+      // https://www.github.com/
+      github: 'siddheshkothadi',
+      // https://twitter.com/
+      twitter: 'siddheshkothadi',
     },
+    languages: ['Marathi', 'English', 'Hindi'],
   },
   {
     id: 2,
     name: 'Mayank Sahu',
+    email: 'abc@viit.ac.in',
+    personalEmail: 'lol@lol.com',
+    bio: 'Common man',
     photo:
       'https://media-exp1.licdn.com/dms/image/C5103AQGEwJJ_uuCE9w/profile-displayphoto-shrink_800_800/0/1585890211566?e=1639008000&v=beta&t=z-wLnNPFVKuNtIMkAAbYxi4N006lk8qoQSLD2eBnEKM',
     info: 'BTech | IT | B2',
+    branch: 'Information Technology',
+    year: '2023',
+    division: 'B',
+    batch: 'B2',
     headline:
       'Web Development Enthusiast | MERN Developer |Freelancer | Programmer | Looking for Internship in Web Development',
     requirements:
@@ -264,13 +282,21 @@ const cards = [
       github: 'https://www.github.com/siddheshkothadi',
       twitter: 'https://twitter.com/siddheshkothadi',
     },
+    languages: ['Marathi', 'English', 'Hindi'],
   },
   {
     id: 3,
     name: 'Sidhant Khamankar',
+    email: 'abc@viit.ac.in',
+    personalEmail: 'lol@lol.com',
+    bio: 'Common man',
     photo:
       'https://media-exp1.licdn.com/dms/image/D5635AQHY87navBQIxA/profile-framedphoto-shrink_800_800/0/1628069175615?e=1633849200&v=beta&t=gWJ4jWPytePBQIbpfvQkv26ofOG7N-8BcUMm0l8Re_8',
     info: 'BTech | IT | B2',
+    branch: 'Information Technology',
+    year: '2023',
+    division: 'B',
+    batch: 'B2',
     headline:
       "Aspiring Software Engineer | 2⭐ Leetcode | Web Development | B.Tech IT'23 | Shining Humans | VEC",
     requirements:
@@ -281,13 +307,21 @@ const cards = [
       github: 'https://www.github.com/siddheshkothadi',
       twitter: 'https://twitter.com/siddheshkothadi',
     },
+    languages: ['Marathi', 'English', 'Hindi'],
   },
   {
     id: 4,
     name: 'Atharva Parikh',
+    email: 'abc@viit.ac.in',
+    personalEmail: 'lol@lol.com',
+    bio: 'Common man',
     photo:
       'https://media-exp1.licdn.com/dms/image/C4D03AQGWBaarNoZmRQ/profile-displayphoto-shrink_800_800/0/1630302510756?e=1639008000&v=beta&t=h-WOITyvTFg03o1MJX5D-E5VSx52I4dfC1JDlY_dC_E',
     info: 'BTech | IT | B2',
+    branch: 'Information Technology',
+    year: '2023',
+    division: 'B',
+    batch: 'B2',
     headline: 'FinTech | Data Science | TY IT VIIT',
     requirements:
       'I am a TY Information Technology student at VIIT Pune. I have keen interest in Data Science 📊 & Finance 📈📉. Exploring opportunities..',
@@ -297,13 +331,21 @@ const cards = [
       github: 'https://www.github.com/siddheshkothadi',
       twitter: 'https://twitter.com/siddheshkothadi',
     },
+    languages: ['Marathi', 'English', 'Hindi'],
   },
   {
     id: 5,
     name: 'Siddhesh Kothadi',
+    email: 'abc@viit.ac.in',
+    personalEmail: 'lol@lol.com',
+    bio: 'Common man',
     photo:
       'https://media-exp1.licdn.com/dms/image/C5603AQGN_bsNHXjP6A/profile-displayphoto-shrink_800_800/0/1595991445474?e=1639008000&v=beta&t=P2y9a7eAjgy7qWYUX1u_xM71a7MKoO34Q9ZNDoeTJws',
     info: 'BTech | IT | B2',
+    branch: 'Information Technology',
+    year: '2023',
+    division: 'B',
+    batch: 'B2',
     headline: 'Android Developer at DSC VIIT Pune',
     requirements:
       'Self-motivated and hardworking undergrad student with an ability to provide simple solutions to complex problems. Passionate about developing new projects and learning new skills. Proficient in C++, Android Development and Web Development with intuitive problem-solving skills.',
@@ -319,6 +361,7 @@ const cards = [
       github: 'https://www.github.com/siddheshkothadi',
       twitter: 'https://twitter.com/siddheshkothadi',
     },
+    languages: ['Marathi', 'English', 'Hindi'],
   },
 ];
 

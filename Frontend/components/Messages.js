@@ -84,9 +84,42 @@ function Messages() {
               justifyContent: 'center',
             }}
             onPress={() => {
-              profile.photo = profile.picture.medium;
-              profile.name = profile.name.first;
-              navigation.navigate('ViewProfileRightSwipedU', {user: profile});
+              card1 = {
+                id: 1,
+                name: 'Tanya Agrawal',
+                email: 'abc@viit.ac.in',
+                personalEmail: 'lol@lol.com',
+                bio: 'Common man',
+                photo:
+                  'https://media-exp1.licdn.com/dms/image/C5103AQFKbyGxKxMYGA/profile-displayphoto-shrink_200_200/0/1539165110959?e=1638403200&v=beta&t=c93WpMen-FJ1jheRQ2DAhVzHWU06ocZHHvjp1BH2jSM',
+                info: 'BTech | CS | A1',
+                year: '2023',
+                division: 'A',
+                batch: 'A1',
+                branch: 'Information Technology',
+                headline:
+                  'Student at VIIT | Passionate about NodeJS, Angular and iOS',
+                requirements:
+                  'Looking for a python developer who is comfortable with numpy and pandas. Need someone who is capable of extracting insights from the given data. Knowledge of iOS development or Web Development is a plus.',
+                skills: [
+                  'Web Development',
+                  'iOS App Development',
+                  'NodeJS',
+                  'Angular',
+                  'Swift',
+                  'Objective-C',
+                ],
+                links: {
+                  // https://www.linkedin.com/in/
+                  linkedin: 'rohini-dutta-b9a8a817b',
+                  // https://www.github.com/
+                  github: 'siddheshkothadi',
+                  // https://twitter.com/
+                  twitter: 'siddheshkothadi',
+                },
+                languages: ['Marathi', 'English', 'Hindi'],
+              };
+              navigation.navigate('ViewProfileRightSwipedU', {user: card1});
             }}>
             <Image
               source={{

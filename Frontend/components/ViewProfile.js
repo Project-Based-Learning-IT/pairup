@@ -18,6 +18,7 @@ import {
   ActivityIndicator,
   Title,
   IconButton,
+  Chip,
 } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DropdownMenu from './DropdownMenu';
@@ -33,58 +34,11 @@ import {
   batches,
 } from '../staticStore';
 
-function ViewProfile(props) {
-  // const {user} = props.route.params;
-  const {setUser, signOut, user} = useAuth();
+function ViewProfile({route}) {
+  const {user} = route.params;
   const {colors} = useTheme();
 
-  const [isSaving, setIsSigningUp] = React.useState(false);
-  const [isSigningOut, setIsSigningOut] = React.useState(false);
-
-  const [email, setEmail] = React.useState(user.email);
-  const [name, setName] = React.useState(user.name);
-  const [personalEmail, setPersonalEmail] = React.useState(user.personalEmail);
-  const [bio, setBio] = React.useState(user.bio);
-  const [headline, setHeadline] = React.useState(user.headline);
-
-  const [division, setDivision] = React.useState(user.division);
-  const [branch, setBranch] = React.useState(user.branch);
-  const [year, setYear] = React.useState(user.year);
-  const [batch, setBatch] = React.useState(user.batch);
-
-  const [twitterUrl, setTwitterUrl] = React.useState(user.twitterUrl);
-  const [githubUrl, setGithubUrl] = React.useState(user.githubUrl);
-  const [linkedinUrl, setLinkedinUrl] = React.useState(user.linkedinUrl);
-
-  const [skills, setSkills] = React.useState(user.skills);
-
-  // TODO: add languages and projects
-  const [languages, setLanguages] = React.useState([]);
-
   const styles = StyleSheet.create({
-    bottomOptionsContainer: {
-      width: '100%',
-      padding: 9,
-      flexDirection: 'row',
-      justifyContent: 'space-evenly',
-      backgroundColor: 'transparent',
-    },
-
-    bottomOption: {
-      borderColor: '#efebe9',
-      borderWidth: 1,
-      borderRadius: 50,
-      backgroundColor: '#fff',
-      padding: 8,
-      shadowColor: 'black',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowRadius: 6,
-      shadowOpacity: 0.3,
-      elevation: 4,
-    },
     bottomOptionLeft: {
       backgroundColor: '#fc454e',
       width: 55,
@@ -144,25 +98,6 @@ function ViewProfile(props) {
         backgroundColor: '#fff',
       }}>
       <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
-      {(isSaving || isSigningOut) && (
-        <Portal>
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: '#000',
-              opacity: 0.5,
-              zIndex: 1000,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <ActivityIndicator size={'large'} color={colors.primary} />
-          </View>
-        </Portal>
-      )}
       <ScrollView
         style={{
           paddingTop: StatusBar.currentHeight,
@@ -209,7 +144,7 @@ function ViewProfile(props) {
         <TextInput
           mode="outlined"
           label="College Email"
-          value={email}
+          value={user.email}
           disabled={true}
           style={{
             paddingTop: 16,
@@ -220,46 +155,57 @@ function ViewProfile(props) {
           mode="outlined"
           label="First Name"
           placeholder="Type your first name"
-          value={name}
-          onChangeText={text => setName(text)}
+          value={user.name}
           style={{
             paddingBottom: 20,
           }}
           disabled={true}
         />
-        <DropdownMenu
-          items={branches}
-          onChange={item => setBranch(item)}
-          value={branch}
-          placeholder="Select your branch"
-          label="Branch"></DropdownMenu>
-        <DropdownMenu
-          items={years}
-          onChange={item => setYear(item)}
-          value={year}
-          placeholder="Select your year"
-          label="Year"></DropdownMenu>
-        <DropdownMenu
-          items={divisions}
-          onChange={item => setDivision(item)}
-          value={division}
-          placeholder="Select your division"
-          label="Division"></DropdownMenu>
-        <DropdownMenu
-          items={
-            division == ''
-              ? batches
-              : batches.filter(batch => batch.startsWith(division))
-          }
-          onChange={item => setBatch(item)}
-          value={batch}
-          placeholder="Select your batch"
-          label="Batch"></DropdownMenu>
+        <TextInput
+          mode="outlined"
+          label="Branch"
+          placeholder="Branch"
+          value={user.branch}
+          style={{
+            paddingBottom: 20,
+          }}
+          disabled={true}
+        />
+        <TextInput
+          mode="outlined"
+          label="Year"
+          placeholder="Year"
+          value={user.year}
+          style={{
+            paddingBottom: 20,
+          }}
+          disabled={true}
+        />
+        <TextInput
+          mode="outlined"
+          label="Division"
+          placeholder="Division"
+          value={user.division}
+          style={{
+            paddingBottom: 20,
+          }}
+          disabled={true}
+        />
+        <TextInput
+          mode="outlined"
+          label="Batch"
+          placeholder="Batch"
+          value={user.batch}
+          style={{
+            paddingBottom: 20,
+          }}
+          disabled={true}
+        />
         <TextInput
           mode="outlined"
           label="Personal Email (Optional)"
           placeholder="Type your personal email"
-          value={personalEmail}
+          value={user.personalEmail}
           onChangeText={text => setPersonalEmail(text)}
           style={{
             paddingBottom: 20,
@@ -270,111 +216,95 @@ function ViewProfile(props) {
           mode="outlined"
           label="Headline"
           placeholder="Type your headline"
-          value={headline}
+          value={user.headline}
           onChangeText={text => setHeadline(text)}
           style={{
             paddingBottom: 20,
           }}
           multiline={true}
-          right={<TextInput.Affix text={`${headline.length}/50`} />}
           disabled={true}
         />
         <TextInput
           mode="outlined"
           label="Bio"
           placeholder="Type your bio"
-          value={bio}
+          value={user.bio}
           onChangeText={text => setBio(text)}
           style={{
             paddingBottom: 20,
           }}
           multiline={true}
-          right={<TextInput.Affix text={`${bio.length}/200`} />}
           disabled={true}
         />
 
+        {/* // NOTE Skills */}
         <NewSection name="Skills" />
-        <Skills skillList={skillList} skills={skills} setSkills={setSkills} />
-
-        <NewSection name="Languages" />
-        <View>
-          {languages.map((language, index) => (
-            <DropdownMenu
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'flex-start',
+            paddingStart: 4,
+            paddingBottom: 12,
+            alignItems: 'center',
+          }}>
+          {user.skills.map((skill, index) => (
+            <Chip
               key={index}
-              items={languageList.filter(lang => !languages.includes(lang))}
-              onChange={item => {
-                setLanguages(
-                  languages.map(lang => {
-                    if (lang == language) {
-                      return item;
-                    }
-                    return lang;
-                  }),
-                );
-              }}
-              value={language}
-              placeholder="Select your language"
-              label="Language"
-              removeFunction={() => {
-                setLanguages(languages.filter(lang => lang != language));
-              }}></DropdownMenu>
+              style={{
+                marginEnd: 8,
+                marginBottom: 8,
+                borderWidth: index < 3 ? 2 : 0,
+                borderColor: colors.primary,
+              }}>
+              {skill}
+            </Chip>
           ))}
-          <Button
-            color={colors.secondary}
-            onPress={() => {
-              setLanguages(languages.concat(''));
-            }}>
-            Add Language
-          </Button>
+        </View>
+        <NewSection name="Languages" />
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'flex-start',
+            paddingStart: 4,
+            paddingBottom: 12,
+            alignItems: 'center',
+          }}>
+          {user.languages.map((language, index) => (
+            <Chip
+              key={index}
+              style={{
+                marginEnd: 8,
+                marginBottom: 8,
+                borderWidth: index < 3 ? 2 : 0,
+                borderColor: colors.primary,
+              }}>
+              {language}
+            </Chip>
+          ))}
         </View>
 
-        {/* Social URLs */}
+        {/* // NOTE Social URLs */}
         <NewSection name="Social URLs" />
         <SocialURL
+          label="Linkedin"
+          value={user.links.linkedin}
+          onChangeText={text => setLinkedinUrl(text)}
+          logoName="linkedin"
+          RouteName={route.name}></SocialURL>
+        <SocialURL
           label="Twitter"
-          value={twitterUrl}
+          value={user.links.twitter}
           onChangeText={text => setTwitterUrl(text)}
-          logoName="twitter"></SocialURL>
+          logoName="twitter"
+          RouteName={route.name}></SocialURL>
         <SocialURL
           label="GitHub"
-          value={githubUrl}
+          value={user.links.github}
           onChangeText={text => setGithubUrl(text)}
-          logoName="github"></SocialURL>
-        <SocialURL
-          label="Linkedin"
-          value={linkedinUrl}
-          onChangeText={text => setLinkedinUrl(text)}
-          logoName="linkedin"></SocialURL>
-
-        {/* For bottom margin */}
-        {/* <View
-          style={{
-            height: 40,
-          }}></View>
-        <TouchableHighlight
-          style={{
-            backgroundColor: colors.primary,
-            padding: 16,
-            borderRadius: 14,
-            width: '96%',
-            // margin: 12,
-            marginBottom: 24,
-            alignSelf: 'center',
-          }}
-          onPress={() => {
-            signOut();
-          }}>
-          <Text
-            style={{
-              color: '#fff',
-              fontWeight: 'bold',
-              fontSize: 18,
-              textAlign: 'center',
-            }}>
-            Sign Out
-          </Text>
-        </TouchableHighlight> */}
-
+          logoName="github"
+          RouteName={route.name}></SocialURL>
         {/* For bottom margin */}
         <View
           style={{

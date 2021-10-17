@@ -37,11 +37,12 @@ function LogoTitle({userChatting, Routename, user}) {
       <View
         style={{
           marginLeft: 10,
-          justifyContent: 'space-between',
+          justifyContent:
+            Routename === 'ViewProfile' ? 'center' : 'space-between',
         }}>
         <Text
           style={{
-            fontSize: 18,
+            fontSize: Routename === 'ViewProfile' ? 22 : 18,
             fontWeight: 'bold',
           }}>
           {userChatting?.name?.first ? userChatting?.name?.first : user.name}

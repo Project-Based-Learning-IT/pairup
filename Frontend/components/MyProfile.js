@@ -24,9 +24,16 @@ import DropdownMenu from './DropdownMenu';
 import SocialURL from './SocialURL';
 import NewSection from './NewSection';
 import Skills from './Skills';
-import { branches, languageList, skillList, years, divisions, batches } from '../staticStore';
+import {
+  branches,
+  languageList,
+  skillList,
+  years,
+  divisions,
+  batches,
+} from '../staticStore';
 
-function MyProfile() {
+function MyProfile({route}) {
   const {setUser, signOut, user} = useAuth();
   const {colors} = useTheme();
 
@@ -107,7 +114,9 @@ function MyProfile() {
             <Image
               style={{width: 120, height: 120, borderRadius: 70}}
               source={{
-                uri: user.photo? user.photo : 'https://www.xeus.com/wp-content/uploads/2014/09/One_User_Orange.png',
+                uri: user.photo
+                  ? user.photo
+                  : 'https://www.xeus.com/wp-content/uploads/2014/09/One_User_Orange.png',
               }}></Image>
             <View
               style={{
@@ -213,35 +222,31 @@ function MyProfile() {
           {languages.map((language, index) => (
             <DropdownMenu
               key={index}
-              items={languageList.filter(  
-                lang => !languages.includes(lang)
-              )}
+              items={languageList.filter(lang => !languages.includes(lang))}
               onChange={item => {
                 setLanguages(
-                  languages
-                  .map(lang => {
+                  languages.map(lang => {
                     if (lang == language) {
                       return item;
                     }
                     return lang;
-                  })
+                  }),
                 );
               }}
               value={language}
               placeholder="Select your language"
               label="Language"
               removeFunction={() => {
-                setLanguages(languages.filter(lang => lang != language))
-              }}
-            >
-            </DropdownMenu>
+                setLanguages(languages.filter(lang => lang != language));
+              }}></DropdownMenu>
           ))}
           <Button
             color={colors.secondary}
             onPress={() => {
-              setLanguages(languages.concat(''))
-            }}
-          >Add Language</Button>
+              setLanguages(languages.concat(''));
+            }}>
+            Add Language
+          </Button>
         </View>
 
         {/* Social URLs */}
@@ -250,17 +255,20 @@ function MyProfile() {
           label="Twitter"
           value={twitterUrl}
           onChangeText={text => setTwitterUrl(text)}
-          logoName="twitter"></SocialURL>
+          logoName="twitter"
+          RouteName={route.name}></SocialURL>
         <SocialURL
           label="GitHub"
           value={githubUrl}
           onChangeText={text => setGithubUrl(text)}
-          logoName="github"></SocialURL>
+          logoName="github"
+          RouteName={route.name}></SocialURL>
         <SocialURL
           label="Linkedin"
           value={linkedinUrl}
           onChangeText={text => setLinkedinUrl(text)}
-          logoName="linkedin"></SocialURL>
+          logoName="linkedin"
+          RouteName={route.name}></SocialURL>
 
         {/* For bottom margin */}
         <View
