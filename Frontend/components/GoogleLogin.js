@@ -4,6 +4,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useAuth} from '../App';
 import {useNavigation} from '@react-navigation/native';
 import {useTheme} from 'react-native-paper';
+import axios from 'axios';
+import {API_BASE_URL} from '@env';
 
 function GoogleLogin() {
   const {signInWithGoogle, setUser, setIsSignedIn} = useAuth();
@@ -18,6 +20,17 @@ function GoogleLogin() {
       // TODO: make an api request to the backend check if the user is already in the database
       // if the user exists then log in the user
       if (false) {
+        // NOTE Get the jwt access token
+        axios
+          .post(API_BASE_URL + '/signup_and_login', {
+            username: 'Dummy_a',
+          })
+          .then(function (response) {
+            console.log(response.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
         setUser(user);
         setIsSignedIn(true);
       }
