@@ -207,16 +207,18 @@ def hello_world():
 @app.route("/signup_and_login", methods=["POST"])
 def signup_and_login():
     username = str(request.json["username"])
+    new_user = False
     student = Student.query.filter_by(
         Name=username.strip().lower()).first()
     if student is None:  # signup or register
+        new_user = True
         student = Student()  # Student_ID Auto incremented
 
     # To access a jwt_required protected view you need to send in the JWT with each request.
     # By default, this is done with an authorization header that looks like:
     # Authorization: Bearer <access_token>
     access_token = create_access_token(identity=student.Student_ID)
-    return jsonify(access_token=access_token), 200
+    return jsonify(access_token=access_token, new_user=new_user), 200
     # Sample json body
     # {
     #     "username": "Dummy_a"
@@ -762,4 +764,5 @@ def get_chats_after_last_cached():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8000)
+    app.run(host=os.getenv(
+        'Sidhant_IP_ADDRESS'), debug=True)

@@ -17,7 +17,7 @@ If yarn is not found <code>npm install -g yarn</code>
 <li>
 Open a terminal from the current directory i.e. <code>CollegeSpace/frontend</code> and run the following command to start the metro bundler
 
-<p><code>npx react-native start</code></p>
+<p><code>npx react-native start --reset-cache</code></p>
 </li>
 <li>
 
