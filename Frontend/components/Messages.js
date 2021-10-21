@@ -19,32 +19,39 @@ function Messages() {
   const [horizontalProfiles, setHorizontalProfiles] = React.useState([]);
   const [verticalProfiles, setVerticalProfiles] = React.useState([]);
 
-  React.useEffect(async () => {
-    // Loop to fetch 8 horizontal profiles
-    for (let i = 0; i < 8; i++) {
-      const response = await fetch(
-        'https://randomuser.me/api/?results=1&inc=name,picture,email,location,phone,cell,dob,login,registered,id,nat&noinfo',
-      );
-      const data = await response.json();
-      setHorizontalProfiles(horizontalProfiles => [
-        ...horizontalProfiles,
-        data.results[0],
-      ]);
-    }
+  React.useEffect(() => {
+    async function getProfiles() {
+      try {
+        // Loop to fetch 8 horizontal profiles
+        for (let i = 0; i < 8; i++) {
+          const response = await fetch(
+            'https://randomuser.me/api/?results=1&inc=name,picture,email,location,phone,cell,dob,login,registered,id,nat&noinfo',
+          );
+          const data = await response.json();
+          setHorizontalProfiles(horizontalProfiles => [
+            ...horizontalProfiles,
+            data.results[0],
+          ]);
+        }
 
-    // console.log(horizontalProfiles);
+        // console.log(horizontalProfiles);
 
-    // Loop for vertical profiles
-    for (let i = 0; i < 8; i++) {
-      const response = await fetch(
-        'https://randomuser.me/api/?results=1&inc=name,picture,email,location,phone,cell,dob,login,registered,id,nat&noinfo',
-      );
-      const data = await response.json();
-      setVerticalProfiles(verticalProfiles => [
-        ...verticalProfiles,
-        data.results[0],
-      ]);
+        // Loop for vertical profiles
+        for (let i = 0; i < 8; i++) {
+          const response = await fetch(
+            'https://randomuser.me/api/?results=1&inc=name,picture,email,location,phone,cell,dob,login,registered,id,nat&noinfo',
+          );
+          const data = await response.json();
+          setVerticalProfiles(verticalProfiles => [
+            ...verticalProfiles,
+            data.results[0],
+          ]);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
+    getProfiles();
   }, []);
 
   return (
