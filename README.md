@@ -68,7 +68,7 @@ added these to my `/android/app/src/main/AndroidManifest.xml`
 </manifest>
 ```
 and localhost (http://127.0.0.1:8000/) is replaced by
-http://10.0.2.2:8000/
+your IP address
 </ol>
 
 ### Frontend References

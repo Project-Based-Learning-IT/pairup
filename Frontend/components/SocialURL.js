@@ -29,7 +29,7 @@ function SocialURL(props) {
         size={36}
         color={colors.primary}
       />
-      {RouteName === 'MyProfile' ? (
+      {RouteName === 'MyProfile' || RouteName === 'SignUp' ? (
         <TextInput
           style={{flex: 1, marginStart: 18}}
           label={label}

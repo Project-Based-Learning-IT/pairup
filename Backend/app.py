@@ -213,6 +213,8 @@ def signup_and_login():
     if student is None:  # signup or register
         new_user = True
         student = Student()  # Student_ID Auto incremented
+        db.session.add(student)
+        db.session.commit()
 
     # To access a jwt_required protected view you need to send in the JWT with each request.
     # By default, this is done with an authorization header that looks like:
@@ -262,7 +264,7 @@ def get_social_urls():
     return res, 200
 
 
-@app.route("/add_social_urls",  methods=['GET', 'POST'])
+@app.route("/add_social_urls",  methods=['POST'])
 @jwt_required()
 def add_social_urls():
     codechef = str(request.json['codechef'])
@@ -289,7 +291,7 @@ def add_social_urls():
     # }
 
 
-@app.route("/update_social_urls",  methods=['GET', 'POST'])
+@app.route("/update_social_urls",  methods=['POST'])
 @jwt_required()
 def update_social_urls():
     id = get_jwt_identity()
@@ -655,7 +657,7 @@ def update_student_skills():
         # }
 
 
-@app.route("/get_stud_skills",  methods=['GET', 'POST'])
+@app.route("/get_stud_skills",  methods=['GET'])
 @jwt_required()
 def get_stud_skills():
     id = get_jwt_identity()
