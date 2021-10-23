@@ -149,7 +149,7 @@ function SignUp({route}) {
         res_degree_id = await axiosInstance
           .post('/add_degree', {
             branch: branch,
-            year: parseInt(year),
+            year: parseInt(year != '' ? year : -1),
             batch: batch,
           })
           .catch(err => {
