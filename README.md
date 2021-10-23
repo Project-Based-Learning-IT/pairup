@@ -17,7 +17,7 @@ If yarn is not found <code>npm install -g yarn</code>
 <li>
 Open a terminal from the current directory i.e. <code>CollegeSpace/frontend</code> and run the following command to start the metro bundler
 
-<p><code>npx react-native start --reset-cache</code></p>
+<p><code>npx react-native start  --reset-cache</code></p>
 </li>
 <li>
 
@@ -101,9 +101,7 @@ Run the following commands one by one:
 
     pip install virtualenv
     virtualenv env
-    .\env\Scripts\activate.bat
-
- (For subsequent run)
+    .\env\Scripts\activate.bat [For subsequent runs]
 
 Install requirements if not done already - `pip install -r requirements.txt`  
 
