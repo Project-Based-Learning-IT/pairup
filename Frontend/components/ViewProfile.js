@@ -38,54 +38,35 @@ function ViewProfile({route}) {
   const {user} = route.params;
   const {colors} = useTheme();
 
-  const styles = StyleSheet.create({
-    bottomOptionLeft: {
-      backgroundColor: '#fc454e',
-      width: 55,
-      height: 55,
-      borderRadius: 33,
-      justifyContent: 'center',
-      alignItems: 'center',
-      position: 'absolute',
-      bottom: 10,
-      right: 90,
-      borderColor: '#efebe9',
-      borderWidth: 1,
-      borderRadius: 50,
-      backgroundColor: '#fff',
-      padding: 8,
-      shadowColor: 'black',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowRadius: 6,
-      shadowOpacity: 0.3,
-      elevation: 4,
+  let bottomOptionLeft = {
+    backgroundColor: '#fc454e',
+    width: 55,
+    height: 55,
+    borderRadius: 33,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 10,
+    right: 90,
+    borderColor: '#efebe9',
+    borderWidth: 1,
+    borderRadius: 50,
+    backgroundColor: '#fff',
+    padding: 8,
+    shadowColor: 'black',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
+    shadowRadius: 6,
+    shadowOpacity: 0.3,
+    elevation: 4,
+  };
+  const styles = StyleSheet.create({
+    bottomOptionLeft: bottomOptionLeft,
     bottomOptionRight: {
-      backgroundColor: '#fc454e',
-      width: 55,
-      height: 55,
-      borderRadius: 33,
-      justifyContent: 'center',
-      alignItems: 'center',
-      position: 'absolute',
-      bottom: 10,
+      ...bottomOptionLeft,
       left: 90,
-      borderColor: '#efebe9',
-      borderWidth: 1,
-      borderRadius: 50,
-      backgroundColor: '#fff',
-      padding: 8,
-      shadowColor: 'black',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowRadius: 6,
-      shadowOpacity: 0.3,
-      elevation: 4,
     },
   });
 
@@ -120,7 +101,11 @@ function ViewProfile({route}) {
             paddingTop: 4,
           }}>
           <View
-            style={{backgroundColor: '#F4F4F4', borderRadius: 500, padding: 8}}>
+            style={{
+              backgroundColor: '#F4F4F4',
+              borderRadius: 500,
+              padding: 8,
+            }}>
             <Image
               style={{width: 120, height: 120, borderRadius: 70}}
               source={{
@@ -313,7 +298,6 @@ function ViewProfile({route}) {
       </ScrollView>
 
       {/* <View style={styles.bottomOptionsContainer}> */}
-
       <TouchableOpacity
         style={styles.bottomOptionRight}
         onPress={() => {
