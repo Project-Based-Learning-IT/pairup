@@ -47,9 +47,13 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
 # If set to False tokens will never expire. This is dangerous and should be avoided in most case
 jwt = JWTManager(app)
 
-# MYSQL URI
+# MYSQL Production URI
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+#     'SQLALCHEMY_DATABASE_URI')
+
+# MYSQL Local URI
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-    'SQLALCHEMY_DATABASE_URI')
+    'LOCAL_SQLALCHEMY_DATABASE_URI')
 
 db = SQLAlchemy(app)
 
