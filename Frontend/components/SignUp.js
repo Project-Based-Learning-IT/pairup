@@ -7,6 +7,7 @@ import {
   Image,
   StyleSheet,
   TouchableHighlight,
+  Platform,
 } from 'react-native';
 import React from 'react';
 import {useAuth} from '../App';
@@ -32,11 +33,37 @@ import {
   batches,
 } from '../staticStore';
 import axios from 'axios';
-import {Sidhant_IP_ADDRESS} from '@env';
+import {Android_Local_ADDRESS, IOS_Local_ADDRESS} from '@env';
 
 function SignUp({route}) {
+  const BASE_ADDRESS =
+    Platform.OS === 'android' ? Android_Local_ADDRESS : IOS_Local_ADDRESS;
   const {user} = route.params;
   const {access_token} = route.params;
+  const axiosInstance = axios.create({
+    baseURL: BASE_ADDRESS,
+    timeout: 15000,
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+
+  // let retries = 5;
+  // let skillsList;
+
+  // while (!skillsList && retries--) {
+  //   setTimeout(async () => {
+  //     await axiosInstance
+  //       .get('/get_domains_and_its_skills')
+  //       .then(response => {
+  //         console.log(JSON.stringify(response.data));
+  //         skillsList = JSON.stringify(response.data);
+  //       })
+  //       .catch(err => {
+  //         console.error('SkillsList Error : ' + err);
+  //       });
+  //   }, 2000);
+  // }
 
   const {setUser, setIsSignedIn} = useAuth();
   const {colors} = useTheme();
@@ -109,16 +136,11 @@ function SignUp({route}) {
         githubUrl: githubUrl,
         linkedinUrl: linkedinUrl,
         skills: skills,
+        access_token: access_token,
       };
 
+      //NOTE For testing
       // async function Test() {
-      const axiosInstance = axios.create({
-        baseURL: Sidhant_IP_ADDRESS,
-        timeout: 15000,
-        headers: {
-          Authorization: 'Bearer ' + access_token,
-        },
-      });
 
       let retries = 5;
 

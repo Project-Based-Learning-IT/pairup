@@ -1,14 +1,25 @@
-import {View, Image, StatusBar, Text, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Image,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  Platform,
+} from 'react-native';
 import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useAuth} from '../App';
 import {useNavigation} from '@react-navigation/native';
 import {useTheme, Portal, ActivityIndicator} from 'react-native-paper';
 import axios from 'axios';
-import {Sidhant_IP_ADDRESS} from '@env';
+import {Android_Local_ADDRESS, IOS_Local_ADDRESS} from '@env';
 import * as Keychain from 'react-native-keychain';
 
 function GoogleLogin() {
+  const BASE_ADDRESS =
+    Platform.OS === 'android' ? Android_Local_ADDRESS : IOS_Local_ADDRESS;
+
+  // console.log(BASE_ADDRESS);
   const {signInWithGoogle, setUser, setIsSignedIn} = useAuth();
 
   const navigation = useNavigation();
@@ -27,7 +38,7 @@ function GoogleLogin() {
     let res_access_token;
     while (!res_access_token && retries--) {
       res_access_token = await axios
-        .post(Sidhant_IP_ADDRESS + '/signup_and_login', {
+        .post(BASE_ADDRESS + '/signup_and_login', {
           username: userInfo.user.name.toLowerCase(),
           timeout: 15000,
         })
@@ -37,7 +48,7 @@ function GoogleLogin() {
     }
 
     const axiosInstance = axios.create({
-      baseURL: Sidhant_IP_ADDRESS,
+      baseURL: BASE_ADDRESS,
       timeout: 15000,
       headers: {
         Authorization: 'Bearer ' + res_access_token.data.access_token,

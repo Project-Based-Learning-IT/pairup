@@ -770,5 +770,6 @@ def get_chats_after_last_cached():
 
 
 if __name__ == "__main__":
-    app.run(host=os.getenv(
-        'Sidhant_IP_ADDRESS'), debug=True)
+    app.run(debug=True)
+    # host = os.getenv(
+    #     'Sidhant_IP_ADDRESS'),
