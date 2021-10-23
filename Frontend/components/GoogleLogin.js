@@ -3,7 +3,7 @@ import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useAuth} from '../App';
 import {useNavigation} from '@react-navigation/native';
-import {useTheme} from 'react-native-paper';
+import {useTheme, Portal, ActivityIndicator} from 'react-native-paper';
 import axios from 'axios';
 import {Sidhant_IP_ADDRESS} from '@env';
 import * as Keychain from 'react-native-keychain';
@@ -15,7 +15,11 @@ function GoogleLogin() {
 
   const {colors} = useTheme();
 
+  const [isLoggingIn, setIsLoggingIn] = React.useState(false);
+
   const signIn = async () => {
+    setIsLoggingIn(true);
+
     const userInfo = await signInWithGoogle();
     let new_user = false;
     let retries = 5;
@@ -41,9 +45,8 @@ function GoogleLogin() {
     });
 
     new_user = res_access_token.data.new_user;
+
     if (!new_user) {
-      // TODO: make an api request to the backend check if the user is already in the database
-      // if the user exists then log in the user
       let studRes;
       let degreeRes;
       let skillsListRes;
@@ -97,11 +100,13 @@ function GoogleLogin() {
 
       await Keychain.setGenericPassword('user', JSON.stringify(userData));
       setUser(userData);
+      setIsLoggingIn(false);
       setIsSignedIn(true);
     }
 
     // else navigate to the sign up page
     else {
+      setIsLoggingIn(false);
       navigation.navigate('SignUp', {
         user: userInfo.user,
         access_token: res_access_token.data.access_token,
@@ -118,6 +123,25 @@ function GoogleLogin() {
         backgroundColor: '#fff',
       }}>
       <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
+      {isLoggingIn && (
+        <Portal>
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: '#000',
+              opacity: 0.5,
+              zIndex: 1000,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator size={'large'} color={'white'} />
+          </View>
+        </Portal>
+      )}
       <View
         style={{
           flex: 1,
