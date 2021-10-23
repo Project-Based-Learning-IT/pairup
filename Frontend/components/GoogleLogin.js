@@ -5,7 +5,8 @@ import {useAuth} from '../App';
 import {useNavigation} from '@react-navigation/native';
 import {useTheme} from 'react-native-paper';
 import axios from 'axios';
-import {API_BASE_URL} from '@env';
+import {Sidhant_IP_ADDRESS} from '@env';
+import * as Keychain from 'react-native-keychain';
 
 function GoogleLogin() {
   const {signInWithGoogle, setUser, setIsSignedIn} = useAuth();
@@ -15,32 +16,96 @@ function GoogleLogin() {
   const {colors} = useTheme();
 
   const signIn = async () => {
-    const user = await signInWithGoogle();
-    if (user) {
+    const userInfo = await signInWithGoogle();
+    let new_user = false;
+    let retries = 5;
+    // NOTE Get the jwt access token
+    let res_access_token;
+    while (!res_access_token && retries--) {
+      res_access_token = await axios
+        .post(Sidhant_IP_ADDRESS + '/signup_and_login', {
+          username: userInfo.user.name.toLowerCase(),
+          timeout: 15000,
+        })
+        .catch(err => {
+          console.error('Access_token Error : ' + err);
+        });
+    }
+
+    const axiosInstance = axios.create({
+      baseURL: Sidhant_IP_ADDRESS,
+      timeout: 15000,
+      headers: {
+        Authorization: 'Bearer ' + res_access_token.data.access_token,
+      },
+    });
+
+    new_user = res_access_token.data.new_user;
+    if (!new_user) {
       // TODO: make an api request to the backend check if the user is already in the database
       // if the user exists then log in the user
-      if (false) {
-        // NOTE Get the jwt access token
-        axios
-          .post(API_BASE_URL + '/signup_and_login', {
-            username: 'Dummy_a',
-          })
-          .then(function (response) {
-            console.log(response.data);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-        setUser(user);
-        setIsSignedIn(true);
-      }
+      let studRes;
+      let degreeRes;
+      let skillsListRes;
 
-      // else navigate to the sign up page
-      else {
-        navigation.navigate('SignUp', {
-          user: user.user,
+      retries = 5;
+      while (!studRes && retries--) {
+        studRes = await axiosInstance.get('/get_student_profile').catch(err => {
+          console.error('Get_Student Error : ' + err);
         });
       }
+
+      retries = 5;
+      while (!degreeRes && retries--) {
+        degreeRes = await axiosInstance.get('/get_degree').catch(err => {
+          console.error('Degree Error : ' + err);
+        });
+      }
+
+      retries = 5;
+      while (!skillsListRes && retries--) {
+        skillsListRes = await axiosInstance
+          .get('/get_stud_skills')
+          .catch(err => {
+            console.error('Skills Error : ' + err);
+          });
+      }
+
+      let SocialsRes;
+      while (!SocialsRes && retries--) {
+        SocialsRes = await axiosInstance.get('/get_social_urls').catch(err => {
+          console.error('Socials Error : ' + err);
+        });
+      }
+
+      let userData = {
+        googleId: userInfo.user.id,
+        photo: userInfo.user.photo,
+        email: userInfo.user.email,
+        name: studRes.data.Name.toUpperCase(),
+        personalEmail: 'NotinDB',
+        bio: studRes.data.Bio,
+        headline: studRes.data.Headline,
+        ...degreeRes.data,
+        division: degreeRes.data.batch[0],
+        twitterUrl: SocialsRes.data.twitter,
+        githubUrl: SocialsRes.data.github,
+        linkedinUrl: SocialsRes.data.linkedin,
+        skills: skillsListRes.data,
+        access_token: res_access_token.data.access_token,
+      };
+
+      await Keychain.setGenericPassword('user', JSON.stringify(userData));
+      setUser(userData);
+      setIsSignedIn(true);
+    }
+
+    // else navigate to the sign up page
+    else {
+      navigation.navigate('SignUp', {
+        user: userInfo.user,
+        access_token: res_access_token.data.access_token,
+      });
     }
   };
 

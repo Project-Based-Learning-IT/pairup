@@ -466,7 +466,7 @@ def get_student_profile():
     res['Bio'] = student.Bio
     res['Email'] = student.Email
     res['Headline'] = student.Headline
-    res['google_id'] = student.Google_ID
+    res['Google_ID'] = student.Google_ID
     res['Image_URl'] = student.Image_URL
     res['Name'] = student.Name
     res['Requirements'] = student.Requirements
@@ -504,9 +504,9 @@ def update_student_profile():
         student.Bio = str(request.json['Bio'])
         student.Email = str(request.json['Email'])
         student.Headline = str(request.json['Headline'])
-        student.Google_ID = str(request.json['google_id'])
-        student.Image_URL = str(request.json['Image_URl'])
-        student.Name = str(request.json['Name'])
+        student.Google_ID = str(request.json['Google_ID'])
+        student.Image_URL = str(request.json['Image_URL'])
+        student.Name = str(request.json['Name']).strip().lower()
         student.Requirements = str(request.json['Requirements'])
 
         student.SocialURL_ID = int(request.json['SocialURL_ID'])
@@ -518,7 +518,7 @@ def update_student_profile():
         return "Profile Updated", 200
     # Sample json body
     # {
-    #     "google_id": 100002,
+    #     "Google_ID": 100002,
     #     "Image_URl": "boi.com",
     #     "Name": "Dummy_ab",
     #     "Headline": "head added",

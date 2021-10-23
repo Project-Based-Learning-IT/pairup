@@ -126,7 +126,7 @@ const skillList = [
   },
 ];
 
-const years = ['First Year', 'Second Year', 'Third Year', 'Fourth Year'];
+const years = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
 
 const divisions = ['A', 'B', 'C', 'D'];
 

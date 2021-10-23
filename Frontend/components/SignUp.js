@@ -23,10 +23,20 @@ import SocialURL from './SocialURL';
 import NewSection from './NewSection';
 import Skills from './Skills';
 import * as Keychain from 'react-native-keychain';
-import { branches, languageList, skillList, years, divisions, batches } from '../staticStore';
+import {
+  branches,
+  languageList,
+  skillList,
+  years,
+  divisions,
+  batches,
+} from '../staticStore';
+import axios from 'axios';
+import {Sidhant_IP_ADDRESS} from '@env';
 
 function SignUp({route}) {
   const {user} = route.params;
+  const {access_token} = route.params;
 
   const {setUser, setIsSignedIn} = useAuth();
   const {colors} = useTheme();
@@ -83,11 +93,11 @@ function SignUp({route}) {
       setIsSigningUp(true);
 
       // without languages and projects
-      const userData = {
+      let userData = {
         googleId: user.id,
         photo: user.photo,
-        email: email,
-        name: name,
+        email: user.email,
+        name: user.name,
         personalEmail: personalEmail,
         bio: bio,
         headline: headline,
@@ -101,10 +111,75 @@ function SignUp({route}) {
         skills: skills,
       };
 
+      // async function Test() {
+      const axiosInstance = axios.create({
+        baseURL: Sidhant_IP_ADDRESS,
+        timeout: 15000,
+        headers: {
+          Authorization: 'Bearer ' + access_token,
+        },
+      });
+
+      let retries = 5;
+
+      let res_degree_id;
+      while (!res_degree_id && retries--) {
+        res_degree_id = await axiosInstance
+          .post('/add_degree', {
+            branch: branch,
+            year: parseInt(year),
+            batch: batch,
+          })
+          .catch(err => {
+            console.error('Degree_add Error : ' + err);
+          });
+      }
+
+      userData.Degree_ID = parseInt(res_degree_id.data);
+
+      retries = 5;
+
+      let res_social_id;
+      while (!res_social_id && retries--) {
+        res_social_id = await axiosInstance
+          .post('/add_social_urls', {
+            codechef: '',
+            hackerrank: '',
+            leetcode: '',
+            linkedin: linkedinUrl,
+            github: githubUrl,
+            twitter: twitterUrl,
+          })
+          .catch(err => {
+            console.error('Social_add Error : ' + err);
+          });
+      }
+
+      userData.Social_ID = parseInt(res_social_id.data);
+
+      retries = 5;
+      let res_profile_update;
+      while (!res_profile_update && retries--) {
+        res_profile_update = await axiosInstance
+          .post('/update_student_profile', {
+            Bio: userData.bio,
+            Email: userData.email,
+            Headline: userData.headline,
+            Google_ID: userData.googleId,
+            Image_URL: '',
+            Name: userData.name,
+            Requirements: '',
+            SocialURL_ID: userData.Social_ID,
+            Degree_ID: userData.Degree_ID,
+          })
+          .catch(err => {
+            console.error('Profile_Update Error : ' + err);
+          });
+      }
+
       await Keychain.setGenericPassword('user', JSON.stringify(userData));
       setUser(userData);
       setIsSigningUp(false);
-
       setIsSignedIn(true);
     } catch (e) {
       setIsSigningUp(false);
@@ -112,6 +187,7 @@ function SignUp({route}) {
     }
   };
 
+  // TODO: To remove
   React.useEffect(() => {
     console.log(user);
   }, [user]);
@@ -159,9 +235,16 @@ function SignUp({route}) {
           <View
             style={{backgroundColor: '#F4F4F4', borderRadius: 500, padding: 8}}>
             <Image
-              style={{width: 120, height: 120, borderRadius: 70, resizeMode: 'contain'}}
+              style={{
+                width: 120,
+                height: 120,
+                borderRadius: 70,
+                resizeMode: 'contain',
+              }}
               source={{
-                uri: user.photo ? user.photo : 'https://www.xeus.com/wp-content/uploads/2014/09/One_User_Orange.png',
+                uri: user.photo
+                  ? user.photo
+                  : 'https://www.xeus.com/wp-content/uploads/2014/09/One_User_Orange.png',
               }}></Image>
             <View
               style={{
@@ -264,38 +347,34 @@ function SignUp({route}) {
 
         <NewSection name="Languages" />
         <View>
-        {languages.map((language, index) => (
+          {languages.map((language, index) => (
             <DropdownMenu
               key={index}
-              items={languageList.filter(  
-                lang => !languages.includes(lang)
-              )}
+              items={languageList.filter(lang => !languages.includes(lang))}
               onChange={item => {
                 setLanguages(
-                  languages
-                  .map(lang => {
+                  languages.map(lang => {
                     if (lang == language) {
                       return item;
                     }
                     return lang;
-                  })
+                  }),
                 );
               }}
               value={language}
               placeholder="Select your language"
               label="Language"
               removeFunction={() => {
-                setLanguages(languages.filter(lang => lang != language))
-              }}
-            >
-            </DropdownMenu>
+                setLanguages(languages.filter(lang => lang != language));
+              }}></DropdownMenu>
           ))}
           <Button
             color={colors.secondary}
             onPress={() => {
-              setLanguages(languages.concat(''))
-            }}
-          >Add Language</Button>
+              setLanguages(languages.concat(''));
+            }}>
+            Add Language
+          </Button>
         </View>
 
         {/* Social URLs */}
@@ -304,17 +383,20 @@ function SignUp({route}) {
           label="Twitter"
           value={twitterUrl}
           onChangeText={text => setTwitterUrl(text)}
-          logoName="twitter"></SocialURL>
+          logoName="twitter"
+          RouteName={route.name}></SocialURL>
         <SocialURL
           label="GitHub"
           value={githubUrl}
           onChangeText={text => setGithubUrl(text)}
-          logoName="github"></SocialURL>
+          logoName="github"
+          RouteName={route.name}></SocialURL>
         <SocialURL
           label="Linkedin"
           value={linkedinUrl}
           onChangeText={text => setLinkedinUrl(text)}
-          logoName="linkedin"></SocialURL>
+          logoName="linkedin"
+          RouteName={route.name}></SocialURL>
 
         {/* For bottom margin */}
         <View
