@@ -87,7 +87,9 @@ https://www.npmjs.com/package/react-native-hyperlink
 
 https://www.npmjs.com/package/react-native-dotenv
 
-https://www.npmjs.com/package/react-native-axios
+https://www.npmjs.com/package/axios
+
+https://www.npmjs.com/package/frisbee
 
 
 ## Backend
