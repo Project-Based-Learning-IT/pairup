@@ -22,6 +22,9 @@ import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 import * as Keychain from 'react-native-keychain';
 import MessageSection from './components/MessageSection';
 
+import axios from 'axios';
+import {Android_Local_ADDRESS, IOS_Local_ADDRESS} from '@env';
+
 const AuthContext = React.createContext();
 
 function useAuth() {
@@ -73,6 +76,18 @@ const App = () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [isSignedIn, setIsSignedIn] = React.useState(false);
   const [user, setUser] = React.useState({});
+  const [axiosInst, setaxiosInstance] = React.useState({});
+
+  const BASE_ADDRESS =
+    Platform.OS === 'android' ? Android_Local_ADDRESS : IOS_Local_ADDRESS;
+  let axiosInstance = axios.create({
+    baseURL: BASE_ADDRESS,
+    timeout: 30000,
+    // headers: {
+    //   'Content-Type': 'application/x-www-form-urlencoded',
+    //   Accept: 'application/json',
+    // },
+  });
 
   const signInWithGoogle = async () => {
     try {
@@ -98,6 +113,8 @@ const App = () => {
       await GoogleSignin.signOut();
       setIsSignedIn(false);
       await Keychain.resetGenericPassword();
+      //NOTE Remove token from networking instance
+      axiosInst.axiosInstance.defaults.headers['Authorization'] = '';
       setUser({});
     } catch (error) {
       console.log(error);
@@ -116,9 +133,17 @@ const App = () => {
         const credentials = await Keychain.getGenericPassword();
 
         if (credentials) {
+          // NOTE Set token for networking instance
+
+          const userData = JSON.parse(credentials.password);
+          axiosInstance.defaults.headers['Authorization'] =
+            'Bearer ' + userData.access_token;
+
           setUser(JSON.parse(credentials.password));
           setIsSignedIn(true);
         }
+
+        setaxiosInstance({axiosInstance});
 
         // TODO: Remove this fake splash screen
         setTimeout(() => {
@@ -163,6 +188,9 @@ const App = () => {
             user,
             setUser,
             signOut,
+            // NOTE pass common Networking instance
+            axiosInstance: axiosInst.axiosInstance,
+            setaxiosInstance,
           }}>
           <NavigationContainer>
             <StatusBar

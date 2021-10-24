@@ -11,16 +11,16 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useAuth} from '../App';
 import {useNavigation} from '@react-navigation/native';
 import {useTheme, Portal, ActivityIndicator} from 'react-native-paper';
-import axios from 'axios';
-import {Android_Local_ADDRESS, IOS_Local_ADDRESS} from '@env';
 import * as Keychain from 'react-native-keychain';
 
 function GoogleLogin() {
-  const BASE_ADDRESS =
-    Platform.OS === 'android' ? Android_Local_ADDRESS : IOS_Local_ADDRESS;
-
-  // console.log(BASE_ADDRESS);
-  const {signInWithGoogle, setUser, setIsSignedIn} = useAuth();
+  const {
+    signInWithGoogle,
+    setUser,
+    setIsSignedIn,
+    axiosInstance,
+    setaxiosInstance,
+  } = useAuth();
 
   const navigation = useNavigation();
 
@@ -37,8 +37,8 @@ function GoogleLogin() {
     // NOTE Get the jwt access token
     let res_access_token;
     while (!res_access_token && retries--) {
-      res_access_token = await axios
-        .post(BASE_ADDRESS + '/signup_and_login', {
+      res_access_token = await axiosInstance
+        .post('/signup_and_login', {
           username: userInfo.user.name.toLowerCase(),
           timeout: 15000,
         })
@@ -47,13 +47,8 @@ function GoogleLogin() {
         });
     }
 
-    const axiosInstance = axios.create({
-      baseURL: BASE_ADDRESS,
-      timeout: 15000,
-      headers: {
-        Authorization: 'Bearer ' + res_access_token.data.access_token,
-      },
-    });
+    axiosInstance.defaults.headers['Authorization'] =
+      'Bearer ' + res_access_token.data.access_token;
 
     new_user = res_access_token.data.new_user;
 
@@ -61,6 +56,7 @@ function GoogleLogin() {
       let studRes;
       let degreeRes;
       let skillsListRes;
+      let languagesRes;
 
       retries = 5;
       while (!studRes && retries--) {
@@ -72,7 +68,7 @@ function GoogleLogin() {
       retries = 5;
       while (!degreeRes && retries--) {
         degreeRes = await axiosInstance.get('/get_degree').catch(err => {
-          console.error('Degree Error : ' + err);
+          console.error('Get Degree Error : ' + err);
         });
       }
 
@@ -81,14 +77,23 @@ function GoogleLogin() {
         skillsListRes = await axiosInstance
           .get('/get_stud_skills')
           .catch(err => {
-            console.error('Skills Error : ' + err);
+            console.error('Get Skills Error : ' + err);
+          });
+      }
+
+      retries = 5;
+      while (!languagesRes && retries--) {
+        languagesRes = await axiosInstance
+          .get('/get_student_languages')
+          .catch(err => {
+            console.error('Get Languages Error : ' + err);
           });
       }
 
       let SocialsRes;
       while (!SocialsRes && retries--) {
         SocialsRes = await axiosInstance.get('/get_social_urls').catch(err => {
-          console.error('Socials Error : ' + err);
+          console.error('Get Socials Error : ' + err);
         });
       }
 
@@ -100,16 +105,22 @@ function GoogleLogin() {
         personalEmail: 'NotinDB',
         bio: studRes.data.Bio,
         headline: studRes.data.Headline,
-        ...degreeRes.data,
-        division: degreeRes.data.batch[0],
+        year: degreeRes.data.year ? degreeRes.data.year : '',
+        branch: degreeRes.data.branch,
+        batch: degreeRes.data.batch,
+        division: degreeRes.data.batch !== '' ? degreeRes.data.batch[0] : '',
         twitterUrl: SocialsRes.data.twitter,
         githubUrl: SocialsRes.data.github,
         linkedinUrl: SocialsRes.data.linkedin,
         skills: skillsListRes.data,
+        languages: languagesRes.data.map(lang => {
+          return lang.Language_name;
+        }),
         access_token: res_access_token.data.access_token,
       };
 
       await Keychain.setGenericPassword('user', JSON.stringify(userData));
+      setaxiosInstance({axiosInstance});
       setUser(userData);
       setIsLoggingIn(false);
       setIsSignedIn(true);
@@ -120,7 +131,6 @@ function GoogleLogin() {
       setIsLoggingIn(false);
       navigation.navigate('SignUp', {
         user: userInfo.user,
-        access_token: res_access_token.data.access_token,
       });
     }
   };

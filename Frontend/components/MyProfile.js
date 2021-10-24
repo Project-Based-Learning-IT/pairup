@@ -26,18 +26,18 @@ import NewSection from './NewSection';
 import Skills from './Skills';
 import {
   branches,
-  languageList,
-  skillList,
+  // languageList,
+  // skillList,
   years,
   divisions,
   batches,
 } from '../staticStore';
 
 function MyProfile({route}) {
-  const {setUser, signOut, user} = useAuth();
+  const {setUser, signOut, user, axiosInstance} = useAuth();
   const {colors} = useTheme();
 
-  const [isSaving, setIsSigningUp] = React.useState(false);
+  const [isSaving, setIsSaving] = React.useState(false);
   const [isSigningOut, setIsSigningOut] = React.useState(false);
 
   const [email, setEmail] = React.useState(user.email);
@@ -56,9 +56,56 @@ function MyProfile({route}) {
   const [linkedinUrl, setLinkedinUrl] = React.useState(user.linkedinUrl);
 
   const [skills, setSkills] = React.useState(user.skills);
+  const [skillsList, setskillsList] = React.useState([]);
 
-  // TODO: add languages and projects
-  const [languages, setLanguages] = React.useState([]);
+  // TODO: add projects
+  const [languages, setLanguages] = React.useState(user.languages);
+  const [languageList, setlanguageList] = React.useState([]);
+
+  React.useEffect(async () => {
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    // console.log(user);
+    async function getDBskills() {
+      let res = [];
+      while (res.length === 0) {
+        await axiosInstance
+          .get('/get_domains_and_its_skills')
+          .then(response => {
+            // console.log(JSON.stringify(response.data));
+            res = response.data;
+          })
+          .catch(err => {
+            console.error('SkillsList Error : ' + err);
+          });
+        await sleep(2000);
+      }
+      setskillsList(res);
+    }
+
+    async function getDBlanguages() {
+      let res = [];
+      while (res.length === 0) {
+        await axiosInstance
+          .get('/get_all_languages')
+          .then(response => {
+            // console.log(JSON.stringify(response.data));
+            res = response.data;
+          })
+          .catch(err => {
+            console.error('languageList Error : ' + err);
+          });
+        await sleep(2000);
+      }
+      setlanguageList(res);
+    }
+    // console.log(axiosInstance.defaults.headers['Authorization']);
+    setIsSigningOut(true);
+    await getDBskills();
+    await getDBlanguages();
+    setIsSigningOut(false);
+  }, []);
 
   return (
     <View
@@ -215,7 +262,7 @@ function MyProfile({route}) {
         />
 
         <NewSection name="Skills" />
-        <Skills skillList={skillList} skills={skills} setSkills={setSkills} />
+        <Skills skillList={skillsList} skills={skills} setSkills={setSkills} />
 
         <NewSection name="Languages" />
         <View>
