@@ -26,16 +26,13 @@ load_dotenv()
 
 def getSimilarUsers(top_n, target):
     df = pd.read_csv('Data.csv')
-    name_of_users = df.index
+    name_of_users = df['Name']
     model = joblib.load('KNNmodel.pkl', mmap_mode='r')
-    user = [df[df['Name'] == target].loc[0, 1:].values]
+    user = [df[df['Name']==target].iloc[0,1:].values.astype(int)]
+    # print(user)
     similar_users = model.kneighbors(user, top_n, return_distance=False)[0]
     recommendedUsers = [name_of_users[i] for i in similar_users]
     return recommendedUsers
-
-
-# getSimilarUsers(10, 'krishna purohit')
-
 
 app = Flask(__name__)
 CORS(app)
@@ -201,7 +198,8 @@ class Social_URLs(db.Model):
 # Homepage
 @app.route("/",  methods=['GET', 'POST'])
 def hello_world():
-    return "<p>Hello, World!</p>"
+    listOfUsers = getSimilarUsers(10, 'krishna purohit')
+    return str(listOfUsers)
 
 # Login
 # Create a route to authenticate your users and return JWTs. The
