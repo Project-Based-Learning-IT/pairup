@@ -32,9 +32,10 @@ import {
   divisions,
   batches,
 } from '../staticStore';
+import * as Keychain from 'react-native-keychain';
 
 function MyProfile({route}) {
-  const {setUser, signOut, user, axiosInstance} = useAuth();
+  const {setUser, signOut, user, axiosInstance, setaxiosInstance} = useAuth();
   const {colors} = useTheme();
 
   const [isSaving, setIsSaving] = React.useState(false);
@@ -61,6 +62,137 @@ function MyProfile({route}) {
   // TODO: add projects
   const [languages, setLanguages] = React.useState(user.languages);
   const [languageList, setlanguageList] = React.useState([]);
+
+  const saveProfile = async () => {
+    try {
+      setIsSaving(true);
+
+      // without languages and projects
+      let userData = {
+        googleId: user.googleId,
+        photo: user.photo,
+        email: user.email,
+        name: user.name,
+        personalEmail: personalEmail,
+        bio: bio,
+        headline: headline,
+        division: division,
+        branch: branch,
+        year: year,
+        batch: batch,
+        twitterUrl: twitterUrl,
+        githubUrl: githubUrl,
+        linkedinUrl: linkedinUrl,
+        skills: skills,
+        languages: languages,
+        access_token:
+          axiosInstance.defaults.headers['Authorization'].split(' ')[1],
+      };
+
+      let retries = 5;
+
+      //TODO test Update degree
+      let res_degree_id;
+      while (!res_degree_id && retries--) {
+        res_degree_id = await axiosInstance
+          .post('/update_degree', {
+            branch: branch,
+            year: parseInt(year != '' ? year : -1),
+            batch: batch,
+          })
+          .catch(err => {
+            console.error('Degree_update Error : ' + err);
+          });
+      }
+
+      userData.Degree_ID = parseInt(res_degree_id.data);
+
+      retries = 5;
+
+      //TODO test Update Socials
+      let res_social_id;
+      while (!res_social_id && retries--) {
+        res_social_id = await axiosInstance
+          .post('/update_social_urls', {
+            codechef: '',
+            hackerrank: '',
+            leetcode: '',
+            linkedin: linkedinUrl,
+            github: githubUrl,
+            twitter: twitterUrl,
+          })
+          .catch(err => {
+            console.error('Social_update Error : ' + err);
+          });
+      }
+
+      userData.Social_ID = parseInt(res_social_id.data);
+
+      //TODO test Update Skills
+      retries = 5;
+      let res_add_skills;
+      let skills_ids = skills.map(skill => {
+        return parseInt(skill.skill_id);
+      });
+      while (!res_add_skills && retries--) {
+        res_add_skills = await axiosInstance
+          .post('/update_student_skills', {
+            Skills: skills_ids,
+          })
+          .catch(err => {
+            console.error('Skill_update Error : ' + err);
+          });
+      }
+
+      //TODO test Update languages
+      let added_proficiencies = {};
+      languages.map(lang => {
+        added_proficiencies[lang] = 'Not set';
+      });
+
+      retries = 5;
+      let res_add_languages;
+      while (!res_add_languages && retries--) {
+        res_add_languages = await axiosInstance
+          .post('/update_student_languages', added_proficiencies)
+          .catch(err => {
+            console.error('Languages_update Error : ' + err);
+          });
+      }
+
+      //TODO test update student profile
+      retries = 5;
+      let res_profile_update;
+
+      while (!res_profile_update && retries--) {
+        res_profile_update = await axiosInstance
+          .post('/update_student_profile', {
+            Bio: userData.bio,
+            Email: userData.email,
+            Headline: userData.headline,
+            Google_ID: userData.googleId,
+            Image_URL: '',
+            Name: userData.name,
+            Requirements: '',
+            SocialURL_ID: userData.Social_ID,
+            Degree_ID: userData.Degree_ID,
+          })
+          .catch(err => {
+            console.error('Profile_Update Error : ' + err);
+          });
+      }
+      axiosInstance.defaults.headers['Authorization'] =
+        'Bearer ' + userData.access_token;
+
+      setaxiosInstance({axiosInstance});
+      await Keychain.setGenericPassword('user', JSON.stringify(userData));
+      setUser(userData);
+      setIsSaving(false);
+    } catch (e) {
+      setIsSaving(false);
+      console.log(e);
+    }
+  };
 
   React.useEffect(async () => {
     function sleep(ms) {
@@ -101,10 +233,10 @@ function MyProfile({route}) {
       setlanguageList(res);
     }
     // console.log(axiosInstance.defaults.headers['Authorization']);
-    setIsSigningOut(true);
+    setIsSaving(true);
     await getDBskills();
     await getDBlanguages();
-    setIsSigningOut(false);
+    setIsSaving(false);
   }, []);
 
   return (
@@ -197,6 +329,7 @@ function MyProfile({route}) {
           style={{
             paddingBottom: 20,
           }}
+          disabled={true}
         />
         <DropdownMenu
           items={branches}
@@ -320,8 +453,9 @@ function MyProfile({route}) {
         {/* For bottom margin */}
         <View
           style={{
-            height: 40,
+            height: 20,
           }}></View>
+
         <TouchableHighlight
           style={{
             backgroundColor: colors.primary,
@@ -329,7 +463,30 @@ function MyProfile({route}) {
             borderRadius: 14,
             width: '96%',
             // margin: 12,
-            marginBottom: 24,
+            marginBottom: 12,
+            alignSelf: 'center',
+          }}
+          onPress={() => {
+            saveProfile();
+          }}>
+          <Text
+            style={{
+              color: '#fff',
+              fontWeight: 'bold',
+              fontSize: 18,
+              textAlign: 'center',
+            }}>
+            Save
+          </Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={{
+            backgroundColor: colors.primary,
+            padding: 16,
+            borderRadius: 14,
+            width: '96%',
+            // margin: 12,
+            marginBottom: 12,
             alignSelf: 'center',
           }}
           onPress={() => {

@@ -94,7 +94,7 @@ function SignUp({route}) {
     try {
       setIsSigningUp(true);
 
-      // without languages and projects
+      // without projects
       let userData = {
         googleId: user.id,
         photo: user.photo,
@@ -115,9 +115,6 @@ function SignUp({route}) {
         access_token:
           axiosInstance.defaults.headers['Authorization'].split(' ')[1],
       };
-
-      //NOTE For testing
-      // async function Test() {
 
       let retries = 5;
 
@@ -158,7 +155,7 @@ function SignUp({route}) {
 
       retries = 5;
       let res_add_skills;
-      skills_ids = skills.map(skill => {
+      let skills_ids = skills.map(skill => {
         return parseInt(skill.skill_id);
       });
       while (!res_add_skills && retries--) {
@@ -171,7 +168,7 @@ function SignUp({route}) {
           });
       }
 
-      added_proficiencies = {};
+      let added_proficiencies = {};
       languages.map(lang => {
         added_proficiencies[lang] = 'Not set';
       });
@@ -350,6 +347,7 @@ function SignUp({route}) {
           style={{
             paddingBottom: 20,
           }}
+          disabled={true}
         />
         <DropdownMenu
           items={branches}

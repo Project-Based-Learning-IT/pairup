@@ -123,7 +123,7 @@ function Discover() {
     setSwipedAll(false);
   };
 
-  const {user, axiosInstance, setaxiosInstance} = useAuth();
+  const {user, axiosInstance, setaxiosInstance, setUser} = useAuth();
 
   useEffect(() => {
     //NOTE Set Token after Glogin
