@@ -24,16 +24,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def getSimilarUsers(top_n, target):
-    df = pd.read_csv('Data.csv')
-    name_of_users = df['Name']
-    model = joblib.load('KNNmodel.pkl', mmap_mode='r')
-    user = [df[df['Name']==target].iloc[0,1:].values.astype(int)]
-    # print(user)
-    similar_users = model.kneighbors(user, top_n, return_distance=False)[0]
-    recommendedUsers = [name_of_users[i] for i in similar_users]
-    return recommendedUsers
-
 app = Flask(__name__)
 CORS(app)
 app.config["JWT_SECRET_KEY"] = os.getenv(
@@ -246,13 +236,65 @@ def protected():
     return jsonify(Student_ID=current_user), 200
 
 
+# Recommendations routes
+
+def getSimilarUsers(top_n, target):
+    df = pd.read_csv('Data.csv')
+    name_of_users = df['Name']
+    model = joblib.load('KNNmodel.pkl', mmap_mode='r')
+    user = [df[df['Name'] == target].iloc[0, 1:].values.astype(int)]
+    # print(user)
+    similar_users = model.kneighbors(user, top_n, return_distance=False)[0]
+    recommendedUsers = [name_of_users[i] for i in similar_users]
+    return recommendedUsers
+
+
+# print(getSimilarUsers(10, 'krishna purohit'))
+
+
+@app.route("/get_recommendations",  methods=['GET', 'POST'])
+@jwt_required()
+def get_recommendations():
+    # id = get_jwt_identity()
+    # res = getSimilarUsers(10, student.Name)
+
+    rec_names = getSimilarUsers(10, 'krishna purohit')
+    rec_names = rec_names[1:]
+    # id, name, photo, headline, requirements, info created using branch-year-batch, skills
+    cards = list()
+    for rec_name in rec_names:
+        curr_rec = dict()
+        rec = Student.query.filter_by(Name=rec_name).first()
+        curr_rec['id'] = rec.Student_ID
+        curr_rec['name'] = rec.Name.title()
+        curr_rec['photo'] = rec.Image_URL if rec.Image_URL else 'https://static.thenounproject.com/png/64485-200.png'
+        curr_rec['headline'] = rec.Headline if rec.Headline else "Headline NULL"
+        curr_rec['requirements'] = rec.Requirements if rec.Requirements else "REQ NULL"
+        curr_rec['Degree_ID'] = rec.degree.Degree_ID if rec.degree else -1
+        curr_rec['year'] = rec.degree.year if rec.degree else 404
+        curr_rec['branch'] = rec.degree.branch if rec.degree else 'BRNF'
+        curr_rec['batch'] = rec.degree.batch if rec.degree else 'BANF'
+        curr_rec['info'] = str(curr_rec['year'])+' | ' + \
+            curr_rec['branch']+' | ' + curr_rec['batch']
+        curr_rec['skills'] = list()
+        for skill in rec.skills:
+            curr_skill = dict()
+            curr_skill['skill_id'] = skill.Skill_ID
+            curr_skill['skill_name'] = skill.Skill_name
+            curr_rec['skills'].append(curr_skill)
+            # curr_rec['skills'].append(skill.Skill_name)
+        cards.append(curr_rec)
+    return jsonify(cards), 200
+
 # Social URLs Routes
 
 
 @app.route("/get_social_urls",  methods=['GET', 'POST'])
 @jwt_required()
 def get_social_urls():
-    id = get_jwt_identity()
+    id = request.args.get('id', -1, type=int)
+    if id == -1:
+        id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     res = dict()
     if student.social_urls != None:
@@ -462,7 +504,9 @@ def update_project(project_id):
 @app.route("/get_student_profile",  methods=['GET'])
 @jwt_required()
 def get_student_profile():
-    id = get_jwt_identity()
+    id = request.args.get('id', -1, type=int)
+    if id == -1:
+        id = get_jwt_identity()
     res = dict()
     student = Student.query.filter_by(Student_ID=id).first()
     res['Bio'] = student.Bio
@@ -629,7 +673,9 @@ def update_student_languages():
 @app.route("/get_student_languages",  methods=['GET'])
 @jwt_required()
 def get_student_languages():
-    id = get_jwt_identity()
+    id = request.args.get('id', -1, type=int)
+    if id == -1:
+        id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     res = list()
     for S_L_M_N in student.languages:

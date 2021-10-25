@@ -1,11 +1,4 @@
-const branches = [
-  'Computer Science',
-  'Information Technology',
-  'Electronics and Telecommunication',
-  'Mechanical',
-  'Civil',
-  'AI-DS',
-];
+const branches = ['CSE', 'IT', 'ENTC', 'Mechanical', 'Civil', 'AI-DS'];
 
 const languageList = ['English', 'Hindi', 'Marathi'];
 
@@ -2125,6 +2118,35 @@ function getBoilerplateChats(userChatting, user) {
 }
 
 const cards = [
+  {
+    Degree_ID: -1,
+    batch: 'BANF',
+    branch: 'BRNF',
+    headline: 'Headline NULL',
+    id: 20,
+    info: '404 | BRNF | BANF',
+    name: 'kunal ambekar',
+    photo: 'https://static.thenounproject.com/png/64485-200.png',
+    requirements: 'REQ NULL',
+    skills: ['python', 'c++', 'c', 'mongodb', 'java', 'javascript'],
+    year: 404,
+  },
+  {
+    Degree_ID: -1,
+    batch: 'BANF',
+    branch: 'BRNF',
+    headline: 'Headline NULL',
+    id: 27,
+    info: '404 | BRNF | BANF',
+    name: 'aniruddha tonge',
+    photo: 'https://static.thenounproject.com/png/64485-200.png',
+    requirements: 'REQ NULL',
+    skills: ['python', 'c++', 'c', 'mongodb', 'java', 'javascript'],
+    year: 404,
+  },
+];
+
+const sample_cards = [
   {
     id: 1,
     name: 'Tanya Agrawal',

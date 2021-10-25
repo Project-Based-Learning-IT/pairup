@@ -81,7 +81,8 @@ function SkillSlider(props) {
             },
           ],
         }}>
-        {skills[skillIndex]}
+        {skills[skillIndex].skill_name}
+        {/* {console.log(skills[skillIndex].skill_name)} */}
       </Animated.Text>
       <IconButton
         icon="chevron-right"

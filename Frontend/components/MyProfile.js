@@ -45,6 +45,7 @@ function MyProfile({route}) {
   const [name, setName] = React.useState(user.name);
   const [personalEmail, setPersonalEmail] = React.useState(user.personalEmail);
   const [bio, setBio] = React.useState(user.bio);
+  const [requirements, setRequirements] = React.useState('user.Requirements');
   const [headline, setHeadline] = React.useState(user.headline);
 
   const [division, setDivision] = React.useState(user.division);
@@ -91,7 +92,6 @@ function MyProfile({route}) {
 
       let retries = 5;
 
-      //TODO test Update degree
       let res_degree_id;
       while (!res_degree_id && retries--) {
         res_degree_id = await axiosInstance
@@ -109,7 +109,6 @@ function MyProfile({route}) {
 
       retries = 5;
 
-      //TODO test Update Socials
       let res_social_id;
       while (!res_social_id && retries--) {
         res_social_id = await axiosInstance
@@ -126,9 +125,8 @@ function MyProfile({route}) {
           });
       }
 
-      userData.Social_ID = parseInt(res_social_id.data);
+      userData.SocialURL_ID = parseInt(res_social_id.data);
 
-      //TODO test Update Skills
       retries = 5;
       let res_add_skills;
       let skills_ids = skills.map(skill => {
@@ -144,7 +142,6 @@ function MyProfile({route}) {
           });
       }
 
-      //TODO test Update languages
       let added_proficiencies = {};
       languages.map(lang => {
         added_proficiencies[lang] = 'Not set';
@@ -160,7 +157,6 @@ function MyProfile({route}) {
           });
       }
 
-      //TODO test update student profile
       retries = 5;
       let res_profile_update;
 
@@ -174,7 +170,7 @@ function MyProfile({route}) {
             Image_URL: '',
             Name: userData.name,
             Requirements: '',
-            SocialURL_ID: userData.Social_ID,
+            SocialURL_ID: userData.SocialURL_ID,
             Degree_ID: userData.Degree_ID,
           })
           .catch(err => {
@@ -387,6 +383,19 @@ function MyProfile({route}) {
           placeholder="Type your bio"
           value={bio}
           onChangeText={text => setBio(text)}
+          style={{
+            paddingBottom: 20,
+          }}
+          multiline={true}
+          right={<TextInput.Affix text={`${bio.length}/200`} />}
+        />
+
+        <TextInput
+          mode="outlined"
+          label="Requirements"
+          placeholder="Type your Requirements"
+          value={requirements}
+          onChangeText={text => setRequirements(text)}
           style={{
             paddingBottom: 20,
           }}

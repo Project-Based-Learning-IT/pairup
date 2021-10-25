@@ -45,6 +45,7 @@ function SignUp({route}) {
   const [name, setName] = React.useState(user.name);
   const [personalEmail, setPersonalEmail] = React.useState('');
   const [bio, setBio] = React.useState('');
+  const [requirements, setRequirements] = React.useState('');
   const [headline, setHeadline] = React.useState('');
 
   const [division, setDivision] = React.useState('');
@@ -102,6 +103,7 @@ function SignUp({route}) {
         name: user.name,
         personalEmail: personalEmail,
         bio: bio,
+        requirements: requirements,
         headline: headline,
         division: division,
         branch: branch,
@@ -151,7 +153,7 @@ function SignUp({route}) {
           });
       }
 
-      userData.Social_ID = parseInt(res_social_id.data);
+      userData.SocialURL_ID = parseInt(res_social_id.data);
 
       retries = 5;
       let res_add_skills;
@@ -192,10 +194,10 @@ function SignUp({route}) {
             Email: userData.email,
             Headline: userData.headline,
             Google_ID: userData.googleId,
-            Image_URL: '',
+            Image_URL: user.photo ? user.photo : '',
             Name: userData.name,
-            Requirements: '',
-            SocialURL_ID: userData.Social_ID,
+            Requirements: userData.requirements,
+            SocialURL_ID: userData.SocialURL_ID,
             Degree_ID: userData.Degree_ID,
           })
           .catch(err => {
@@ -405,6 +407,19 @@ function SignUp({route}) {
           placeholder="Type your bio"
           value={bio}
           onChangeText={text => setBio(text)}
+          style={{
+            paddingBottom: 20,
+          }}
+          multiline={true}
+          right={<TextInput.Affix text={`${bio.length}/200`} />}
+        />
+
+        <TextInput
+          mode="outlined"
+          label="Requirements"
+          placeholder="Type your Requirements"
+          value={requirements}
+          onChangeText={text => setRequirements(text)}
           style={{
             paddingBottom: 20,
           }}

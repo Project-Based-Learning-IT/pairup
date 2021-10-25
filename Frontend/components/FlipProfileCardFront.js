@@ -11,6 +11,7 @@ function FlipProfileCardFront(props) {
   const {colors} = useTheme();
 
   const {card} = props;
+
   return (
     <View
       style={[
@@ -96,8 +97,8 @@ function FlipProfileCardFront(props) {
         />
         <Button
           onPress={() => {
-            console.log('ViewProfile pressed');
-            navigation.navigate('ViewProfile', {user: card});
+            // console.log('ViewProfile pressed');
+            navigation.navigate('ViewProfile', {card_user: card});
           }}>
           View Profile
         </Button>
@@ -122,7 +123,7 @@ function FlipProfileCardFront(props) {
           paddingLeft: 12,
           paddingRight: 12,
         }}>
-        <SkillSlider skills={props.card.skills} />
+        <SkillSlider skills={card.skills} />
       </View>
 
       <View
