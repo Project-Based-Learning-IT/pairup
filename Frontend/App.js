@@ -139,7 +139,7 @@ const App = () => {
           axiosInstance.defaults.headers['Authorization'] =
             'Bearer ' + userData.access_token;
 
-          setUser(JSON.parse(credentials.password));
+          setUser(userData);
           setIsSignedIn(true);
         }
 

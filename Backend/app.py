@@ -523,7 +523,7 @@ def update_student_profile():
     # Sample json body
     # {
     #     "Google_ID": 100002,
-    #     "Image_URl": "boi.com",
+    #     "Image_URL": "boi.com",
     #     "Name": "Dummy_ab",
     #     "Headline": "head added",
     #     "Requirements": "require added",
@@ -580,6 +580,38 @@ def add_student_languages():
         id = get_jwt_identity()
         languages = dict(request.json)
         student = Student.query.filter_by(Student_ID=id).first()
+        for language_name, proficiency in languages.items():
+            S_L_M_N = Student_Language_M_N(Proficiency=str(proficiency))
+            curr_language = Languages.query.filter_by(
+                Name=language_name).first()
+            S_L_M_N.language = curr_language
+            S_L_M_N.student = student
+            student.languages.append(S_L_M_N)
+        db.session.commit()
+        return str(student.Student_ID), 200
+        # Sample json body
+        # {
+        #         "English": "Native",
+        #         "Hindi": "Professional"
+        # }
+
+
+@app.route("/update_student_languages",  methods=['POST'])
+@jwt_required()
+def update_student_languages():
+    if request.method == "POST":
+        id = get_jwt_identity()
+        # skills_ids = list(request.json['Skills'])
+
+        student = Student.query.filter_by(Student_ID=id).first()
+
+        old_stud_langMNs = list()
+        for stud_langMN in student.languages:
+            old_stud_langMNs.append(stud_langMN)
+        for stud_langMN in old_stud_langMNs:
+            db.session.delete(stud_langMN)
+
+        languages = dict(request.json)
         for language_name, proficiency in languages.items():
             S_L_M_N = Student_Language_M_N(Proficiency=str(proficiency))
             curr_language = Languages.query.filter_by(
