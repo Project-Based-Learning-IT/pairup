@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   TouchableHighlight,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,6 +17,7 @@ import {IconButton, useTheme} from 'react-native-paper';
 import FlipProfileCard from './FlipProfileCard';
 import Filter from './Filter';
 import {cards} from '../staticStore';
+import {useAuth} from '../App';
 
 function Discover() {
   const {colors} = useTheme();
@@ -121,6 +122,39 @@ function Discover() {
     setIndex(0);
     setSwipedAll(false);
   };
+
+  const {user, axiosInstance, setaxiosInstance} = useAuth();
+
+  useEffect(() => {
+    //NOTE Set Token after Glogin
+    axiosInstance.defaults.headers['Authorization'] =
+      'Bearer ' + user.access_token;
+
+    // NOTE For testing
+    async function Test() {
+      // let retries = 5;
+      // let skillsList = [];
+      // function sleep(ms) {
+      //   return new Promise(resolve => setTimeout(resolve, ms));
+      // }
+      // (async () => {
+      //   while (skillsList.length === 0 && retries--) {
+      //     await axiosInstance
+      //       .get('/get_domains_and_its_skills')
+      //       .then(response => {
+      //         console.log(JSON.stringify(response.data));
+      //         skillsList = JSON.stringify(response.data);
+      //       })
+      //       .catch(err => {
+      //         console.error('SkillsList Error : ' + err);
+      //       });
+      //     await sleep(10000);
+      //   }
+      // })();
+    }
+    Test();
+    setaxiosInstance({axiosInstance});
+  }, []);
 
   return (
     <View style={styles.container}>

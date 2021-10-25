@@ -561,16 +561,16 @@ def update_student_profile():
 @jwt_required()
 def get_all_languages():
     languages = Languages.query.all()
-    res = dict()
+    res = list()
     for lang in languages:
-        res[lang.Language_ID] = lang.Name
+        res.append(lang.Name)
     return jsonify(res), 200
     # Sample output
-    # {
-    #     "1": "English",
-    #     "2": "Hindi",
-    #     "3": "Marathi"
-    # }
+    # [
+    #   "English",
+    #   "Hindi",
+    #   "Marathi"
+    # ]
 
 
 @app.route("/add_student_languages",  methods=['POST'])
@@ -580,10 +580,10 @@ def add_student_languages():
         id = get_jwt_identity()
         languages = dict(request.json)
         student = Student.query.filter_by(Student_ID=id).first()
-        for language_id, proficiency in languages.items():
+        for language_name, proficiency in languages.items():
             S_L_M_N = Student_Language_M_N(Proficiency=str(proficiency))
             curr_language = Languages.query.filter_by(
-                Language_ID=int(language_id)).first()
+                Name=language_name).first()
             S_L_M_N.language = curr_language
             S_L_M_N.student = student
             student.languages.append(S_L_M_N)
@@ -591,8 +591,8 @@ def add_student_languages():
         return str(student.Student_ID), 200
         # Sample json body
         # {
-        #         "1": "Native",
-        #         "2": "Professional"
+        #         "English": "Native",
+        #         "Hindi": "Professional"
         # }
 
 
@@ -669,8 +669,8 @@ def get_stud_skills():
     res = list()
     for skill in student.skills:
         curr_skill = dict()
-        curr_skill['Skill_ID'] = skill.Skill_ID
-        curr_skill['Skill_name'] = skill.Skill_name
+        curr_skill['skill_id'] = skill.Skill_ID
+        curr_skill['skill_name'] = skill.Skill_name
         res.append(curr_skill)
     return jsonify(res), 200
 

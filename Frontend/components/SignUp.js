@@ -26,46 +26,17 @@ import Skills from './Skills';
 import * as Keychain from 'react-native-keychain';
 import {
   branches,
-  languageList,
-  skillList,
+  // languageList,
+  // DB_skillsList,
   years,
   divisions,
   batches,
 } from '../staticStore';
-import axios from 'axios';
-import {Android_Local_ADDRESS, IOS_Local_ADDRESS} from '@env';
 
 function SignUp({route}) {
-  const BASE_ADDRESS =
-    Platform.OS === 'android' ? Android_Local_ADDRESS : IOS_Local_ADDRESS;
   const {user} = route.params;
-  const {access_token} = route.params;
-  const axiosInstance = axios.create({
-    baseURL: BASE_ADDRESS,
-    timeout: 15000,
-    headers: {
-      Authorization: 'Bearer ' + access_token,
-    },
-  });
 
-  // let retries = 5;
-  // let skillsList;
-
-  // while (!skillsList && retries--) {
-  //   setTimeout(async () => {
-  //     await axiosInstance
-  //       .get('/get_domains_and_its_skills')
-  //       .then(response => {
-  //         console.log(JSON.stringify(response.data));
-  //         skillsList = JSON.stringify(response.data);
-  //       })
-  //       .catch(err => {
-  //         console.error('SkillsList Error : ' + err);
-  //       });
-  //   }, 2000);
-  // }
-
-  const {setUser, setIsSignedIn} = useAuth();
+  const {setUser, setIsSignedIn, axiosInstance, setaxiosInstance} = useAuth();
   const {colors} = useTheme();
 
   const [isSigningUp, setIsSigningUp] = React.useState(false);
@@ -86,9 +57,13 @@ function SignUp({route}) {
   const [linkedinUrl, setLinkedinUrl] = React.useState('');
 
   const [skills, setSkills] = React.useState([]);
+  const [skillsList, setskillsList] = React.useState([]);
 
-  // TODO: add languages and projects
+  // TODO: add projects
   const [languages, setLanguages] = React.useState([]);
+  const [languageList, setlanguageList] = React.useState([]);
+
+  let retries = 5;
 
   const styles = StyleSheet.create({
     signUpButton: {
@@ -136,7 +111,9 @@ function SignUp({route}) {
         githubUrl: githubUrl,
         linkedinUrl: linkedinUrl,
         skills: skills,
-        access_token: access_token,
+        languages: languages,
+        access_token:
+          axiosInstance.defaults.headers['Authorization'].split(' ')[1],
       };
 
       //NOTE For testing
@@ -180,6 +157,36 @@ function SignUp({route}) {
       userData.Social_ID = parseInt(res_social_id.data);
 
       retries = 5;
+      let res_add_skills;
+      skills_ids = skills.map(skill => {
+        return parseInt(skill.skill_id);
+      });
+      while (!res_add_skills && retries--) {
+        res_add_skills = await axiosInstance
+          .post('/add_student_skills', {
+            Skills: skills_ids,
+          })
+          .catch(err => {
+            console.error('Skill_add Error : ' + err);
+          });
+      }
+
+      added_proficiencies = {};
+      languages.map(lang => {
+        added_proficiencies[lang] = 'Not set';
+      });
+
+      retries = 5;
+      let res_add_languages;
+      while (!res_add_languages && retries--) {
+        res_add_languages = await axiosInstance
+          .post('/add_student_languages', added_proficiencies)
+          .catch(err => {
+            console.error('Languages_add Error : ' + err);
+          });
+      }
+
+      retries = 5;
       let res_profile_update;
       while (!res_profile_update && retries--) {
         res_profile_update = await axiosInstance
@@ -198,7 +205,10 @@ function SignUp({route}) {
             console.error('Profile_Update Error : ' + err);
           });
       }
+      axiosInstance.defaults.headers['Authorization'] =
+        'Bearer ' + userData.access_token;
 
+      setaxiosInstance({axiosInstance});
       await Keychain.setGenericPassword('user', JSON.stringify(userData));
       setUser(userData);
       setIsSigningUp(false);
@@ -209,10 +219,50 @@ function SignUp({route}) {
     }
   };
 
-  // TODO: To remove
-  React.useEffect(() => {
+  React.useEffect(async () => {
     console.log(user);
-  }, [user]);
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    async function getDBskills() {
+      let res = [];
+      while (res.length === 0) {
+        await axiosInstance
+          .get('/get_domains_and_its_skills')
+          .then(response => {
+            // console.log(JSON.stringify(response.data));
+            res = response.data;
+          })
+          .catch(err => {
+            console.error('SkillsList Error : ' + err);
+          });
+        await sleep(4000);
+      }
+      setskillsList(res);
+    }
+
+    async function getDBlanguages() {
+      let res = [];
+      while (res.length === 0) {
+        await axiosInstance
+          .get('/get_all_languages')
+          .then(response => {
+            // console.log(JSON.stringify(response.data));
+            res = response.data;
+          })
+          .catch(err => {
+            console.error('languageList Error : ' + err);
+          });
+        await sleep(4000);
+      }
+      setlanguageList(res);
+    }
+    setIsSigningUp(true);
+    await getDBskills();
+    await getDBlanguages();
+    setIsSigningUp(false);
+  }, []);
 
   return (
     <View
@@ -365,7 +415,13 @@ function SignUp({route}) {
         />
 
         <NewSection name="Skills" />
-        <Skills skillList={skillList} skills={skills} setSkills={setSkills} />
+        {skillsList.length > 0 && (
+          <Skills
+            skillList={skillsList}
+            skills={skills}
+            setSkills={setSkills}
+          />
+        )}
 
         <NewSection name="Languages" />
         <View>
