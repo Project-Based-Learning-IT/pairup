@@ -27,7 +27,7 @@ load_dotenv()
 def getSimilarUsers(top_n, target):
     df = pd.read_csv('Data.csv')
     name_of_users = df.index
-    model = joblib.load('model.pkl', mmap_mode='r')
+    model = joblib.load('KNNmodel.pkl', mmap_mode='r')
     user = [df[df['Name'] == target].loc[0, 1:].values]
     similar_users = model.kneighbors(user, top_n, return_distance=False)[0]
     recommendedUsers = [name_of_users[i] for i in similar_users]
