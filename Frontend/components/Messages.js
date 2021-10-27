@@ -65,7 +65,7 @@ function Messages() {
       }}>
       <FocusAwareStatusBar barStyle={'dark-content'} backgroundColor={'#fff'} />
 
-      <Text
+      {/* <Text
         style={{
           padding: 10,
           color: colors.primary,
@@ -126,7 +126,9 @@ function Messages() {
                 },
                 languages: ['Marathi', 'English', 'Hindi'],
               };
-              navigation.navigate('ViewProfileRightSwipedU', {user: card1});
+              navigation.navigate('ViewProfileRightSwipedU', {
+                card_user: card1,
+              });
             }}>
             <Image
               source={{
@@ -164,7 +166,7 @@ function Messages() {
             </Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </ScrollView> */}
 
       <Text
         style={{

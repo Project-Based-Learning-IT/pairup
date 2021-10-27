@@ -1,5 +1,8 @@
 {
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[sql]": {
+    "editor.defaultFormatter": "mtxr.sqltools"
+  }
 }

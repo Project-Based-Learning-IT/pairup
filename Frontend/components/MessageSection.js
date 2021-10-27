@@ -33,7 +33,7 @@ function MessageSection() {
         component={ViewProfile}
         options={({route}) => ({
           headerTitle: () => (
-            <LogoTitle user={route?.params?.user} Routename={route.name} />
+            <LogoTitle user={route?.params?.card_user} Routename={route.name} />
           ),
           headerRight: () => <IconButton icon="dots-horizontal" />,
         })}></MessageSectionStack.Screen>

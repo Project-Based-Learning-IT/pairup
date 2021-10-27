@@ -134,7 +134,6 @@ function ViewProfile({route}) {
       let cardUserData = {
         ...card_user,
         email: studData.Email,
-        name: card_user.name,
         personalEmail: 'NotinDB',
         bio: studData.Bio,
         SocialURL_ID: studData.SocialURL_ID,
@@ -146,6 +145,10 @@ function ViewProfile({route}) {
           return lang.Language_name;
         }),
       };
+
+      //TODO Fetch remaining data for navigations coming from messages with id only
+      // if (!cardUserData.skills)
+      // Fetch skills and all from get_student_profile route
 
       setcardUserData(cardUserData);
     }
@@ -325,6 +328,19 @@ function ViewProfile({route}) {
               placeholder="Type your bio"
               value={cardUserData.bio}
               onChangeText={text => setBio(text)}
+              style={{
+                paddingBottom: 20,
+              }}
+              multiline={true}
+              disabled={true}
+            />
+
+            <TextInput
+              mode="outlined"
+              label="Requirements"
+              placeholder="Type your Requirements"
+              value={cardUserData.requirements}
+              onChangeText={text => setRequirements(text)}
               style={{
                 paddingBottom: 20,
               }}

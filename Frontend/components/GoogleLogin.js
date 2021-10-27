@@ -101,7 +101,7 @@ function GoogleLogin() {
         googleId: userInfo.user.id,
         photo: userInfo.user.photo,
         email: userInfo.user.email,
-        name: studRes.data.Name.toUpperCase(),
+        name: studRes.data.Name,
         personalEmail: 'NotinDB',
         bio: studRes.data.Bio,
         requirements: studRes.data.Requirements,

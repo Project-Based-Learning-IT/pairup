@@ -514,7 +514,7 @@ def get_student_profile():
     res['Headline'] = student.Headline
     res['Google_ID'] = student.Google_ID
     res['Image_URl'] = student.Image_URL
-    res['Name'] = student.Name
+    res['Name'] = student.Name.title()
     res['Requirements'] = student.Requirements
     res['SocialURL_ID'] = student.SocialURL_ID
     res['Degree_ID'] = student.Degree_ID
@@ -800,9 +800,72 @@ def message():
         # }
 
 
-@app.route("/get_all_chats",  methods=['GET', 'POST'])
+@app.route("/get_last_msgs_with_count_name_photo",  methods=['GET'])
+@jwt_required()
+def get_last_msgs():
+    id = get_jwt_identity()
+
+    q = """SELECT m1.*,
+      NewSC.newmsgs,
+      StudNI.Name,
+      StudNI.Image_URL
+    FROM messages AS m1
+      INNER JOIN (
+        select Sender_ID,
+          COUNT(*) newmsgs
+        from messages as NewM
+        where NewM.timestamp > :dt
+          and NewM.Sender_ID != :id
+        group by NewM.Sender_ID
+      ) AS NewSC
+      INNER JOIN (
+        select T1.pid pid,
+          max(T1.maxMsgID) maxMsgID
+        from (
+            select R.RECEIVER_ID pid,
+              max(R.Message_ID) maxMsgID
+            from messages AS R
+            where R.SENDER_ID = :id
+            group by R.RECEIVER_ID
+            union
+            distinct
+            select S.Sender_ID pid,
+              max(S.Message_ID) maxMsgID
+            from messages AS S
+            where S.Receiver_ID = :id
+            group by S.Sender_ID
+          ) AS T1
+        GROUP BY T1.pid
+      ) AS maxTsC
+      INNER JOIN (
+        select Student_ID,
+          Name,
+          Image_URL
+        from student AS Stud
+      ) AS StudNI ON m1.Message_ID = maxTsC.maxMsgID
+      AND NewSC.Sender_ID = maxTsC.pid
+      AND maxTsC.pid = StudNI.Student_ID """
+
+    str_last_date_time = request.json['DateTime']
+    last_date_time = parser.parse(str_last_date_time)
+    result = db.session.execute(q, {'id': id, 'dt': last_date_time})
+    res = list()
+    for row in result:
+        res.append(row._asdict())  # convert to dict keyed by column names
+    return jsonify(res), 200
+
+# Sample json request body
+# {
+    # "DateTime": "2021-10-26 13:10:38",
+# }
+
+# First time use
+
+
+@app.route("/get_all_chats",  methods=['GET'])
 @jwt_required()
 def get_all_chats():
+    pid = request.args.get('pid', -1, type=int)
     id = get_jwt_identity()
     chats = Messages.query.filter((Messages.Sender_ID == id) | (
         Messages.Receiver_ID == id)).order_by(Messages.timestamp.asc())
@@ -818,7 +881,7 @@ def get_all_chats():
     return jsonify(res), 200
 
 
-@app.route("/get_chats_after_last_cached",  methods=['GET', 'POST'])
+@app.route("/get_received_chats_after_last_cached",  methods=['GET', 'POST'])
 @jwt_required()
 def get_chats_after_last_cached():
     if request.method == "POST":
@@ -826,8 +889,8 @@ def get_chats_after_last_cached():
         str_last_date_time = request.json['DateTime']
         last_date_time = parser.parse(str_last_date_time)
 
-        chats = Messages.query.filter(((Messages.Sender_ID == id) | (
-            Messages.Receiver_ID == id)) & (Messages.timestamp > last_date_time)).order_by(Messages.timestamp.asc())
+        chats = Messages.query.filter((Messages.Receiver_ID == id) & (
+            Messages.timestamp > last_date_time)).order_by(Messages.timestamp.asc())
         res = list()
         for message in chats:
             curr_message = dict()
@@ -838,11 +901,12 @@ def get_chats_after_last_cached():
             curr_message['timestamp'] = message.timestamp
             res.append(curr_message)
         return jsonify(res), 200
-
 # Sample json body
 # {
-#     "DateTime": "2021-09-29 09:35:52"
+    # "DateTime": "2021-09-29 09:35:52",
+    # "sid": 2
 # }
+# or "DateTime": "Tue, 26 Oct 2021 13:10:38 GMT"
 
 
 if __name__ == "__main__":

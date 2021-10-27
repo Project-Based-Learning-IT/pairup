@@ -400,7 +400,7 @@ function MyProfile({route}) {
             paddingBottom: 20,
           }}
           multiline={true}
-          right={<TextInput.Affix text={`${bio.length}/200`} />}
+          right={<TextInput.Affix text={`${requirements.length}/200`} />}
         />
 
         <NewSection name="Skills" />
