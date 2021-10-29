@@ -29,7 +29,7 @@ Open a terminal from the current directory i.e. <code>CollegeSpace/frontend</cod
 
 
 ### Physical device USB connection
-Follow docs and also do adb reverse port 5000 along with 8081 for flask server access
+Follow [docs](https://reactnative.dev/docs/running-on-device) and also do adb reverse port 5000 along with 8081 for flask server access
 
 Can use [SCRCPY](https://github.com/Genymobile/scrcpy) to cast device to PC
 ### Physical device wireless connection
