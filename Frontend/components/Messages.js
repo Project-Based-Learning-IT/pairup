@@ -12,16 +12,38 @@ import FocusAwareStatusBar from './FocusAwareStatusBar';
 import {useTheme} from 'react-native-paper';
 import {chats} from '../staticStore';
 import {useAuth} from '../App';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Keychain from 'react-native-keychain';
+import {ChatContext} from './ChatContext';
 
 function Messages() {
-  const {user, axiosInstance, setaxiosInstance, setUser} = useAuth();
+  const {axiosInstance} = useAuth();
+  const {allChats, setAllChats, verticalProfiles, setVerticalProfiles} =
+    React.useContext(ChatContext);
   const navigation = useNavigation();
   const {colors} = useTheme();
 
   const [unreadCounts, setUnreadCounts] = React.useState({});
 
   const [horizontalProfiles, setHorizontalProfiles] = React.useState([]);
-  const [verticalProfiles, setVerticalProfiles] = React.useState([]);
+
+  const storeData = async value => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem('@Chats', jsonValue);
+    } catch (e) {
+      // saving error
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('@Chats');
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // error reading value
+    }
+  };
 
   React.useEffect(async () => {
     function sleep(ms) {
@@ -52,6 +74,39 @@ function Messages() {
         setVerticalProfiles(res);
         setUnreadCounts(unreads);
         // console.log(JSON.stringify(res));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    async function getNewlyReceived() {
+      try {
+        let res = [];
+        while (res.length === 0) {
+          await axiosInstance
+            .post('/get_received_chats_after_last_cached', {
+              DateTime: '2021-10-23 13:59:13',
+            })
+            .then(response => {
+              res = response.data;
+            })
+            .catch(err => {
+              console.error('NewlyReceived Error : ' + err);
+            });
+          await sleep(2000);
+        }
+
+        await setAllChats(prevAllChats => {
+          res.map(msg => {
+            if (!prevAllChats[msg.Sender_ID]) {
+              prevAllChats[msg.Sender_ID] = [];
+            }
+            prevAllChats[msg.Sender_ID].push(msg);
+          });
+          return prevAllChats;
+        });
+
+        await storeData(allChats);
       } catch (error) {
         console.log(error);
       }
@@ -91,6 +146,21 @@ function Messages() {
     // getProfiles();
 
     await getMessageProfiles();
+
+    // console.log('Before append: ', allChats);
+    if (Object.keys(allChats).length === 0 && (await getData())) {
+      await setAllChats(await getData());
+    }
+    //  else {
+    //   await getNewlyReceived();
+    //   console.log('After append: ', allChats);
+    //   console.log('StoredChats: ', await getData());
+    // }
+
+    await getNewlyReceived();
+    console.log('After append: ', allChats);
+
+    // await AsyncStorage.removeItem('@Chats');
   }, []);
 
   return (
@@ -231,7 +301,12 @@ function Messages() {
               flexDirection: 'row',
             }}
             onPress={() => {
-              navigation.navigate('Chat', {userChatting: profile});
+              console.log(allChats[profile.pid]);
+              navigation.navigate('Chat', {
+                userChatting: profile,
+                pChats: allChats[profile.pid],
+                // setVProfiles: setVerticalProfiles,
+              });
               setUnreadCounts(prevUnreads => {
                 return {
                   ...prevUnreads,

@@ -34,19 +34,11 @@
 -- Query to get last messages of a chat and count of unread fetched messages after last cached time
 SELECT m1.Message_ID,
   m1.text,
-  NewSC.newmsgs,
   maxTsC.pid,
+  ifnull(NewSC.newmsgs, 0) newmsgs,
   StudNI.Name,
   StudNI.Image_URL
 FROM messages AS m1
-  INNER JOIN (
-    select Sender_ID,
-      COUNT(*) newmsgs
-    from messages as NewM
-    where NewM.timestamp > '2021-10-26 13:10:38'
-      and NewM.Sender_ID != 709
-    group by NewM.Sender_ID
-  ) AS NewSC
   INNER JOIN (
     select T1.pid pid,
       max(T1.maxMsgID) maxMsgID
@@ -65,12 +57,18 @@ FROM messages AS m1
         group by S.Sender_ID
       ) AS T1
     GROUP BY T1.pid
-  ) AS maxTsC
+  ) AS maxTsC ON m1.Message_ID = maxTsC.maxMsgID
+  LEFT JOIN (
+    select Sender_ID,
+      COUNT(*) newmsgs
+    from messages as NewM
+    where NewM.timestamp > '2021-10-26 13:10:38'
+      and NewM.Sender_ID != 709
+    group by NewM.Sender_ID
+  ) AS NewSC ON NewSC.Sender_ID = maxTsC.pid
   INNER JOIN (
     select Student_ID,
       Name,
       Image_URL
     from student AS Stud
-  ) AS StudNI ON m1.Message_ID = maxTsC.maxMsgID
-  AND NewSC.Sender_ID = maxTsC.pid
-  AND maxTsC.pid = StudNI.Student_ID -- order by T1.maxMsgID desc
+  ) AS StudNI ON maxTsC.pid = StudNI.Student_ID -- order by T1.maxMsgID desc

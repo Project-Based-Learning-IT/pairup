@@ -70,6 +70,7 @@ function MyProfile({route}) {
 
       // without languages and projects
       let userData = {
+        id: user.id,
         googleId: user.googleId,
         photo: user.photo,
         email: user.email,

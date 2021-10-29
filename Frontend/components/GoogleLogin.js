@@ -51,6 +51,8 @@ function GoogleLogin() {
 
     new_user = res_access_token.data.new_user;
 
+    id = res_access_token.data.id;
+
     if (!new_user) {
       let studRes;
       let degreeRes;
@@ -97,6 +99,7 @@ function GoogleLogin() {
       }
 
       let userData = {
+        id: id,
         googleId: userInfo.user.id,
         photo: userInfo.user.photo,
         email: userInfo.user.email,
@@ -133,6 +136,7 @@ function GoogleLogin() {
       setIsLoggingIn(false);
       navigation.navigate('SignUp', {
         user: userInfo.user,
+        id: id,
       });
     }
   };

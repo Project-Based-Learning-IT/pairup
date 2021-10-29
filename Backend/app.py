@@ -212,7 +212,7 @@ def signup_and_login():
     # By default, this is done with an authorization header that looks like:
     # Authorization: Bearer <access_token>
     access_token = create_access_token(identity=student.Student_ID)
-    return jsonify(access_token=access_token, new_user=new_user), 200
+    return jsonify(access_token=access_token, new_user=new_user, id=student.Student_ID), 200
     # Sample json body
     # {
     #     "username": "Dummy_a"
@@ -792,11 +792,17 @@ def message():
         message = Messages(Sender_ID=id, Receiver_ID=Receiver_ID, text=text)
         db.session.add(message)
         db.session.commit()
-        return str(message.Message_ID), 200
+        res = dict()
+        res['text'] = message.text
+        res['timestamp'] = message.timestamp
+        res['Sender_ID'] = message.Sender_ID
+        res['Receiver_ID'] = message.Receiver_ID
+        res['Message_ID'] = message.Message_ID
+        return res, 200
         # Sample json body
         # {
-        #     "text": "Hi, this is first chat",
-        #     "Receiver_ID": 2
+        # "text": "Hi, this is first chat",
+        # "Receiver_ID": 2
         # }
 
 
@@ -807,19 +813,11 @@ def get_last_msgs():
 
     q = """SELECT m1.Message_ID,
       m1.text,
-      NewSC.newmsgs,
       maxTsC.pid,
+      ifnull(NewSC.newmsgs, 0) newmsgs,
       StudNI.Name,
       StudNI.Image_URL
     FROM messages AS m1
-      INNER JOIN (
-        select Sender_ID,
-          COUNT(*) newmsgs
-        from messages as NewM
-        where NewM.timestamp > :dt
-          and NewM.Sender_ID != :id
-        group by NewM.Sender_ID
-      ) AS NewSC
       INNER JOIN (
         select T1.pid pid,
           max(T1.maxMsgID) maxMsgID
@@ -838,15 +836,21 @@ def get_last_msgs():
             group by S.Sender_ID
           ) AS T1
         GROUP BY T1.pid
-      ) AS maxTsC
+      ) AS maxTsC ON m1.Message_ID = maxTsC.maxMsgID
+      LEFT JOIN (
+        select Sender_ID,
+          COUNT(*) newmsgs
+        from messages as NewM
+        where NewM.timestamp > :dt
+          and NewM.Sender_ID != :id
+        group by NewM.Sender_ID
+      ) AS NewSC ON NewSC.Sender_ID = maxTsC.pid
       INNER JOIN (
         select Student_ID,
           Name,
           Image_URL
         from student AS Stud
-      ) AS StudNI ON m1.Message_ID = maxTsC.maxMsgID
-      AND NewSC.Sender_ID = maxTsC.pid
-      AND maxTsC.pid = StudNI.Student_ID """
+      ) AS StudNI ON maxTsC.pid = StudNI.Student_ID"""
 
     str_last_date_time = request.json['DateTime']
     last_date_time = parser.parse(str_last_date_time)
@@ -891,7 +895,8 @@ def get_chats_after_last_cached():
         str_last_date_time = request.json['DateTime']
         last_date_time = parser.parse(str_last_date_time)
 
-        chats = Messages.query.filter((Messages.Receiver_ID == id) & (
+        chats = Messages.query.filter((
+            Messages.Receiver_ID == id) & (
             Messages.timestamp > last_date_time)).order_by(Messages.timestamp.asc())
         res = list()
         for message in chats:
@@ -905,8 +910,7 @@ def get_chats_after_last_cached():
         return jsonify(res), 200
 # Sample json body
 # {
-    # "DateTime": "2021-09-29 09:35:52",
-    # "sid": 2
+    # "DateTime": "2021-10-23 13:59:13",
 # }
 # or "DateTime": "Tue, 26 Oct 2021 13:10:38 GMT"
 

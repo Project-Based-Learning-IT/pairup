@@ -14,7 +14,8 @@ import Hyperlink from 'react-native-hyperlink';
 import {Linking} from 'react-native';
 import {useAuth} from '../App';
 import LinkPreview from './LinkPreview';
-import {getBoilerplateChats} from '../staticStore';
+import {ChatContext} from './ChatContext';
+// import {getBoilerplateChats} from '../staticStore';
 
 function extractURL(text) {
   var urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -31,24 +32,26 @@ function extractURL(text) {
 function Chat(props) {
   const scrollViewRef = React.useRef();
 
-  const {userChatting} = props.route.params;
+  const {userChatting, pChats} = props.route.params;
+  const {allChats, setAllChats, verticalProfiles, setVerticalProfiles} =
+    React.useContext(ChatContext);
+
+  // console.log(pChats);
 
   const {colors} = useTheme();
 
-  const {user} = useAuth();
+  const {user, axiosInstance} = useAuth();
 
   const [chatText, setChatText] = React.useState('');
 
-  const [chats, setChats] = React.useState(
-    getBoilerplateChats(userChatting, user),
-  );
+  const [chats, setChats] = React.useState(pChats);
 
   function getMarginBottom(index) {
     if (index === chats.length - 1) {
       return 0;
     }
 
-    if (chats[index + 1].senderId === chats[index].senderId) {
+    if (chats[index + 1].Sender_ID === chats[index].Sender_ID) {
       return 2;
     }
 
@@ -60,14 +63,16 @@ function Chat(props) {
       return 4;
     }
 
-    if (chats[index - 1].senderId === chats[index].senderId) {
+    if (chats[index - 1].Sender_ID === chats[index].Sender_ID) {
       return 14;
     }
 
     return 4;
   }
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    console.log(chats);
+  }, []);
 
   return (
     <View
@@ -113,18 +118,19 @@ function Chat(props) {
                   maxWidth: '70%',
                   borderRadius: 14,
                   borderTopRightRadius:
-                    chat.senderId === 'me' ? getBorderRadius(index) : 14,
+                    chat.Sender_ID === user.id ? getBorderRadius(index) : 14,
                   borderTopLeftRadius:
-                    chat.senderId === 'me' ? 14 : getBorderRadius(index),
+                    chat.Sender_ID === user.id ? 14 : getBorderRadius(index),
                   marginBottom: getMarginBottom(index),
                   backgroundColor:
-                    chat.senderId === 'me' ? colors.primary : '#fff',
-                  alignSelf: chat.senderId === 'me' ? 'flex-end' : 'flex-start',
+                    chat.Sender_ID === user.id ? colors.primary : '#fff',
+                  alignSelf:
+                    chat.Sender_ID === user.id ? 'flex-end' : 'flex-start',
                   elevation: 2,
                 }}>
                 <Hyperlink
                   linkStyle={{
-                    color: chat.senderId === 'me' ? '#d3ffff' : '#007bff',
+                    color: chat.Sender_ID === user.id ? '#d3ffff' : '#007bff',
                     fontWeight: 'bold',
                     textDecorationLine: 'underline',
                   }}
@@ -133,19 +139,20 @@ function Chat(props) {
                       console.warn('An error occurred: ', error),
                     );
                   }}>
-                  {extractURL(chat.message) && (
+                  {extractURL(chat.text) && (
                     <LinkPreview
-                      link={extractURL(chat.message)}
-                      isSent={chat.senderId !== 'me'}
+                      link={extractURL(chat.text)}
+                      isSent={chat.Sender_ID !== user.id}
                     />
                   )}
                   <Text
                     selectable={true}
                     style={{
                       padding: 6,
-                      color: chat.senderId === 'me' ? '#fff' : colors.primary,
+                      color:
+                        chat.Sender_ID === user.id ? '#fff' : colors.primary,
                     }}>
-                    {chat.message}
+                    {chat.text}
                   </Text>
                 </Hyperlink>
               </View>
@@ -197,17 +204,35 @@ function Chat(props) {
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          onPress={() => {
+          onPress={async () => {
+            function sleep(ms) {
+              return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            let Newmsg = {};
+            while (Object.keys(Newmsg).length === 0) {
+              await axiosInstance
+                .post('/message', {
+                  Receiver_ID: userChatting.pid,
+                  text: chatText,
+                })
+                .then(response => {
+                  // console.log(JSON.stringify(response.data));
+                  Newmsg = response.data;
+                })
+                .catch(err => {
+                  console.error('NewMessage Error : ' + err);
+                });
+              await sleep(2000);
+            }
+            setChats([...chats, Newmsg]);
+            userChatting.text = chatText;
+            setVerticalProfiles(prevVerticalProfiles => {
+              const newVProfiles = prevVerticalProfiles.filter(profile => {
+                return profile.pid !== userChatting.pid;
+              });
+              return [...newVProfiles, userChatting];
+            });
             setChatText('');
-            setChats([
-              ...chats,
-              {
-                id: chats.length + 1,
-                message: chatText,
-                senderId: 'me',
-                receiverId: userChatting.pid,
-              },
-            ]);
           }}>
           <Ioncions
             name="ios-send"

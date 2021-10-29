@@ -34,7 +34,7 @@ import {
 } from '../staticStore';
 
 function SignUp({route}) {
-  const {user} = route.params;
+  const {user, id} = route.params;
 
   const {setUser, setIsSignedIn, axiosInstance, setaxiosInstance} = useAuth();
   const {colors} = useTheme();
@@ -97,6 +97,7 @@ function SignUp({route}) {
 
       // without projects
       let userData = {
+        id: id,
         googleId: user.id,
         photo: user.photo,
         email: user.email,
