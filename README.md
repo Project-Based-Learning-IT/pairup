@@ -27,7 +27,14 @@ Open a terminal from the current directory i.e. <code>CollegeSpace/frontend</cod
 <p>[Make sure to use<code>yarn install</code> if there are errors]</p>
 </li>
 
+
+### Physical device USB connection
+Follow docs and also do adb reverse port 5000 along with 8081 for flask server access
+
+Can use [SCRCPY](https://github.com/Genymobile/scrcpy) to cast device to PC
 ### Physical device wireless connection
+Note: Flask server isn't connected with this method
+
 To find the devices: `adb devices`
 1. Make sure your laptop and your phone are on the  **same**  Wi-Fi network.
 2.  Open your React Native app on your device.
@@ -35,7 +42,7 @@ To find the devices: `adb devices`
 4.  Open the in-app  [Developer menu]
 (https://reactnative.dev/docs/debugging#accessing-the-in-app-developer-menu).
 To open the dev menu: `adb shell input keyevent 82`
-5.  Go to  **Dev Settings**  →  **Debug server host & port for device**.
+5.  Go to  **Dev Settings**  →  **Debug server host & port for device**. 
 6.  Type in your machine's IP address and the port of the local dev server (e.g. 10.0.1.1:8081).
 `ipconfig` to find your machine's IP address
 8.  Go back to the  **Developer menu**  and select  **Reload JS**.
@@ -93,6 +100,27 @@ https://www.npmjs.com/package/frisbee
 
 
 ## Backend
+
+### Setup Database server
+using XAMPP (Apache and MySQL) and make these changes after starting Apache and Mysql(Stop MySQL Workbench service from services to freeup port 3306) in XAMMP->Apache->Config->php.ini
+```sql
+Find:
+post_max_size = 8M
+upload_max_filesize = 2M
+max_execution_time = 30
+max_input_time = 60
+memory_limit = 8M
+
+Change to:
+post_max_size = 750M
+upload_max_filesize = 750M
+max_execution_time = 5000
+max_input_time = 5000
+memory_limit = 1000M
+```
+Then import the sql file using phpMyAdmin (XAMMP->MySQL->Admin)
+
+### Setup Server
 
 Navigate to the cloned repository
 
