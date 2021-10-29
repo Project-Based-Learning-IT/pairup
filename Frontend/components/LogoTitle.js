@@ -14,9 +14,11 @@ function LogoTitle({userChatting, Routename, user}) {
           borderRadius: 21,
         }}
         source={{
-          uri: userChatting?.picture?.medium
-            ? userChatting?.picture?.medium
-            : user.photo,
+          uri: userChatting?.Image_URL
+            ? userChatting?.Image_URL
+            : user?.photo
+            ? user?.photo
+            : 'https://www.xeus.com/wp-content/uploads/2014/09/One_User_Orange.png',
         }}
       />
       {Routename == 'Chat' && (
@@ -45,7 +47,7 @@ function LogoTitle({userChatting, Routename, user}) {
             fontSize: Routename === 'ViewProfile' ? 22 : 18,
             fontWeight: 'bold',
           }}>
-          {userChatting?.name?.first ? userChatting?.name?.first : user.name}
+          {userChatting?.Name ? userChatting?.Name : user.name}
         </Text>
         {Routename == 'Chat' && (
           <Text

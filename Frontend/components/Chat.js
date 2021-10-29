@@ -205,7 +205,7 @@ function Chat(props) {
                 id: chats.length + 1,
                 message: chatText,
                 senderId: 'me',
-                receiverId: userChatting.cell,
+                receiverId: userChatting.pid,
               },
             ]);
           }}>

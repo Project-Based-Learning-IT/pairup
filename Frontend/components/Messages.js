@@ -11,47 +11,86 @@ import {useNavigation} from '@react-navigation/native';
 import FocusAwareStatusBar from './FocusAwareStatusBar';
 import {useTheme} from 'react-native-paper';
 import {chats} from '../staticStore';
+import {useAuth} from '../App';
 
 function Messages() {
+  const {user, axiosInstance, setaxiosInstance, setUser} = useAuth();
   const navigation = useNavigation();
   const {colors} = useTheme();
+
+  const [unreadCounts, setUnreadCounts] = React.useState({});
 
   const [horizontalProfiles, setHorizontalProfiles] = React.useState([]);
   const [verticalProfiles, setVerticalProfiles] = React.useState([]);
 
-  React.useEffect(() => {
-    async function getProfiles() {
+  React.useEffect(async () => {
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    async function getMessageProfiles() {
       try {
-        // Loop to fetch 8 horizontal profiles
-        for (let i = 0; i < 8; i++) {
-          const response = await fetch(
-            'https://randomuser.me/api/?results=1&inc=name,picture,email,location,phone,cell,dob,login,registered,id,nat&noinfo',
-          );
-          const data = await response.json();
-          setHorizontalProfiles(horizontalProfiles => [
-            ...horizontalProfiles,
-            data.results[0],
-          ]);
+        let res = [];
+        while (res.length === 0) {
+          await axiosInstance
+            .post('/get_last_msgs_with_count_name_photo', {
+              DateTime: '2021-10-26 13:10:38',
+            })
+            .then(response => {
+              res = response.data;
+            })
+            .catch(err => {
+              console.error('MessageProfiles Error : ' + err);
+            });
+          await sleep(2000);
         }
 
-        // console.log(horizontalProfiles);
+        let unreads = {};
+        res.map(profile => {
+          unreads[profile.pid] = profile.newmsgs;
+        });
 
-        // Loop for vertical profiles
-        for (let i = 0; i < 8; i++) {
-          const response = await fetch(
-            'https://randomuser.me/api/?results=1&inc=name,picture,email,location,phone,cell,dob,login,registered,id,nat&noinfo',
-          );
-          const data = await response.json();
-          setVerticalProfiles(verticalProfiles => [
-            ...verticalProfiles,
-            data.results[0],
-          ]);
-        }
+        setVerticalProfiles(res);
+        setUnreadCounts(unreads);
+        // console.log(JSON.stringify(res));
       } catch (error) {
         console.log(error);
       }
     }
-    getProfiles();
+    // async function getProfiles() {
+    //   try {
+    // Loop to fetch 8 horizontal profiles
+    // for (let i = 0; i < 8; i++) {
+    //   const response = await fetch(
+    //     'https://randomuser.me/api/?results=1&inc=name,picture,email,location,phone,cell,dob,login,registered,id,nat&noinfo',
+    //   );
+    //   const data = await response.json();
+    //   setHorizontalProfiles(horizontalProfiles => [
+    //     ...horizontalProfiles,
+    //     data.results[0],
+    //   ]);
+    // }
+
+    // console.log(horizontalProfiles);
+
+    // Loop for vertical profiles
+    // for (let i = 0; i < 8; i++) {
+    //   const response = await fetch(
+    //     'https://randomuser.me/api/?results=1&inc=name,picture,email,location,phone,cell,dob,login,registered,id,nat&noinfo',
+    //   );
+    //   const data = await response.json();
+    //   setVerticalProfiles(verticalProfiles => [
+    //     ...verticalProfiles,
+    //     data.results[0],
+    //   ]);
+
+    //     }
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // }
+    // getProfiles();
+
+    await getMessageProfiles();
   }, []);
 
   return (
@@ -64,7 +103,6 @@ function Messages() {
         paddingTop: StatusBar.currentHeight,
       }}>
       <FocusAwareStatusBar barStyle={'dark-content'} backgroundColor={'#fff'} />
-
       {/* <Text
         style={{
           padding: 10,
@@ -192,12 +230,20 @@ function Messages() {
               alignItems: 'center',
               flexDirection: 'row',
             }}
-            onPress={() =>
-              navigation.navigate('Chat', {userChatting: profile})
-            }>
+            onPress={() => {
+              navigation.navigate('Chat', {userChatting: profile});
+              setUnreadCounts(prevUnreads => {
+                return {
+                  ...prevUnreads,
+                  [profile.pid]: 0,
+                };
+              });
+            }}>
             <Image
               source={{
-                uri: profile.picture.large,
+                uri: profile.Image_URL
+                  ? profile.Image_URL
+                  : 'https://www.xeus.com/wp-content/uploads/2014/09/One_User_Orange.png',
               }}
               style={{
                 width: 64,
@@ -219,19 +265,21 @@ function Messages() {
                   fontSize: 18,
                   fontWeight: 'bold',
                 }}>
-                {profile.name.first}
+                {profile.Name}
               </Text>
               <Text
+                numberOfLines={1}
                 style={{
                   textAlign: 'center',
                   fontSize: 14,
                   fontWeight: 'bold',
                   color: '#9b9b9b',
                 }}>
-                {chats[Math.floor(Math.random() * 9)]}
+                {/* {chats[Math.floor(Math.random() * 9)]} */}
+                {profile.text}
               </Text>
             </View>
-            {(index == 0 || index == 1 || index == 4) && (
+            {unreadCounts[profile.pid] >= 1 && (
               <View
                 style={{
                   borderRadius: 50,
@@ -249,7 +297,8 @@ function Messages() {
                     textAlign: 'center',
                     zIndex: 1,
                   }}>
-                  {Math.floor(Math.random() * 5) + 1}
+                  {/* {Math.floor(Math.random() * 5) + 1} */}
+                  {unreadCounts[profile.pid]}
                 </Text>
               </View>
             )}

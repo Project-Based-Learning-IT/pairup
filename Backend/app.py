@@ -800,13 +800,15 @@ def message():
         # }
 
 
-@app.route("/get_last_msgs_with_count_name_photo",  methods=['GET'])
+@app.route("/get_last_msgs_with_count_name_photo",  methods=['POST'])
 @jwt_required()
 def get_last_msgs():
     id = get_jwt_identity()
 
-    q = """SELECT m1.*,
+    q = """SELECT m1.Message_ID,
+      m1.text,
       NewSC.newmsgs,
+      maxTsC.pid,
       StudNI.Name,
       StudNI.Image_URL
     FROM messages AS m1

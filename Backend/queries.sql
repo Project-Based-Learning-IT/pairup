@@ -32,8 +32,10 @@
 -- 
 -- 
 -- Query to get last messages of a chat and count of unread fetched messages after last cached time
-SELECT m1.*,
+SELECT m1.Message_ID,
+  m1.text,
   NewSC.newmsgs,
+  maxTsC.pid,
   StudNI.Name,
   StudNI.Image_URL
 FROM messages AS m1
