@@ -154,6 +154,7 @@ Main Packages
     pip install flask-jwt-extended
     pip install python-dotenv
     pip install python-dateutil
+    pip install -U flask-cors
 
 Install a python formatter in VSCode outside of virtual environment
 
