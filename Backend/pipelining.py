@@ -117,9 +117,9 @@ def recommendUsers(target_user_skills, target_user_domains, UserNames):
     
     return skill_based_user_names, domain_based_user_names
 
-#TODO : write the main driver code which will connect all these functions.
-#TODO : see error handling and exception handling in python (erros generated from database)
-
+#=======================================================================================================================
+#                         MAIN LOGIC
+#=======================================================================================================================          
 def update_models(skill_domain_dict, user_skill_dict):
     skills, SkillDomains = get_skills_n_domains(skill_domain_dict)
     UserSkills = user_data_matrix(user_skill_dict, skills) #user-skill-data-matrix

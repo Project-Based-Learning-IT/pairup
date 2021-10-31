@@ -24,7 +24,7 @@ import os
 # pymysql.install_as_MySQLdb()
 from dotenv import load_dotenv
 load_dotenv()
-
+import pipelining
 
 app = Flask(__name__)
 CORS(app)
