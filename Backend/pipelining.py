@@ -10,7 +10,7 @@ import joblib
 # User - Skill mapping
 # { "Username" : [skill1, skill2, skill3, ......., skilln] }
 
-
+#TODO: check this passed skill_domain_dict structure mostly current one is wrong
 def get_skills_n_domains(skill_domain_dict):
     skills = set()
     domains = set()
