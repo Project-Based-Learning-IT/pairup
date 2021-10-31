@@ -20,6 +20,8 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 # dotenv import
 import os
+# import pymysql  
+# pymysql.install_as_MySQLdb()
 from dotenv import load_dotenv
 load_dotenv()
 
