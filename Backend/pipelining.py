@@ -17,9 +17,11 @@ def get_skills_n_domains(skill_domain_dict):
     skill_domain_map = {}
     for element in skill_domain_dict:
         domains.add(element['domain_name'])
+        skillsList = []
         for skill in element['skills']:
             skills.add(skill['skill_name'])
-        skill_domain_map[element['domain_name']] = skills
+            skillsList.add(skill['skill_name'])
+        skill_domain_map[element['domain_name']] = skillsList
     skills = list(skills)
     domains = list(domains)
     skills.sort()
