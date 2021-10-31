@@ -26,13 +26,13 @@ def get_skills_n_domains(skill_domain_dict):
     domains.sort()
 
     SkillDomains = []
-    for domain in domains:
+    for skill in skills:
         oneHotSkillDomainList = []
-        for skill in skills:
-            if(skill in skill_domain_map[domain]):
-                oneHotSkillDomainList.append(1)
-            else:
-                oneHotSkillDomainList.append(0)
+        for domain in domains:
+          if(skill in skill_domain_map[domain]):
+              oneHotSkillDomainList.append(1)
+          else:
+              oneHotSkillDomainList.append(0)
         oneHotSkillDomainList.insert(0,skill)
         SkillDomains.append(oneHotSkillDomainList)
     columns = []
