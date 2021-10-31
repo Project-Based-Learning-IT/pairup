@@ -237,35 +237,19 @@ def protected():
     current_user = get_jwt_identity()
     return jsonify(Student_ID=current_user), 200
 
-
-# Recommendations routes
-
-def getSimilarUsers(top_n, target):
-    df = pd.read_csv('Data.csv')
-    name_of_users = df['Name']
-    model = joblib.load('KNNmodel.pkl', mmap_mode='r')
-    user = [df[df['Name'] == target].iloc[0, 1:].values.astype(int)]
-    # print(user)
-    similar_users = model.kneighbors(user, top_n, return_distance=False)[0]
-    recommendedUsers = [name_of_users[i] for i in similar_users]
-    return recommendedUsers
-
-
-# print(getSimilarUsers(10, 'krishna purohit'))
-
-
+#Recommendation Routes
 @app.route("/get_recommendations",  methods=['GET', 'POST'])
 @jwt_required()
 def get_recommendations():
     # id = get_jwt_identity()
     # res = getSimilarUsers(10, student.Name)
-
-    rec_names = getSimilarUsers(10, 'krishna purohit')
-    rec_names = rec_names[1:]
+    user_skill_dict = request.json['']
+    rec_names = pipelining.predict()
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
     cards = list()
     for rec_name in rec_names:
         curr_rec = dict()
+        #!DOUBT do we need to add error checking for this?
         rec = Student.query.filter_by(Name=rec_name).first()
         curr_rec['id'] = rec.Student_ID
         curr_rec['name'] = rec.Name.title()
@@ -299,6 +283,10 @@ def get_social_urls():
         id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     res = dict()
+    #Why is this hardcoded? !DOUBT
+    #social media handles may vary
+    #if we want to hardcode then only allow certain social media handles
+    #which are commom to all students
     if student.social_urls != None:
         res['SocialURL_ID'] = student.social_urls.SocialURL_ID
         res['codechef'] = student.social_urls.codechef

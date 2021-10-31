@@ -10,6 +10,7 @@ import joblib
 # User - Skill mapping
 # { "Username" : [skill1, skill2, skill3, ......., skilln] }
 
+
 def get_skills_n_domains(skill_domain_dict):
     skills = set()
     domains = set()
@@ -107,15 +108,23 @@ def recommendUsers(target_user_skills, target_user_domains, UserNames):
     skills_based_similar_users, skills_based_similar_user_distances = skill_based_model.kneighbors([target_user_skills],10)
     domains_based_similar_users, domains_based_similar_user_distances = domain_based_model.kneighbors([target_user_domains],10)
 
-    skill_based_user_names = []
-    domain_based_user_names = []
+    # skill_based_user_names = []
+    # domain_based_user_names = []
 
-    for usr_indx in skills_based_similar_users[0]:
-        skill_based_user_names.append(UserNames[usr_indx])
-    for usr_indx in domains_based_similar_users[0]:
-        domain_based_user_names.append(UserNames[usr_indx])
+    # # cutoff = 0.5
+    # for usr_indx in skills_based_similar_users[0]:
+    #     skill_based_user_names.append(UserNames[usr_indx])
+    # for usr_indx in domains_based_similar_users[0]:
+    #     domain_based_user_names.append(UserNames[usr_indx])
     
-    return skill_based_user_names, domain_based_user_names
+    Suggestions = list()
+    for usr_indx in skills_based_similar_users[0]:
+        if(UserNames[usr_indx] not in Suggestions):
+            Suggestions.append(UserNames[usr_indx])
+    for usr_indx in domains_based_similar_users[0]:
+        if(UserNames[usr_indx] not in Suggestions):
+            Suggestions.append(UserNames[usr_indx])
+    return Suggestions
 
 #=======================================================================================================================
 #                         MAIN LOGIC
@@ -125,12 +134,16 @@ def update_models(skill_domain_dict, user_skill_dict):
     UserSkills = user_data_matrix(user_skill_dict, skills) #user-skill-data-matrix
     UserDomains = weights(UserSkills, SkillDomains)
     create_models(UserSkills, UserDomains)
+    #add return statement to see if everything went down properly
 
-#TODO: think of a waay to not require the user-skill-dict as its costly operation
 def predict(target_user_skills):
-    UserNames = json.load(open('allUserNames.json')) #[1]
-    encoded_target_user_skills, encoded_target_user_domains = get_target_user_data(target_user_skills)
-    similar_skill_users, similar_domain_users = recommendUsers(encoded_target_user_skills, encoded_target_user_domains, UserNames)
+  """
+  input: target_user_skills - dict{"username": [skill1, skill2, ...]}
+  """
+  UserNames = json.load(open('allUserNames.json')) #[1]
+  encoded_target_user_skills, encoded_target_user_domains = get_target_user_data(target_user_skills)
+  suggestions = recommendUsers(encoded_target_user_skills, encoded_target_user_domains, UserNames)
+  return suggestions
 
 
 """
