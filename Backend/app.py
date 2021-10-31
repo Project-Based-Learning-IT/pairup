@@ -242,7 +242,7 @@ def protected():
 @app.route("/get_recommendations",  methods=['GET', 'POST'])
 @jwt_required()
 def get_recommendations():
-    user_skill_dict = request.json['']
+    user_skill_dict = request.json['skills']
     rec_names = pipelining.predict(user_skill_dict)
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
     cards = list()
