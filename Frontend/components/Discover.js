@@ -152,19 +152,10 @@ function Discover() {
 
     // console.log(user);
     async function getCards() {
+
       // TODO: POST user skills to server
-      // retries = 5;
-      // let res_post_user_skill;
-      // while (!res_post_user_skill && retries--) {
-      //   res_post_user_skill = await axiosInstance
-      //   // !DOUBT - why limited urls added?
-      //     .post('/get_recommendations', {
-      //       skills : user.skills,
-      //     })
-      //     .catch(err => {
-      //       console.error('Social_add Error : ' + err);
-      //     });
-      // }
+      // If user has done filtering post that list
+      // If not, then post users skill list
 
       let res = [];
       while (res.length === 0) {
