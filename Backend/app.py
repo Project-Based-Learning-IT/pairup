@@ -248,8 +248,11 @@ def get_recommendations():
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
     cards = list()
     for rec_name in rec_names:
+        id = get_jwt_identity()
+        student = Student.query.filter_by(Student_ID=id).first()
+        if(student.Name.title() == rec_name):
+            continue
         curr_rec = dict()
-        #!DOUBT do we need to add error checking for this?
         rec = Student.query.filter_by(Name=rec_name).first()
         curr_rec['id'] = rec.Student_ID
         curr_rec['name'] = rec.Name.title()
