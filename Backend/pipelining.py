@@ -62,12 +62,22 @@ def create_models(UserSkills, UserDomains):
     joblib.dump(domain_based_model,'KNN_user_domains.pkl')
 
 
+def save_usernames_insequence(usernames):
+    with open('usernames.txt', 'w') as f:
+        for username in usernames:
+            f.write(username + '\n')
+
+def read_usernames_insequence():
+    with open('usernames.txt', 'r') as f:
+        usernames = list(map(lambda x:x.strip('\n'),f.readlines()))
+    return usernames
+
 def user_data_matrix(user_skill_dict, Allskills):
     user_skill_dict.sort()
     UserSkills = []
-    UserNames = {}
+    UserNames = []
     for username,skill_list in user_skill_dict.items():
-        UserNames.append(username)
+        UserNames.append(username.lower())
         oneHotSkillList = []
         for skill in Allskills:
             if(skill in skill_list):
@@ -75,7 +85,8 @@ def user_data_matrix(user_skill_dict, Allskills):
             else:
                 oneHotSkillList.append(0)
         UserSkills.append(oneHotSkillList)
-    json.dump(UserNames,open('allUserNames.json','w'))
+    #write usernames in same sequence to text file and read also from text file
+    save_usernames_insequence(UserNames)
     return UserSkills
 
 def weights(UserSkills, SkillDomains):
@@ -140,7 +151,7 @@ def predict(target_user_skills):
   """
   input: target_user_skills - dict{"username": [skill1, skill2, ...]}
   """
-  UserNames = json.load(open('allUserNames.json')) #[1]
+  UserNames = read_usernames_insequence() #[1]
   encoded_target_user_skills, encoded_target_user_domains = get_target_user_data(target_user_skills)
   suggestions = recommendUsers(encoded_target_user_skills, encoded_target_user_domains, UserNames)
   return suggestions

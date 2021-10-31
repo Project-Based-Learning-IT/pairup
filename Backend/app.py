@@ -190,8 +190,9 @@ class Social_URLs(db.Model):
 # Homepage
 @app.route("/",  methods=['GET', 'POST'])
 def hello_world():
-    listOfUsers = getSimilarUsers(10, 'krishna purohit')
-    return str(listOfUsers)
+    return "How you doin'??"
+    # listOfUsers = getSimilarUsers(10, 'krishna purohit')
+    # return str(listOfUsers)
 
 # Login
 # Create a route to authenticate your users and return JWTs. The
@@ -241,15 +242,13 @@ def protected():
 @app.route("/get_recommendations",  methods=['GET', 'POST'])
 @jwt_required()
 def get_recommendations():
-    # id = get_jwt_identity()
-    # res = getSimilarUsers(10, student.Name)
     user_skill_dict = request.json['']
-    rec_names = pipelining.predict()
+    rec_names = pipelining.predict(user_skill_dict)
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
     cards = list()
+    id = get_jwt_identity()
+    student = Student.query.filter_by(Student_ID=id).first()
     for rec_name in rec_names:
-        id = get_jwt_identity()
-        student = Student.query.filter_by(Student_ID=id).first()
         if(student.Name.title() == rec_name):
             continue
         curr_rec = dict()
