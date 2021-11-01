@@ -24,6 +24,8 @@ def get_skills_n_domains(skill_domain_dict):
         skill_domain_map[element['domain_name']] = skillsList
     skills = list(skills)
     domains = list(domains)
+    print("Total Skills - {}".format(len(skills)))
+    print("Total Domains - {}".format(len(domains)))
     skills.sort()
     domains.sort()
 
