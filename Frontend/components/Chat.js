@@ -38,7 +38,7 @@ function Chat(props) {
   const {
     allChats,
     setAllChats,
-    // verticalProfiles,
+    verticalProfiles,
     // setVerticalProfiles,
     // getData,
     // storeData,
@@ -52,6 +52,7 @@ function Chat(props) {
   const [chatText, setChatText] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
 
+  let updatingState;
   const [chats, setChats] = React.useState(
     allChats[userChatting.pid] ? allChats[userChatting.pid] : [],
   );
@@ -91,10 +92,11 @@ function Chat(props) {
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     await getNewlyReceived();
-    sleep(2000).then(() => setRefreshing(false));
+    await sleep(2000).then(() => setRefreshing(false));
   }, []);
 
   const getNewlyReceived = async () => {
+    updatingState = true;
     try {
       let lastMessageTimestamp =
         chats.length > 0
@@ -103,7 +105,7 @@ function Chat(props) {
 
       // console.log('Chats length: ', chats.length, 'content', chats);
 
-      // console.log(lastMessageTimestamp);
+      console.log('ChatsTime: ', lastMessageTimestamp);
       let res = null;
       while (res === null) {
         await axiosInstance
@@ -123,20 +125,38 @@ function Chat(props) {
       }
 
       let new_chats = [];
-      await setAllChats(prevAllChats => {
-        res.map(msg => {
-          if (!prevAllChats[userChatting.pid]) {
-            prevAllChats[userChatting.pid] = [];
-          }
-          new_chats.push(msg);
-          prevAllChats[userChatting.pid].push(msg);
-        });
-        return prevAllChats;
-      });
+      if (res.length > 0) {
+        if (updatingState === true) {
+          await setAllChats(prevAllChats => {
+            res.map(msg => {
+              if (!prevAllChats[userChatting.pid]) {
+                prevAllChats[userChatting.pid] = [];
+              }
+              new_chats.push(msg);
+              prevAllChats[userChatting.pid].push(msg);
+            });
+            return prevAllChats;
+          });
 
-      // storeData('chats', allChats);
-      // console.log('Stored updated chats', getData('chats'));
-      await setChats([...chats, ...new_chats]);
+          // storeData('chats', allChats);
+          // console.log('Stored updated chats', getData('chats'));
+
+          if (chats.length > 0) {
+            await setChats(prevChats => {
+              new_chats.map(msg => {
+                if (msg.Sender_ID !== user.id) {
+                  if (prevChats[prevChats.length - 1].text !== msg.text) {
+                    prevChats.push(msg);
+                  }
+                }
+              });
+              return prevChats;
+            });
+          } else {
+            await setChats([...chats, ...new_chats]);
+          }
+        }
+      }
     } catch (error) {
       console.log(error);
     }
@@ -144,16 +164,19 @@ function Chat(props) {
 
   React.useEffect(async () => {
     // setIsLoading(true);
+    await sleep(2000);
     await getNewlyReceived();
+    await sleep(2000);
     // currChatInterval = setInterval(async () => {
     //   await getNewlyReceived();
     // }, 5000);
     // setIsLoading(false);
     return () => {
+      updatingState = false;
       //To prevent state update on unmount
       // clearInterval(currChatInterval);
     };
-  }, []);
+  }, [verticalProfiles]);
 
   return (
     <View
@@ -176,7 +199,7 @@ function Chat(props) {
           justifyContent: 'center',
           width: '100%',
         }}>
-        {isLoading ? (
+        {/* {isLoading ? (
           <Portal>
             <View
               style={{
@@ -194,76 +217,77 @@ function Chat(props) {
               <ActivityIndicator size={'large'} color={colors.primary} />
             </View>
           </Portal>
-        ) : (
-          <ScrollView
-            ref={scrollViewRef}
-            contentContainerStyle={{
-              paddingTop: 12,
-              paddingBottom: 75,
-              paddingLeft: '4%',
-              paddingRight: '4%',
-            }}
-            onContentSizeChange={() =>
-              scrollViewRef.current.scrollToEnd({animated: true})
-            }
-            style={{
-              flex: 1,
-              width: '100%',
-            }}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }>
-            {chats.map((chat, index) => {
-              return (
-                <View
-                  key={index}
-                  style={{
-                    padding: 6,
-                    maxWidth: '70%',
-                    borderRadius: 14,
-                    borderTopRightRadius:
-                      chat.Sender_ID === user.id ? getBorderRadius(index) : 14,
-                    borderTopLeftRadius:
-                      chat.Sender_ID === user.id ? 14 : getBorderRadius(index),
-                    marginBottom: getMarginBottom(index),
-                    backgroundColor:
-                      chat.Sender_ID === user.id ? colors.primary : '#fff',
-                    alignSelf:
-                      chat.Sender_ID === user.id ? 'flex-end' : 'flex-start',
-                    elevation: 2,
+        ) : ( */}
+        <ScrollView
+          ref={scrollViewRef}
+          contentContainerStyle={{
+            paddingTop: 12,
+            paddingBottom: 75,
+            paddingLeft: '4%',
+            paddingRight: '4%',
+          }}
+          onContentSizeChange={() =>
+            scrollViewRef.current.scrollToEnd({animated: true})
+          }
+          style={{
+            flex: 1,
+            width: '100%',
+          }}
+          // refreshControl={
+          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          // }
+        >
+          {chats.map((chat, index) => {
+            return (
+              <View
+                key={index}
+                style={{
+                  padding: 6,
+                  maxWidth: '70%',
+                  borderRadius: 14,
+                  borderTopRightRadius:
+                    chat.Sender_ID === user.id ? getBorderRadius(index) : 14,
+                  borderTopLeftRadius:
+                    chat.Sender_ID === user.id ? 14 : getBorderRadius(index),
+                  marginBottom: getMarginBottom(index),
+                  backgroundColor:
+                    chat.Sender_ID === user.id ? colors.primary : '#fff',
+                  alignSelf:
+                    chat.Sender_ID === user.id ? 'flex-end' : 'flex-start',
+                  elevation: 2,
+                }}>
+                <Hyperlink
+                  linkStyle={{
+                    color: chat.Sender_ID === user.id ? '#d3ffff' : '#007bff',
+                    fontWeight: 'bold',
+                    textDecorationLine: 'underline',
+                  }}
+                  onPress={(url, text) => {
+                    Linking.openURL(url).catch(error =>
+                      console.warn('An error occurred: ', error),
+                    );
                   }}>
-                  <Hyperlink
-                    linkStyle={{
-                      color: chat.Sender_ID === user.id ? '#d3ffff' : '#007bff',
-                      fontWeight: 'bold',
-                      textDecorationLine: 'underline',
-                    }}
-                    onPress={(url, text) => {
-                      Linking.openURL(url).catch(error =>
-                        console.warn('An error occurred: ', error),
-                      );
+                  {extractURL(chat.text) && (
+                    <LinkPreview
+                      link={extractURL(chat.text)}
+                      isSent={chat.Sender_ID !== user.id}
+                    />
+                  )}
+                  <Text
+                    selectable={true}
+                    style={{
+                      padding: 6,
+                      color:
+                        chat.Sender_ID === user.id ? '#fff' : colors.primary,
                     }}>
-                    {extractURL(chat.text) && (
-                      <LinkPreview
-                        link={extractURL(chat.text)}
-                        isSent={chat.Sender_ID !== user.id}
-                      />
-                    )}
-                    <Text
-                      selectable={true}
-                      style={{
-                        padding: 6,
-                        color:
-                          chat.Sender_ID === user.id ? '#fff' : colors.primary,
-                      }}>
-                      {chat.text}
-                    </Text>
-                  </Hyperlink>
-                </View>
-              );
-            })}
-          </ScrollView>
-        )}
+                    {chat.text}
+                  </Text>
+                </Hyperlink>
+              </View>
+            );
+          })}
+        </ScrollView>
+        {/* )} */}
       </ImageBackground>
 
       <View
@@ -326,7 +350,8 @@ function Chat(props) {
                 });
               await sleep(2000);
             }
-            // setChats([...chats, Newmsg]);
+            setChats([...chats, Newmsg]);
+            // await getNewlyReceived();
             setChatText('');
             // userChatting.text = chatText;
             // await setVerticalProfiles(prevVerticalProfiles => {

@@ -1,4 +1,5 @@
 # package imports
+import pipelining
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask.templating import DispatchingJinjaLoader
@@ -20,11 +21,10 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 # dotenv import
 import os
-# import pymysql  
+# import pymysql
 # pymysql.install_as_MySQLdb()
 from dotenv import load_dotenv
 load_dotenv()
-import pipelining
 
 app = Flask(__name__)
 CORS(app)
@@ -238,7 +238,9 @@ def protected():
     current_user = get_jwt_identity()
     return jsonify(Student_ID=current_user), 200
 
-#Recommendation Routes
+# Recommendation Routes
+
+
 @app.route("/get_recommendations",  methods=['GET', 'POST'])
 @jwt_required()
 def get_recommendations():
@@ -276,6 +278,7 @@ def get_recommendations():
 
 # Social URLs Routes
 
+
 @app.route("/get_social_urls",  methods=['GET', 'POST'])
 @jwt_required()
 def get_social_urls():
@@ -284,10 +287,10 @@ def get_social_urls():
         id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     res = dict()
-    #Why is this hardcoded? !DOUBT
-    #social media handles may vary
-    #if we want to hardcode then only allow certain social media handles
-    #which are commom to all students
+    # Why is this hardcoded? !DOUBT
+    # social media handles may vary
+    # if we want to hardcode then only allow certain social media handles
+    # which are commom to all students
     if student.social_urls != None:
         res['SocialURL_ID'] = student.social_urls.SocialURL_ID
         res['codechef'] = student.social_urls.codechef
@@ -807,6 +810,7 @@ def get_last_msgs():
 
     q = """SELECT m1.Message_ID,
       m1.text,
+      m1.Sender_ID,
       maxTsC.pid,
       ifnull(NewSC.newmsgs, 0) newmsgs,
       StudNI.Name,
@@ -916,6 +920,7 @@ def get_chats_after_last_cached():
 # }
 # or "DateTime": "Tue, 26 Oct 2021 13:10:38 GMT"
 
+
 def user_and_skills_for_retraining():
     users = Student.query.all()
     users_and_their_skills = dict()
@@ -926,6 +931,7 @@ def user_and_skills_for_retraining():
             user_skills.append(skill.Skill_name)
         users_and_their_skills[user.Name] = user_skills
     return users_and_their_skills
+
 
 def domain_and_skills_for_retraining():
     '''
@@ -952,13 +958,15 @@ def domain_and_skills_for_retraining():
     return res_ids_domains_skills
     # output is list of domains dictionaries which has domian id,name and skills list with skill dictionaries with skill id,name
 
+
 def call_to_retraining_function():
     users_and_their_skills = user_and_skills_for_retraining()
     domain_and_skills = domain_and_skills_for_retraining()
     pipelining.update_models(domain_and_skills, users_and_their_skills)
     print('Retraining performed successfully')
 
-#call to retrain the model
+
+# call to retrain the model
 call_to_retraining_function()
 
 if __name__ == "__main__":

@@ -15,7 +15,7 @@ import {useAuth} from '../App';
 import {ChatContext} from './ChatContext';
 
 function Messages() {
-  const {axiosInstance} = useAuth();
+  const {user, axiosInstance} = useAuth();
   const {
     allChats,
     setAllChats,
@@ -48,7 +48,7 @@ function Messages() {
         lastMsgTimestamps.sort((a, b) => Date.parse(a) < Date.parse(b));
         MinlastMessageTimestamp = lastMsgTimestamps[0];
       }
-      console.log(MinlastMessageTimestamp);
+      console.log('VPsTime: ', MinlastMessageTimestamp);
 
       let res = null;
       while (res === null) {
@@ -71,9 +71,26 @@ function Messages() {
       // res.map(profile => {
       //   unreads[profile.pid] = profile.newmsgs;
       // });
-
-      await setVerticalProfiles(res);
+      if (res.length > 0) {
+        await setVerticalProfiles(prevVProfiles => {
+          res.map(profile => {
+            if (
+              prevVProfiles.some(
+                p =>
+                  p.newmsgs == 0 &&
+                  p.pid === profile.pid &&
+                  p.Message_ID === profile.Message_ID,
+              ) ||
+              profile.Sender_ID === user.id
+            ) {
+              profile.newmsgs = 0;
+            }
+          });
+          return res;
+        });
+      }
       // console.log('Res: ', res);
+      // console.log('VPs: ', verticalProfiles);
 
       // await setUnreadCounts(unreads);
     } catch (error) {
@@ -106,9 +123,9 @@ function Messages() {
 
     // console.log('Before append: ', allChats);
     await getMessageProfiles();
-    // vProfilesInterval = setInterval(async () => {
-    //   await getMessageProfiles();
-    // }, 5000);
+    vProfilesInterval = setInterval(async () => {
+      await getMessageProfiles();
+    }, 10000);
 
     // if (Object.keys(allChats).length === 0) {
     //   console.log('Stored chats', getData('chats'));
@@ -283,16 +300,23 @@ function Messages() {
                 alignItems: 'center',
                 flexDirection: 'row',
               }}
-              onPress={() => {
-                navigation.navigate('Chat', {
-                  userChatting: profile,
-                });
+              onPress={async () => {
                 // setUnreadCounts(prevUnreads => {
                 //   return {
                 //     ...prevUnreads,
                 //     [profile.pid]: 0,
                 //   };
                 // });
+                await setVerticalProfiles(prevVProfiles => {
+                  prevVProfiles[index] = {
+                    ...prevVProfiles[index],
+                    newmsgs: 0,
+                  };
+                  return prevVProfiles;
+                });
+                navigation.navigate('Chat', {
+                  userChatting: profile,
+                });
               }}>
               <Image
                 source={{
