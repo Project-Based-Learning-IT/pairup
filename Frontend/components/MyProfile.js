@@ -43,7 +43,6 @@ function MyProfile({route}) {
 
   const [email, setEmail] = React.useState(user.email);
   const [name, setName] = React.useState(user.name);
-  const [personalEmail, setPersonalEmail] = React.useState(user.personalEmail);
   const [bio, setBio] = React.useState(user.bio);
   const [requirements, setRequirements] = React.useState(user.requirements);
   const [headline, setHeadline] = React.useState(user.headline);
@@ -75,7 +74,6 @@ function MyProfile({route}) {
         photo: user.photo,
         email: user.email,
         name: user.name,
-        personalEmail: personalEmail,
         bio: bio,
         headline: headline,
         requirements: requirements,
@@ -198,20 +196,27 @@ function MyProfile({route}) {
     }
     // console.log(user);
     async function getDBskills() {
-      let res = [];
-      while (res.length === 0) {
-        await axiosInstance
-          .get('/get_domains_and_its_skills')
-          .then(response => {
-            // console.log(JSON.stringify(response.data));
-            res = response.data;
-          })
-          .catch(err => {
-            console.error('SkillsList Error : ' + err);
-          });
-        await sleep(2000);
-      }
-      setskillsList(res);
+      // let res = [];
+      // while (res.length === 0) {
+      //   await axiosInstance
+      //     .get('/get_domains_and_its_skills')
+      //     .then(response => {
+      //       // console.log(JSON.stringify(response.data));
+      //       res = response.data;
+      //     })
+      //     .catch(err => {
+      //       console.error('SkillsList Error : ' + err);
+      //     });
+      //   await sleep(2000);
+      // }
+      // setskillsList(res);
+
+      const res = await fetch(
+        'https://project-based-learning-it.github.io/static-data/collegespace/domain_and_skills.json',
+      );
+      const resJson = await res.json();
+      setskillsList(resJson);
+      console.log(resJson.length);
     }
 
     async function getDBlanguages() {
@@ -357,16 +362,6 @@ function MyProfile({route}) {
           value={batch}
           placeholder="Select your batch"
           label="Batch"></DropdownMenu>
-        <TextInput
-          mode="outlined"
-          label="Personal Email (Optional)"
-          placeholder="Type your personal email"
-          value={personalEmail}
-          onChangeText={text => setPersonalEmail(text)}
-          style={{
-            paddingBottom: 20,
-          }}
-        />
         <TextInput
           mode="outlined"
           label="Headline"

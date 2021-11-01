@@ -43,7 +43,6 @@ function SignUp({route}) {
 
   const [email, setEmail] = React.useState(user.email);
   const [name, setName] = React.useState(user.name);
-  const [personalEmail, setPersonalEmail] = React.useState('');
   const [bio, setBio] = React.useState('');
   const [requirements, setRequirements] = React.useState('');
   const [headline, setHeadline] = React.useState('');
@@ -102,7 +101,6 @@ function SignUp({route}) {
         photo: user.photo,
         email: user.email,
         name: user.name,
-        personalEmail: personalEmail,
         bio: bio,
         requirements: requirements,
         headline: headline,
@@ -381,16 +379,6 @@ function SignUp({route}) {
           value={batch}
           placeholder="Select your batch"
           label="Batch"></DropdownMenu>
-        <TextInput
-          mode="outlined"
-          label="Personal Email (Optional)"
-          placeholder="Type your personal email"
-          value={personalEmail}
-          onChangeText={text => setPersonalEmail(text)}
-          style={{
-            paddingBottom: 20,
-          }}
-        />
         <TextInput
           mode="outlined"
           label="Headline"
