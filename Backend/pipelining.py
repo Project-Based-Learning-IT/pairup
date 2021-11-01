@@ -12,6 +12,7 @@ import joblib
 
 #TODO: check this passed skill_domain_dict structure mostly current one is wrong
 def get_skills_n_domains(skill_domain_dict):
+    json.dump(skill_domain_dict, open('skill_domain_dict.json', 'w'))
     skills = set()
     domains = set()
     skill_domain_map = {}
