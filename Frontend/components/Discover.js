@@ -28,7 +28,7 @@ function Discover() {
   const {colors} = useTheme();
   const {height} = Dimensions.get('window');
 
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = React.useState(false);
   const [cards, setCards] = useState([]);
 
   const styles = StyleSheet.create({
@@ -173,8 +173,7 @@ function Discover() {
       setCards(res);
     }
 
-    await getCards();
-
+    // await getCards();
     //NOTE update axiosInstance after setting jwt
     setaxiosInstance({axiosInstance});
 

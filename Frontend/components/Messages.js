@@ -9,108 +9,83 @@ import {
 import * as React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import FocusAwareStatusBar from './FocusAwareStatusBar';
-import {useTheme} from 'react-native-paper';
-import {chats} from '../staticStore';
+import {useTheme, Portal, ActivityIndicator} from 'react-native-paper';
+// import {chats} from '../staticStore';
 import {useAuth} from '../App';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Keychain from 'react-native-keychain';
 import {ChatContext} from './ChatContext';
 
 function Messages() {
   const {axiosInstance} = useAuth();
-  const {allChats, setAllChats, verticalProfiles, setVerticalProfiles} =
-    React.useContext(ChatContext);
+  const {
+    allChats,
+    setAllChats,
+    verticalProfiles,
+    setVerticalProfiles,
+    // storeData,
+    // getData,
+    // removeItem,
+  } = React.useContext(ChatContext);
+  const [isLoading, setIsLoading] = React.useState(false);
   const navigation = useNavigation();
   const {colors} = useTheme();
 
-  const [unreadCounts, setUnreadCounts] = React.useState({});
+  // const [unreadCounts, setUnreadCounts] = React.useState({});
 
   const [horizontalProfiles, setHorizontalProfiles] = React.useState([]);
 
-  const storeData = async value => {
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  const getMessageProfiles = async () => {
     try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem('@Chats', jsonValue);
-    } catch (e) {
-      // saving error
+      let MinlastMessageTimestamp = '2021-10-23 13:59:13';
+      if (Object.keys(allChats).length > 0) {
+        let lastMsgTimestamps = [];
+        Object.values(allChats).forEach(pChatArr => {
+          lastMsgTimestamps.push(pChatArr[pChatArr.length - 1].timestamp);
+        });
+        lastMsgTimestamps.sort((a, b) => Date.parse(a) < Date.parse(b));
+        MinlastMessageTimestamp = lastMsgTimestamps[0];
+      }
+      console.log(MinlastMessageTimestamp);
+
+      let res = null;
+      while (res === null) {
+        await axiosInstance
+          .post('/get_last_msgs_with_count_name_photo', {
+            //TODO set MinlastMessageTimestamp for DateTime
+            // DateTime: '2021-10-26 13:10:38',
+            DateTime: MinlastMessageTimestamp,
+          })
+          .then(response => {
+            res = response.data;
+          })
+          .catch(err => {
+            console.error('MessageProfiles Error : ' + err);
+          });
+        await sleep(2000);
+      }
+
+      // let unreads = {};
+      // res.map(profile => {
+      //   unreads[profile.pid] = profile.newmsgs;
+      // });
+
+      await setVerticalProfiles(res);
+      // console.log('Res: ', res);
+
+      // await setUnreadCounts(unreads);
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const getData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem('@Chats');
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-      // error reading value
-    }
-  };
+  let vProfilesInterval;
 
   React.useEffect(async () => {
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-    async function getMessageProfiles() {
-      try {
-        let res = [];
-        while (res.length === 0) {
-          await axiosInstance
-            .post('/get_last_msgs_with_count_name_photo', {
-              DateTime: '2021-10-26 13:10:38',
-            })
-            .then(response => {
-              res = response.data;
-            })
-            .catch(err => {
-              console.error('MessageProfiles Error : ' + err);
-            });
-          await sleep(2000);
-        }
+    // setIsLoading(true);
 
-        let unreads = {};
-        res.map(profile => {
-          unreads[profile.pid] = profile.newmsgs;
-        });
-
-        setVerticalProfiles(res);
-        setUnreadCounts(unreads);
-        // console.log(JSON.stringify(res));
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    async function getNewlyReceived() {
-      try {
-        let res = [];
-        while (res.length === 0) {
-          await axiosInstance
-            .post('/get_received_chats_after_last_cached', {
-              DateTime: '2021-10-23 13:59:13',
-            })
-            .then(response => {
-              res = response.data;
-            })
-            .catch(err => {
-              console.error('NewlyReceived Error : ' + err);
-            });
-          await sleep(2000);
-        }
-
-        await setAllChats(prevAllChats => {
-          res.map(msg => {
-            if (!prevAllChats[msg.Sender_ID]) {
-              prevAllChats[msg.Sender_ID] = [];
-            }
-            prevAllChats[msg.Sender_ID].push(msg);
-          });
-          return prevAllChats;
-        });
-
-        await storeData(allChats);
-      } catch (error) {
-        console.log(error);
-      }
-    }
     // async function getProfiles() {
     //   try {
     // Loop to fetch 8 horizontal profiles
@@ -126,41 +101,29 @@ function Messages() {
     // }
 
     // console.log(horizontalProfiles);
-
-    // Loop for vertical profiles
-    // for (let i = 0; i < 8; i++) {
-    //   const response = await fetch(
-    //     'https://randomuser.me/api/?results=1&inc=name,picture,email,location,phone,cell,dob,login,registered,id,nat&noinfo',
-    //   );
-    //   const data = await response.json();
-    //   setVerticalProfiles(verticalProfiles => [
-    //     ...verticalProfiles,
-    //     data.results[0],
-    //   ]);
-
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
     // }
     // getProfiles();
 
-    await getMessageProfiles();
-
     // console.log('Before append: ', allChats);
-    if (Object.keys(allChats).length === 0 && (await getData())) {
-      await setAllChats(await getData());
-    }
-    //  else {
-    //   await getNewlyReceived();
-    //   console.log('After append: ', allChats);
-    //   console.log('StoredChats: ', await getData());
+    await getMessageProfiles();
+    // vProfilesInterval = setInterval(async () => {
+    //   await getMessageProfiles();
+    // }, 5000);
+
+    // if (Object.keys(allChats).length === 0) {
+    //   console.log('Stored chats', getData('chats'));
+    //   setAllChats(getData('chats') ? getData('chats') : {});
+    //   console.log('Retreved from storage', allChats);
     // }
 
-    await getNewlyReceived();
-    console.log('After append: ', allChats);
+    //TODO add this after signup and signin
+    //Storage not working
+    // removeItem('chats');
+    // storeData('chats', {1: 2});
+    // console.log('Stored chats', getData('chats'));
+    // console.log('After append allChats: ', allChats);
 
-    // await AsyncStorage.removeItem('@Chats');
+    // setIsLoading(false);
   }, []);
 
   return (
@@ -172,6 +135,7 @@ function Messages() {
         backgroundColor: '#fff',
         paddingTop: StatusBar.currentHeight,
       }}>
+      {console.log('Messages Rerender')}
       <FocusAwareStatusBar barStyle={'dark-content'} backgroundColor={'#fff'} />
       {/* <Text
         style={{
@@ -286,100 +250,118 @@ function Messages() {
         Messages
       </Text>
 
-      <ScrollView
-        style={{
-          flex: 1,
-          width: '100%',
-        }}>
-        {verticalProfiles.map((profile, index) => (
-          <TouchableOpacity
-            key={index}
+      {isLoading ? (
+        <Portal>
+          <View
             style={{
-              padding: 10,
-              width: '100%',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: '#000',
+              opacity: 0.5,
+              zIndex: 1000,
+              justifyContent: 'center',
               alignItems: 'center',
-              flexDirection: 'row',
-            }}
-            onPress={() => {
-              console.log(allChats[profile.pid]);
-              navigation.navigate('Chat', {
-                userChatting: profile,
-                pChats: allChats[profile.pid],
-                // setVProfiles: setVerticalProfiles,
-              });
-              setUnreadCounts(prevUnreads => {
-                return {
-                  ...prevUnreads,
-                  [profile.pid]: 0,
-                };
-              });
             }}>
-            <Image
-              source={{
-                uri: profile.Image_URL
-                  ? profile.Image_URL
-                  : 'https://www.xeus.com/wp-content/uploads/2014/09/One_User_Orange.png',
-              }}
+            <ActivityIndicator size={'large'} color={colors.primary} />
+          </View>
+        </Portal>
+      ) : (
+        <ScrollView
+          style={{
+            flex: 1,
+            width: '100%',
+          }}>
+          {verticalProfiles.map((profile, index) => (
+            <TouchableOpacity
+              key={index}
               style={{
-                width: 64,
-                height: 64,
-                marginBottom: 2,
-                borderRadius: 50,
+                padding: 10,
+                width: '100%',
+                alignItems: 'center',
+                flexDirection: 'row',
               }}
-            />
-            <View
-              style={{
-                paddingLeft: 12,
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                flex: 1,
+              onPress={() => {
+                navigation.navigate('Chat', {
+                  userChatting: profile,
+                });
+                // setUnreadCounts(prevUnreads => {
+                //   return {
+                //     ...prevUnreads,
+                //     [profile.pid]: 0,
+                //   };
+                // });
               }}>
-              <Text
+              <Image
+                source={{
+                  uri: profile.Image_URL
+                    ? profile.Image_URL
+                    : 'https://www.xeus.com/wp-content/uploads/2014/09/One_User_Orange.png',
+                }}
                 style={{
-                  textAlign: 'center',
-                  fontSize: 18,
-                  fontWeight: 'bold',
-                }}>
-                {profile.Name}
-              </Text>
-              <Text
-                numberOfLines={1}
-                style={{
-                  textAlign: 'center',
-                  fontSize: 14,
-                  fontWeight: 'bold',
-                  color: '#9b9b9b',
-                }}>
-                {/* {chats[Math.floor(Math.random() * 9)]} */}
-                {profile.text}
-              </Text>
-            </View>
-            {unreadCounts[profile.pid] >= 1 && (
+                  width: 64,
+                  height: 64,
+                  marginBottom: 2,
+                  borderRadius: 50,
+                }}
+              />
               <View
                 style={{
-                  borderRadius: 50,
-                  backgroundColor: colors.secondary,
-                  height: 24,
-                  width: 24,
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  paddingLeft: 12,
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  flex: 1,
                 }}>
                 <Text
                   style={{
-                    color: '#fff',
-                    fontSize: 10,
-                    fontWeight: 'bold',
                     textAlign: 'center',
-                    zIndex: 1,
+                    fontSize: 18,
+                    fontWeight: 'bold',
                   }}>
-                  {/* {Math.floor(Math.random() * 5) + 1} */}
-                  {unreadCounts[profile.pid]}
+                  {profile.Name}
+                </Text>
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    color: '#9b9b9b',
+                  }}>
+                  {/* {chats[Math.floor(Math.random() * 9)]} */}
+                  {profile.text}
                 </Text>
               </View>
-            )}
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+              {profile.newmsgs >= 1 && (
+                <View
+                  style={{
+                    borderRadius: 50,
+                    backgroundColor: colors.secondary,
+                    height: 24,
+                    width: 24,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      fontSize: 10,
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                      zIndex: 1,
+                    }}>
+                    {/* {Math.floor(Math.random() * 5) + 1} */}
+                    {/* {unreadCounts[profile.pid]} */}
+                    {profile.newmsgs}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 }

@@ -116,6 +116,7 @@ const App = () => {
       //NOTE Remove token from networking instance
       axiosInst.axiosInstance.defaults.headers['Authorization'] = '';
       setUser({});
+      //TODO Remove Chats from local storage
     } catch (error) {
       console.log(error);
     }

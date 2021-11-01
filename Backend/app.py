@@ -274,6 +274,22 @@ def get_recommendations():
         cards.append(curr_rec)
     return jsonify(cards), 200
 
+
+def get_All_Users_and_their_skills():
+    users = Student.query.all()
+    users_and_their_skills = dict()
+    for user in users:
+        user_skills = list()
+        db_user_skills = user.skills
+        for skill in db_user_skills:
+            user_skills.append(skill.Skill_name)
+        users_and_their_skills[user.Name] = user_skills
+    return users_and_their_skills
+
+
+# tested for 5 users
+# print(get_All_Users_and_their_skills())
+
 # Social URLs Routes
 
 
@@ -793,8 +809,11 @@ def message():
         return res, 200
         # Sample json body
         # {
-        # "text": "Hi, this is first chat",
-        # "Receiver_ID": 2
+        #     "Sender_ID": 709,
+        #     "Message_ID": 3,
+        #     "timestamp": "Fri, 29 Oct 2021 17:51:50 GMT",
+        #     "text": "Hi, this is first chat",
+        #     "Receiver_ID": 2
         # }
 
 
@@ -833,7 +852,7 @@ def get_last_msgs():
         select Sender_ID,
           COUNT(*) newmsgs
         from messages as NewM
-        where NewM.timestamp > :dt
+        where NewM.timestamp >= :dt
           and NewM.Sender_ID != :id
         group by NewM.Sender_ID
       ) AS NewSC ON NewSC.Sender_ID = maxTsC.pid
@@ -867,6 +886,10 @@ def get_all_chats():
     id = get_jwt_identity()
     chats = Messages.query.filter((Messages.Sender_ID == id) | (
         Messages.Receiver_ID == id)).order_by(Messages.timestamp.asc())
+    # chats = Messages.query.filter(((Messages.Sender_ID) == id & (
+    #     Messages.Receiver_ID == pid)) | ((
+    #         Messages.Receiver_ID == id) & (
+    #         Messages.Sender_ID == pid))).order_by(Messages.timestamp.asc())
     res = list()
     for message in chats:
         curr_message = dict()
@@ -879,16 +902,19 @@ def get_all_chats():
     return jsonify(res), 200
 
 
-@app.route("/get_received_chats_after_last_cached",  methods=['GET', 'POST'])
+@app.route("/get_chats_after_last_cached",  methods=['GET', 'POST'])
 @jwt_required()
 def get_chats_after_last_cached():
     if request.method == "POST":
         id = get_jwt_identity()
+        pid = int(request.json['pid'])
         str_last_date_time = request.json['DateTime']
         last_date_time = parser.parse(str_last_date_time)
 
-        chats = Messages.query.filter((
-            Messages.Receiver_ID == id) & (
+        chats = Messages.query.filter((((Messages.Sender_ID == id) &
+                                        (Messages.Receiver_ID == pid)) | (
+            (Messages.Receiver_ID == id) &
+            (Messages.Sender_ID == pid))) & (
             Messages.timestamp > last_date_time)).order_by(Messages.timestamp.asc())
         res = list()
         for message in chats:
@@ -902,6 +928,7 @@ def get_chats_after_last_cached():
         return jsonify(res), 200
 # Sample json body
 # {
+    # "pid": 2,
     # "DateTime": "2021-10-23 13:59:13",
 # }
 # or "DateTime": "Tue, 26 Oct 2021 13:10:38 GMT"

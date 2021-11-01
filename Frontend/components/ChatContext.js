@@ -1,3 +1,8 @@
 import React from 'react';
 
-export const ChatContext = React.createContext();
+const ChatContext = React.createContext();
+function useChat() {
+  return useContext(ChatContext);
+}
+
+export {ChatContext, useChat};

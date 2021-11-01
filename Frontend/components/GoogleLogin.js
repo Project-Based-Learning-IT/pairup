@@ -33,10 +33,9 @@ function GoogleLogin() {
 
     const userInfo = await signInWithGoogle();
     let new_user = false;
-    let retries = 5;
     // NOTE Get the jwt access token
     let res_access_token;
-    while (!res_access_token && retries--) {
+    while (!res_access_token) {
       res_access_token = await axiosInstance
         .post('/signup_and_login', {
           username: userInfo.user.name.toLowerCase(),
@@ -59,22 +58,19 @@ function GoogleLogin() {
       let skillsListRes;
       let languagesRes;
 
-      retries = 5;
-      while (!studRes && retries--) {
+      while (!studRes) {
         studRes = await axiosInstance.get('/get_student_profile').catch(err => {
           console.error('Get_Student Error : ' + err);
         });
       }
 
-      retries = 5;
-      while (!degreeRes && retries--) {
+      while (!degreeRes) {
         degreeRes = await axiosInstance.get('/get_degree').catch(err => {
           console.error('Get Degree Error : ' + err);
         });
       }
 
-      retries = 5;
-      while (!skillsListRes && retries--) {
+      while (!skillsListRes) {
         skillsListRes = await axiosInstance
           .get('/get_stud_skills')
           .catch(err => {
@@ -82,8 +78,7 @@ function GoogleLogin() {
           });
       }
 
-      retries = 5;
-      while (!languagesRes && retries--) {
+      while (!languagesRes) {
         languagesRes = await axiosInstance
           .get('/get_student_languages')
           .catch(err => {
@@ -92,7 +87,7 @@ function GoogleLogin() {
       }
 
       let SocialsRes;
-      while (!SocialsRes && retries--) {
+      while (!SocialsRes) {
         SocialsRes = await axiosInstance.get('/get_social_urls').catch(err => {
           console.error('Get Socials Error : ' + err);
         });
