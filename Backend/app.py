@@ -958,6 +958,8 @@ def call_to_retraining_function():
     pipelining.update_models(domain_and_skills, users_and_their_skills)
     print('Retraining performed successfully')
 
+#call to retrain the model
+call_to_retraining_function()
 
 if __name__ == "__main__":
     app.run(debug=True)
