@@ -30,6 +30,7 @@ def get_skills_n_domains(skill_domain_dict):
     domains.sort()
 
     SkillDomains = []
+    SkillDomainoneHot = []
     for skill in skills:
         oneHotSkillDomainList = []
         for domain in domains:
@@ -37,6 +38,7 @@ def get_skills_n_domains(skill_domain_dict):
               oneHotSkillDomainList.append(1)
           else:
               oneHotSkillDomainList.append(0)
+        SkillDomainoneHot.append(oneHotSkillDomainList)
         oneHotSkillDomainList.insert(0,skill)
         SkillDomains.append(oneHotSkillDomainList)
     columns = []
@@ -44,7 +46,7 @@ def get_skills_n_domains(skill_domain_dict):
     columns.insert(0,'SkillName')
     df_skill_n_domains = pd.DataFrame(SkillDomains,columns=columns)
     df_skill_n_domains.to_csv('skill_n_domain.csv',index=False)
-    return skills, SkillDomains
+    return skills, SkillDomainoneHot
 
 def get_user_names(user_skill_dict):
     UserNames = []
