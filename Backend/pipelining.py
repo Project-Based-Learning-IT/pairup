@@ -77,7 +77,7 @@ def read_usernames_insequence():
     return usernames
 
 def user_data_matrix(user_skill_dict, Allskills):
-    user_skill_dict = sorted(user_skill_dict)
+#     user_skill_dict = sorted(user_skill_dict)
     UserSkills = []
     UserNames = []
     for username,skill_list in user_skill_dict.items():
