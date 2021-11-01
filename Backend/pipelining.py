@@ -81,14 +81,15 @@ def user_data_matrix(user_skill_dict, Allskills):
     UserSkills = []
     UserNames = []
     for username,skill_list in user_skill_dict.items():
-        UserNames.append(username.lower())
-        oneHotSkillList = []
-        for skill in Allskills:
-            if(skill in skill_list):
-                oneHotSkillList.append(1)
-            else:
-                oneHotSkillList.append(0)
-        UserSkills.append(oneHotSkillList)
+        if(username!=None):
+            UserNames.append(username.lower())
+            oneHotSkillList = []
+            for skill in Allskills:
+                if(skill in skill_list):
+                    oneHotSkillList.append(1)
+                else:
+                    oneHotSkillList.append(0)
+            UserSkills.append(oneHotSkillList)
     #write usernames in same sequence to text file and read also from text file
     save_usernames_insequence(UserNames)
     return UserSkills
