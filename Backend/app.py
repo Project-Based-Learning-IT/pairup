@@ -933,13 +933,6 @@ def get_chats_after_last_cached():
 # }
 # or "DateTime": "Tue, 26 Oct 2021 13:10:38 GMT"
 
-def allUserSkills():
-    result = db.session.execute(q)
-    res = list()
-    for row in result:
-        res.append(row._asdict())  # convert to dict keyed by column names
-    return res
-
 
 if __name__ == "__main__":
     app.run(debug=True)
