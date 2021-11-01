@@ -23,7 +23,7 @@ import * as Keychain from 'react-native-keychain';
 import MessageSection from './components/MessageSection';
 
 import axios from 'axios';
-import {Android_Local_ADDRESS, IOS_Local_ADDRESS} from '@env';
+import {Android_Emulator_Local_ADDRESS, IOS_Local_ADDRESS} from '@env';
 
 const AuthContext = React.createContext();
 
@@ -79,7 +79,7 @@ const App = () => {
   const [axiosInst, setaxiosInstance] = React.useState({});
 
   const BASE_ADDRESS =
-    Platform.OS === 'android' ? Android_Local_ADDRESS : IOS_Local_ADDRESS;
+    Platform.OS === 'android' ? Android_Emulator_Local_ADDRESS : IOS_Local_ADDRESS;
   let axiosInstance = axios.create({
     baseURL: BASE_ADDRESS,
     timeout: 30000,

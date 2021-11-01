@@ -50,7 +50,9 @@ function GoogleLogin() {
 
     new_user = res_access_token.data.new_user;
 
-    id = res_access_token.data.id;
+    const id = res_access_token.data.id;
+
+    console.log('id : ' + id);
 
     if (!new_user) {
       let studRes;

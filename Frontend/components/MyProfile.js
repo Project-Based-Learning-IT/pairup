@@ -45,7 +45,7 @@ function MyProfile({route}) {
   const [name, setName] = React.useState(user.name);
   const [personalEmail, setPersonalEmail] = React.useState(user.personalEmail);
   const [bio, setBio] = React.useState(user.bio);
-  const [requirements, setRequirements] = React.useState('user.Requirements');
+  const [requirements, setRequirements] = React.useState(user.requirements);
   const [headline, setHeadline] = React.useState(user.headline);
 
   const [division, setDivision] = React.useState(user.division);
@@ -78,6 +78,7 @@ function MyProfile({route}) {
         personalEmail: personalEmail,
         bio: bio,
         headline: headline,
+        requirements: requirements,
         division: division,
         branch: branch,
         year: year,
@@ -168,9 +169,9 @@ function MyProfile({route}) {
             Email: userData.email,
             Headline: userData.headline,
             Google_ID: userData.googleId,
-            Image_URL: '',
+            Image_URL: userData.photo,
             Name: userData.name,
-            Requirements: '',
+            Requirements: userData.requirements,
             SocialURL_ID: userData.SocialURL_ID,
             Degree_ID: userData.Degree_ID,
           })
