@@ -274,24 +274,7 @@ def get_recommendations():
         cards.append(curr_rec)
     return jsonify(cards), 200
 
-
-def get_All_Users_and_their_skills():
-    users = Student.query.all()
-    users_and_their_skills = dict()
-    for user in users:
-        user_skills = list()
-        db_user_skills = user.skills
-        for skill in db_user_skills:
-            user_skills.append(skill.Skill_name)
-        users_and_their_skills[user.Name] = user_skills
-    return users_and_their_skills
-
-
-# tested for 5 users
-# print(get_All_Users_and_their_skills())
-
 # Social URLs Routes
-
 
 @app.route("/get_social_urls",  methods=['GET', 'POST'])
 @jwt_required()
@@ -933,13 +916,50 @@ def get_chats_after_last_cached():
 # }
 # or "DateTime": "Tue, 26 Oct 2021 13:10:38 GMT"
 
-def allUserSkills():
-    result = db.session.execute(q)
-    res = list()
-    for row in result:
-        res.append(row._asdict())  # convert to dict keyed by column names
-    return res
+def user_and_skills_for_retraining():
+    users = Student.query.all()
+    users_and_their_skills = dict()
+    for user in users:
+        user_skills = list()
+        db_user_skills = user.skills
+        for skill in db_user_skills:
+            user_skills.append(skill.Skill_name)
+        users_and_their_skills[user.Name] = user_skills
+    return users_and_their_skills
 
+def domain_and_skills_for_retraining():
+    '''
+    For direct API calls through request
+    '''
+    # For post
+    # data = request.get_json(force=True)
+    # prediction = model.predict([np.array(list(data.values()))])
+    # output = prediction[0]
+    ids_domains = Domains.query.all()
+
+    res_ids_domains_skills = list()
+    for domain_obj in ids_domains:
+        curr_id_domain = dict()
+        curr_id_domain['domain_id'] = domain_obj.Domain_ID
+        curr_id_domain['domain_name'] = domain_obj.Domain_name
+        curr_id_domain['skills'] = list()
+        for s in domain_obj.see_skills:
+            skill_in_domain = dict()
+            skill_in_domain['skill_id'] = s.Skill_ID
+            skill_in_domain['skill_name'] = s.Skill_name
+            curr_id_domain['skills'].append(skill_in_domain)
+        res_ids_domains_skills.append(curr_id_domain)
+    return res_ids_domains_skills
+    # output is list of domains dictionaries which has domian id,name and skills list with skill dictionaries with skill id,name
+
+def call_to_retraining_function():
+    users_and_their_skills = user_and_skills_for_retraining()
+    domain_and_skills = domain_and_skills_for_retraining()
+    pipelining.update_models(domain_and_skills, users_and_their_skills)
+    print('Retraining performed successfully')
+
+#call to retrain the model
+call_to_retraining_function()
 
 if __name__ == "__main__":
     app.run(debug=True)
