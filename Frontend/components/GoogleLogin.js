@@ -57,17 +57,22 @@ function GoogleLogin() {
       let degreeRes;
       let skillsListRes;
       let languagesRes;
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
 
       while (!studRes) {
         studRes = await axiosInstance.get('/get_student_profile').catch(err => {
           console.error('Get_Student Error : ' + err);
         });
+        await sleep(2000);
       }
 
       while (!degreeRes) {
         degreeRes = await axiosInstance.get('/get_degree').catch(err => {
           console.error('Get Degree Error : ' + err);
         });
+        await sleep(2000);
       }
 
       while (!skillsListRes) {
@@ -76,6 +81,7 @@ function GoogleLogin() {
           .catch(err => {
             console.error('Get Skills Error : ' + err);
           });
+        await sleep(2000);
       }
 
       while (!languagesRes) {
@@ -84,6 +90,7 @@ function GoogleLogin() {
           .catch(err => {
             console.error('Get Languages Error : ' + err);
           });
+        await sleep(2000);
       }
 
       let SocialsRes;
@@ -91,6 +98,7 @@ function GoogleLogin() {
         SocialsRes = await axiosInstance.get('/get_social_urls').catch(err => {
           console.error('Get Socials Error : ' + err);
         });
+        await sleep(2000);
       }
 
       let userData = {
