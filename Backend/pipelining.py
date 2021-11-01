@@ -5,12 +5,6 @@ from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 import joblib
 
-#This code is supposed to be run once/twice in a week
-
-# User - Skill mapping
-# { "Username" : [skill1, skill2, skill3, ......., skilln] }
-
-#TODO: check this passed skill_domain_dict structure mostly current one is wrong
 def get_skills_n_domains(skill_domain_dict):
     json.dump(skill_domain_dict, open('skill_domain_dict.json', 'w'))
     skills = set()
@@ -31,7 +25,6 @@ def get_skills_n_domains(skill_domain_dict):
     domains.sort()
 
     SkillDomains = []
-    SkillDomainoneHot = []
     for skill in skills:
         oneHotSkillDomainList = []
         for domain in domains:
@@ -39,15 +32,29 @@ def get_skills_n_domains(skill_domain_dict):
               oneHotSkillDomainList.append(1)
           else:
               oneHotSkillDomainList.append(0)
-        SkillDomainoneHot.append(oneHotSkillDomainList)
         oneHotSkillDomainList.insert(0,skill)
         SkillDomains.append(oneHotSkillDomainList)
+    # print(SkillDomains)
+    
     columns = []
     columns.extend(domains)
     columns.insert(0,'SkillName')
     df_skill_n_domains = pd.DataFrame(SkillDomains,columns=columns)
     df_skill_n_domains.to_csv('skill_n_domain.csv',index=False)
-    return skills, SkillDomainoneHot
+
+    SkillDomainsOneHot = []
+    for skill in skills:
+        onehot = []
+        for domain in domains:
+            if(skill in skill_domain_map[domain]):
+                onehot.append(1)
+            else:
+                onehot.append(0)
+        SkillDomainsOneHot.append(onehot)
+    # print(SkillDomainsOneHot)
+
+
+    return skills, SkillDomainsOneHot
 
 def get_user_names(user_skill_dict):
     UserNames = []
