@@ -19,6 +19,7 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
+from flask_restx import Api, Resource, fields
 # dotenv import
 import os
 # import pymysql
@@ -27,6 +28,24 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+api = Api(app, version='3.18.3', title='Sample API',
+          description='A sample API',
+          )
+
+# Sample Swagger UI
+
+
+@api.route('/my-resource/<id>')
+@api.doc(params={'id': 'An ID'})
+class MyResource(Resource):
+    def get(self, id):
+        return {}
+
+    @api.response(403, 'Not Authorized')
+    def post(self, id):
+        api.abort(403)
+
+
 CORS(app)
 app.config["JWT_SECRET_KEY"] = os.getenv(
     'JWT_SECRET_KEY')
@@ -241,15 +260,20 @@ def protected():
 # Recommendation Routes
 
 
-@app.route("/get_recommendations",  methods=['GET', 'POST'])
+@app.route("/get_recommendations",  methods=['POST'])
 @jwt_required()
 def get_recommendations():
-    user_skill_dict = request.json['skills']
-    # rec_names = pipelining.predict(user_skill_dict)
+    filter_skill_arr = request.json['filter_skills']
+    id = get_jwt_identity()
+    student = Student.query.filter_by(Student_ID=id).first()
+    skill_arr = []
+    if len(filter_skill_arr) == 0:
+        skill_arr = student.skills
+    else:
+        skill_arr = filter_skill_arr
+    # rec_names = pipelining.predict(skill_arr)
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
-    cards = list()
-    # id = get_jwt_identity()
-    # student = Student.query.filter_by(Student_ID=id).first()
+    # cards = list()
     # for rec_name in rec_names:
     #     if(student.Name.title() == rec_name):
     #         continue
@@ -274,7 +298,7 @@ def get_recommendations():
     #         curr_rec['skills'].append(curr_skill)
     #         # curr_rec['skills'].append(skill.Skill_name)
     #     cards.append(curr_rec)
-    return jsonify(cards), 200
+    # return jsonify(cards), 200
 
 # Social URLs Routes
 
@@ -967,7 +991,7 @@ def call_to_retraining_function():
 
 
 # call to retrain the model
-call_to_retraining_function()
+# call_to_retraining_function()
 
 if __name__ == "__main__":
     app.run(debug=True)
