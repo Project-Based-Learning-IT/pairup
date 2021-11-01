@@ -20,7 +20,7 @@ def get_skills_n_domains(skill_domain_dict):
         skillsList = []
         for skill in element['skills']:
             skills.add(skill['skill_name'])
-            skillsList.add(skill['skill_name'])
+            skillsList.append(skill['skill_name'])
         skill_domain_map[element['domain_name']] = skillsList
     skills = list(skills)
     domains = list(domains)
@@ -75,7 +75,7 @@ def read_usernames_insequence():
     return usernames
 
 def user_data_matrix(user_skill_dict, Allskills):
-    user_skill_dict.sort()
+    user_skill_dict = sorted(user_skill_dict)
     UserSkills = []
     UserNames = []
     for username,skill_list in user_skill_dict.items():
