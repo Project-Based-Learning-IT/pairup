@@ -95,8 +95,8 @@ def user_data_matrix(user_skill_dict, Allskills):
     return UserSkills
 
 def weights(UserSkills, SkillDomains):
-    UserSkills = np.array(UserSkills)
-    SkillDomains = np.array(SkillDomains)
+    UserSkills = np.array(UserSkills,dtype=np.float64)
+    SkillDomains = np.array(SkillDomains,dtype=np.float64)
     UserDomains = np.dot(UserSkills, SkillDomains)
     return UserDomains
 
@@ -109,10 +109,8 @@ def get_target_user_data(target_user_skills):
             target_skills.append(1)
         else:
             target_skills.append(0)
-    target_skills = np.array(target_skills)
-    
-    SkillDomains = np.array(df_skill_n_domain.iloc[:,1:].values)
-
+    target_skills = np.array(target_skills,dtype=np.float64)
+    SkillDomains = np.array(df_skill_n_domain.iloc[:,1:].values,dtype=np.float64)
     target_domains = np.dot(target_skills, SkillDomains)
     return target_skills, target_domains
 
