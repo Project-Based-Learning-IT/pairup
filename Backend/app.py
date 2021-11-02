@@ -1,40 +1,43 @@
+#=============================================================
+# Necessary Imports
+#=============================================================
 # package imports
 import pipelining
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask.templating import DispatchingJinjaLoader
 from flask_sqlalchemy import SQLAlchemy
+
 # DateTime
 from datetime import datetime
 from dateutil import parser
+
+#Bloom filter - for matching
 from bloom_filter2 import BloomFilter
 import pickle
-# ML packages
-import pandas as pd
-# from sklearn.externals import joblib
-import joblib
-from sklearn.neighbors import NearestNeighbors
+
 # JWT
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 from flask_restx import Api, Resource, fields
+
 # dotenv import
 import os
-# import pymysql
-# pymysql.install_as_MySQLdb()
 from dotenv import load_dotenv
 load_dotenv()
 
+#import the tables
+im
+#=============================================================
+
+#initialize the app
 app = Flask(__name__)
 api = Api(app, version='3.18.3', title='Sample API',
           description='A sample API',
           )
 
 # Sample Swagger UI
-
-
 @api.route('/my-resource/<id>')
 @api.doc(params={'id': 'An ID'})
 class MyResource(Resource):
@@ -271,6 +274,7 @@ def get_recommendations():
         skill_arr = student.skills
     else:
         skill_arr = filter_skill_arr
+    print(f'{student.name} skills are :\n {skill_arr}')
     rec_names = pipelining.predict(skill_arr)
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
     cards = list()
