@@ -16,6 +16,7 @@ import {ChatContext} from './ChatContext';
 
 function Messages() {
   const {user, axiosInstance} = useAuth();
+  let {vProfilesInterval, setVProfilesInterval} = useAuth();
   const {
     allChats,
     setAllChats,
@@ -36,6 +37,7 @@ function Messages() {
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+  // console.log('OusideEffect Messages', vProfilesInterval);
 
   const getMessageProfiles = async () => {
     try {
@@ -71,7 +73,7 @@ function Messages() {
       // res.map(profile => {
       //   unreads[profile.pid] = profile.newmsgs;
       // });
-      if (res.length > 0) {
+      if (res.length > 0 && vProfilesInterval._idleTimeout !== -1) {
         await setVerticalProfiles(prevVProfiles => {
           res.map(profile => {
             if (
@@ -98,7 +100,7 @@ function Messages() {
     }
   };
 
-  let vProfilesInterval;
+  // let vProfilesInterval;
 
   React.useEffect(async () => {
     // setIsLoading(true);
@@ -123,9 +125,6 @@ function Messages() {
 
     // console.log('Before append: ', allChats);
     await getMessageProfiles();
-    vProfilesInterval = setInterval(async () => {
-      await getMessageProfiles();
-    }, 10000);
 
     // if (Object.keys(allChats).length === 0) {
     //   console.log('Stored chats', getData('chats'));
@@ -142,6 +141,23 @@ function Messages() {
 
     // setIsLoading(false);
   }, []);
+
+  React.useEffect(() => {
+    console.log('messages vProfilesInterval', vProfilesInterval);
+    if (!vProfilesInterval) {
+      vProfilesInterval = setInterval(async () => {
+        await getMessageProfiles();
+      }, 5000);
+      setVProfilesInterval(vProfilesInterval);
+    }
+    // else if (vProfilesInterval._idleTimeout === -1) {
+    else if (vProfilesInterval._idleTimeout === -1) {
+      setVProfilesInterval(prevVProfilesInterval => {
+        clearInterval(prevVProfilesInterval);
+        return prevVProfilesInterval;
+      });
+    }
+  }, [vProfilesInterval]);
 
   return (
     <View

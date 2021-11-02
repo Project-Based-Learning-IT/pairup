@@ -36,6 +36,15 @@ import * as Keychain from 'react-native-keychain';
 
 function MyProfile({route}) {
   const {setUser, signOut, user, axiosInstance, setaxiosInstance} = useAuth();
+  // const {vProfilesInterval, setVProfilesInterval} = useAuth();
+  // console.log('My profile rendered');
+  // setVProfilesInterval(prevVProfilesInterval => {
+  //   clearInterval(prevVProfilesInterval);
+  //   return prevVProfilesInterval;
+  // });
+
+  // console.log('Myprofile vProfilesInterval', vProfilesInterval);
+
   const {colors} = useTheme();
 
   const [isSaving, setIsSaving] = React.useState(false);
@@ -188,6 +197,10 @@ function MyProfile({route}) {
       setIsSaving(false);
       console.log(e);
     }
+    // return () => {
+    //   console.log('Myprofile unmounted');
+    //   vProfilesInterval = null;
+    // };
   };
 
   React.useEffect(() => {

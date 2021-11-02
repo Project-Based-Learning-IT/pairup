@@ -24,6 +24,7 @@ import MessageSection from './components/MessageSection';
 
 import axios from 'axios';
 import {Android_Local_ADDRESS, IOS_Local_ADDRESS} from '@env';
+import {ChatContext} from './components/ChatContext';
 
 const AuthContext = React.createContext();
 
@@ -108,8 +109,14 @@ const App = () => {
     }
   };
 
+  const [vProfilesInterval, setVProfilesInterval] = React.useState(null);
+
   const signOut = async () => {
     try {
+      setVProfilesInterval(prevVProfilesInterval => {
+        clearInterval(prevVProfilesInterval);
+        return prevVProfilesInterval;
+      });
       await GoogleSignin.signOut();
       setIsSignedIn(false);
       await Keychain.resetGenericPassword();
@@ -192,6 +199,8 @@ const App = () => {
             // NOTE pass common Networking instance
             axiosInstance: axiosInst.axiosInstance,
             setaxiosInstance,
+            vProfilesInterval,
+            setVProfilesInterval,
           }}>
           <NavigationContainer>
             <StatusBar
