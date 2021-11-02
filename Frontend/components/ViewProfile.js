@@ -24,6 +24,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import DropdownMenu from './DropdownMenu';
 import SocialURL from './SocialURL';
 import NewSection from './NewSection';
+import {defaultProfilePic} from '../staticStore';
 
 function ViewProfile({route}) {
   const {card_user} = route.params;
@@ -220,7 +221,7 @@ function ViewProfile({route}) {
                   source={{
                     uri: cardUserData.photo
                       ? cardUserData.photo
-                      : 'https://www.xeus.com/wp-content/uploads/2014/09/One_User_Orange.png',
+                      : defaultProfilePic,
                   }}></Image>
                 <View
                   style={{

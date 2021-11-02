@@ -2,6 +2,9 @@ const branches = ['CSE', 'IT', 'ENTC', 'Mechanical', 'Civil', 'AI-DS'];
 
 const languageList = ['English', 'Hindi', 'Marathi'];
 
+const defaultProfilePic =
+  'https://s3-alpha.figma.com/hub/file/1214651386/269de90c-2656-4842-81dd-499fe6b2f2dc-cover.png';
+
 const skillList = [
   {
     domain_id: 0,
@@ -2340,4 +2343,5 @@ export {
   leftOptions,
   socialMedia,
   DB_skillsList,
+  defaultProfilePic,
 };

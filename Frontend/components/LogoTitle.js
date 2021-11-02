@@ -1,6 +1,7 @@
 import React from 'react';
 import {Image, Text, View} from 'react-native';
 import {useTheme} from 'react-native-paper';
+import {defaultProfilePic} from '../staticStore';
 
 function LogoTitle({userChatting, Routename, user}) {
   const {colors} = useTheme();
@@ -18,7 +19,7 @@ function LogoTitle({userChatting, Routename, user}) {
             ? userChatting?.Image_URL
             : user?.photo
             ? user?.photo
-            : 'https://www.xeus.com/wp-content/uploads/2014/09/One_User_Orange.png',
+            : defaultProfilePic,
         }}
       />
       {Routename == 'Chat' && (

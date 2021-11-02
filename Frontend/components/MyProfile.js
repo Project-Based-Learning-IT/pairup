@@ -190,56 +190,37 @@ function MyProfile({route}) {
     }
   };
 
-  React.useEffect(async () => {
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-    // console.log(user);
-    async function getDBskills() {
-      // let res = [];
-      // while (res.length === 0) {
-      //   await axiosInstance
-      //     .get('/get_domains_and_its_skills')
-      //     .then(response => {
-      //       // console.log(JSON.stringify(response.data));
-      //       res = response.data;
-      //     })
-      //     .catch(err => {
-      //       console.error('SkillsList Error : ' + err);
-      //     });
-      //   await sleep(2000);
-      // }
-      // setskillsList(res);
-
-      const res = await fetch(
-        'https://project-based-learning-it.github.io/static-data/collegespace/domain_and_skills.json',
-      );
-      const resJson = await res.json();
-      setskillsList(resJson);
-      console.log(resJson.length);
-    }
-
-    async function getDBlanguages() {
-      let res = [];
-      while (res.length === 0) {
-        await axiosInstance
-          .get('/get_all_languages')
-          .then(response => {
-            // console.log(JSON.stringify(response.data));
-            res = response.data;
-          })
-          .catch(err => {
-            console.error('languageList Error : ' + err);
-          });
-        await sleep(2000);
+  React.useEffect(() => {
+    const getDBskills = async () => {
+      try {
+        const res = await axiosInstance.get('/get_domains_and_its_skills');
+        setskillsList(res.data);
+      } catch (e) {
+        console.log(e);
       }
-      setlanguageList(res);
-    }
-    // console.log(axiosInstance.defaults.headers['Authorization']);
-    setIsSaving(true);
-    await getDBskills();
-    await getDBlanguages();
-    setIsSaving(false);
+    };
+
+    const getDBlanguages = async () => {
+      try {
+        const res = await axiosInstance.get('/get_all_languages');
+        setlanguageList(res.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    const init = async () => {
+      try {
+        setIsSaving(true);
+        await getDBskills();
+        await getDBlanguages();
+        setIsSaving(false);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    init();
   }, []);
 
   return (
