@@ -33,7 +33,7 @@ import SkillSection from './SkillSection';
 const {height} = Dimensions.get('window');
 
 function Filter(props) {
-  const {close} = props;
+  const {close, setFiltered_skills, filtered_skills} = props;
 
   const {colors} = useTheme();
 
@@ -41,7 +41,7 @@ function Filter(props) {
 
   const [selectedLeftIndex, setSelectedLeftIndex] = React.useState(0);
 
-  const [filterSkills, setFilterSkills] = React.useState([]);
+  const [filterSkills, setFilterSkills] = React.useState(filtered_skills);
   const [filterLanguages, setFilterLanguages] = React.useState([]);
   const [filterYears, setFilterYears] = React.useState([]);
   const [filterBranches, setFilterBranches] = React.useState([]);
@@ -85,6 +85,7 @@ function Filter(props) {
       duration: 256,
       useNativeDriver: true,
     }).start(() => {
+      setFiltered_skills(filterSkills);
       close();
     });
   };

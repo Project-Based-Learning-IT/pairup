@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Chip,
-  Button,
-} from 'react-native-paper';
+import {Chip, Button} from 'react-native-paper';
 import {ScrollView, View} from 'react-native';
 import NewSection from './NewSection';
 import SearchBox from './SearchBox';
@@ -29,6 +26,7 @@ function SkillSection(props) {
         });
     });
     const flatSkills = skillArr.flat();
+    //can simply return flatSkills right?
     const ids = flatSkills.map(it => it.skill_id);
     return flatSkills.filter((it, index) => ids.indexOf(it.skill_id) === index);
   }

@@ -271,6 +271,7 @@ def protected():
 def get_recommendations():
     filter_skill_arr = request.json['filter_skills']
     filter_skill_arr = [x.strip().lower() for x in filter_skill_arr]
+    # print(filter_skill_arr)
     id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     skill_arr = []
@@ -279,10 +280,12 @@ def get_recommendations():
     else:
         skill_arr = filter_skill_arr
     rec_names = pipelining.predict(skill_arr)
+    # NOTE For testing
+    # rec_names = ["Dummy_a", "Dummy_ab"]
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
     cards = list()
     for rec_name in rec_names:
-        if(student.Name.title() == rec_name):
+        if(student.Name.lower() == rec_name):
             continue
         curr_rec = dict()
         rec = Student.query.filter_by(Name=rec_name).first()

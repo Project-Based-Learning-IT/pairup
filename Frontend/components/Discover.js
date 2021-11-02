@@ -30,6 +30,7 @@ function Discover() {
 
   const [isLoading, setIsLoading] = React.useState(true);
   const [cards, setCards] = useState([]);
+  const [filtered_skills, setFiltered_skills] = useState([]);
 
   const styles = StyleSheet.create({
     container: {
@@ -150,7 +151,9 @@ function Discover() {
         // If user has done filtering post that list
         // If not, then post users skill list
         const res = await axiosInstance.post('/get_recommendations', {
-          filter_skills: [],
+          filter_skills: filtered_skills.map(skill => {
+            return skill.skill_name;
+          }),
         });
 
         setCards(res.data);
@@ -161,9 +164,10 @@ function Discover() {
 
     const init = async () => {
       try {
+        setIsLoading(true);
         updateAxiosInstance();
         //TODO Build two model files first using retraining function in server for updated db
-        // await getCards();
+        await getCards();
         setIsLoading(false);
       } catch (err) {
         console.log(err);
@@ -171,7 +175,7 @@ function Discover() {
     };
 
     init();
-  }, []);
+  }, [filtered_skills]);
 
   return (
     <View style={styles.container}>
@@ -212,7 +216,13 @@ function Discover() {
               color={colors.textWhite}
               onPress={() => setIsFilterModalVisible(true)}
             />
-            {isFilterModalVisible && <Filter close={setIsFilterModalVisible} />}
+            {isFilterModalVisible && (
+              <Filter
+                close={setIsFilterModalVisible}
+                setFiltered_skills={setFiltered_skills}
+                filtered_skills={filtered_skills}
+              />
+            )}
           </View>
 
           {/* Main content with swipe cards */}
