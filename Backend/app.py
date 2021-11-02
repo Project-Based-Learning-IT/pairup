@@ -275,7 +275,7 @@ def get_recommendations():
     student = Student.query.filter_by(Student_ID=id).first()
     skill_arr = []
     if len(filter_skill_arr) == 0:
-        skill_arr = student.skills
+        skill_arr = [skill.Skill_name for skill in student.skills]
     else:
         skill_arr = filter_skill_arr
     # print(f'{student.name} skills are :\n {skill_arr}')
