@@ -172,7 +172,7 @@ function Discover() {
       setCards(res);
     }
 
-    // await getCards();
+    await getCards();
     //NOTE update axiosInstance after setting jwt
     setaxiosInstance({axiosInstance});
 
