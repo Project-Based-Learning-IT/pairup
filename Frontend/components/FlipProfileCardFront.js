@@ -46,7 +46,10 @@ function FlipProfileCardFront(props) {
             borderColor: colors.secondary,
           }}
           source={{
-            uri: 'https://s3-alpha.figma.com/hub/file/1214651386/269de90c-2656-4842-81dd-499fe6b2f2dc-cover.png',
+            uri:
+              props.card.photo.length === 0
+                ? 'https://s3-alpha.figma.com/hub/file/1214651386/269de90c-2656-4842-81dd-499fe6b2f2dc-cover.png'
+                : props.card.photo,
           }}></Image>
       </TouchableOpacity>
 

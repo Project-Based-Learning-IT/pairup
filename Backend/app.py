@@ -281,7 +281,7 @@ def get_recommendations():
         rec = Student.query.filter_by(Name=rec_name).first()
         curr_rec['id'] = rec.Student_ID
         curr_rec['name'] = rec.Name.title()
-        curr_rec['photo'] = rec.Image_URL if rec.Image_URL else 'https://static.thenounproject.com/png/64485-200.png'
+        curr_rec['photo'] = rec.Image_URL if rec.Image_URL else ''
         curr_rec['headline'] = rec.Headline if rec.Headline else "Headline NULL"
         curr_rec['requirements'] = rec.Requirements if rec.Requirements else "REQ NULL"
         curr_rec['Degree_ID'] = rec.degree.Degree_ID if rec.degree else -1
