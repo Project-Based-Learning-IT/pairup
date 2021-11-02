@@ -952,6 +952,7 @@ def get_chats_after_last_cached():
 # or "DateTime": "Tue, 26 Oct 2021 13:10:38 GMT"
 
 
+# @app.route("/get_all_users_skills",  methods=['GET'])
 def user_and_skills_for_retraining():
     users = Student.query.all()
     users_and_their_skills = dict()
@@ -964,6 +965,7 @@ def user_and_skills_for_retraining():
             user_skills.append(skill.Skill_name)
         users_and_their_skills[user.Name] = user_skills
     return users_and_their_skills
+    # return users_and_their_skills, 200
 
 
 def domain_and_skills_for_retraining():
