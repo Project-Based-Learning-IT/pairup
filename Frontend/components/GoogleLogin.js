@@ -40,6 +40,8 @@ function GoogleLogin() {
       res_access_token = await axiosInstance
         .post('/signup_and_login', {
           username: userInfo.user.name.toLowerCase(),
+          //NOTE For testing
+          // username: 'Dummy_a',
         })
         .catch(err => {
           console.error('Access_token Error : ' + err);

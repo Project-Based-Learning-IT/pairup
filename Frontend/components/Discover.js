@@ -117,8 +117,20 @@ function Discover() {
     setIndex(index + 1);
   };
 
-  const onSwipedRight = index => {
+  const onSwipedRight = async index => {
     console.log(index, 'Right');
+    const res = await axiosInstance.post('/right_swipe', {
+      Swiped_Student_ID: cards[index].id,
+    });
+    if (res.data === 'Matched') {
+      console.log('Matched');
+      const msg = await axiosInstance.post('/message', {
+        Receiver_ID: cards[index].id,
+        text: 'Hi, 👋 We matched up',
+      });
+    } else {
+      console.log('Yet to Match');
+    }
     setIndex(index + 1);
   };
 

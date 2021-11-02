@@ -282,6 +282,7 @@ def get_recommendations():
     rec_names = pipelining.predict(skill_arr)
     # NOTE For testing
     # rec_names = ["Dummy_a", "Dummy_ab"]
+    # rec_names = ["Sidhant Khamankar"]
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
     cards = list()
     for rec_name in rec_names:
