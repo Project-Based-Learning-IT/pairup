@@ -28,7 +28,7 @@ function Discover() {
   const {colors} = useTheme();
   const {height} = Dimensions.get('window');
 
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [cards, setCards] = useState([]);
 
   const styles = StyleSheet.create({
@@ -133,46 +133,43 @@ function Discover() {
 
   const {user, axiosInstance, setaxiosInstance, setUser} = useAuth();
 
-  useEffect(async () => {
+  useEffect(() => {
     setIsLoading(true);
 
-    //NOTE Set Token after Glogin
-    axiosInstance.defaults.headers['Authorization'] =
-      'Bearer ' + user.access_token;
+    const updateAxiosInstance = () => {
+      //NOTE Set Token after Glogin
+      axiosInstance.defaults.headers['Authorization'] =
+        'Bearer ' + user.access_token;
 
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
+      setaxiosInstance({axiosInstance});
+    };
 
-    // console.log(user);
-    async function getCards() {
-      // TODO: POST user skills to server
-      // If user has done filtering post that list
-      // If not, then post users skill list
+    const getCards = async () => {
+      try {
+        // TODO: POST user skills to server
+        // If user has done filtering post that list
+        // If not, then post users skill list
+        const res = await axiosInstance.post('/get_recommendations', {
+          filter_skills: [],
+        });
 
-      let res = [];
-      while (res.length === 0) {
-        await axiosInstance
-          .post('/get_recommendations', {
-            filter_skills: [],
-          })
-          .then(response => {
-            res = response.data;
-          })
-          .catch(err => {
-            console.error('Cards Error : ' + err);
-          });
-        await sleep(2000);
+        setCards(res.data);
+      } catch (err) {
+        console.log(err);
       }
-      // console.log(JSON.stringify(res));
-      setCards(res);
-    }
+    };
 
-    await getCards();
-    //NOTE update axiosInstance after setting jwt
-    setaxiosInstance({axiosInstance});
+    const init = async () => {
+      try {
+        updateAxiosInstance();
+        await getCards();
+        setIsLoading(false);
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
-    setIsLoading(false);
+    init();
   }, []);
 
   return (

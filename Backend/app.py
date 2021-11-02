@@ -2,7 +2,7 @@
 # Necessary Imports
 #=============================================================
 # package imports
-# import pipelining
+import pipelining
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -28,7 +28,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 #import the tables
-im
+# im
 #=============================================================
 
 #initialize the app
@@ -275,7 +275,7 @@ def get_recommendations():
         skill_arr = student.skills
     else:
         skill_arr = filter_skill_arr
-    print(f'{student.name} skills are :\n {skill_arr}')
+    # print(f'{student.name} skills are :\n {skill_arr}')
     rec_names = pipelining.predict(skill_arr)
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
     cards = list()
