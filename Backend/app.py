@@ -275,7 +275,6 @@ def get_recommendations():
         skill_arr = student.skills
     else:
         skill_arr = filter_skill_arr
-<<<<<<< Updated upstream
     print(f'{student.name} skills are :\n {skill_arr}')
     rec_names = pipelining.predict(skill_arr)
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
@@ -305,36 +304,6 @@ def get_recommendations():
             # curr_rec['skills'].append(skill.Skill_name)
         cards.append(curr_rec)
     return jsonify(cards), 200
-=======
-    # rec_names = pipelining.predict(skill_arr)
-    # id, name, photo, headline, requirements, info created using branch-year-batch, skills
-    # cards = list()
-    # for rec_name in rec_names:
-    #     if(student.Name.title() == rec_name):
-    #         continue
-    #     curr_rec = dict()
-    #     rec = Student.query.filter_by(Name=rec_name).first()
-    #     curr_rec['id'] = rec.Student_ID
-    #     curr_rec['name'] = rec.Name.title()
-    #     curr_rec['photo'] = rec.Image_URL if rec.Image_URL else 'https://static.thenounproject.com/png/64485-200.png'
-    #     curr_rec['headline'] = rec.Headline if rec.Headline else "Headline NULL"
-    #     curr_rec['requirements'] = rec.Requirements if rec.Requirements else "REQ NULL"
-    #     curr_rec['Degree_ID'] = rec.degree.Degree_ID if rec.degree else -1
-    #     curr_rec['year'] = rec.degree.year if rec.degree else 404
-    #     curr_rec['branch'] = rec.degree.branch if rec.degree else 'BRNF'
-    #     curr_rec['batch'] = rec.degree.batch if rec.degree else 'BANF'
-    #     curr_rec['info'] = str(curr_rec['year'])+' | ' + \
-    #         curr_rec['branch']+' | ' + curr_rec['batch']
-    #     curr_rec['skills'] = list()
-    #     for skill in rec.skills:
-    #         curr_skill = dict()
-    #         curr_skill['skill_id'] = skill.Skill_ID
-    #         curr_skill['skill_name'] = skill.Skill_name
-    #         curr_rec['skills'].append(curr_skill)
-    #         # curr_rec['skills'].append(skill.Skill_name)
-    #     cards.append(curr_rec)
-    # return jsonify(cards), 200
->>>>>>> Stashed changes
 
 # Social URLs Routes
 
