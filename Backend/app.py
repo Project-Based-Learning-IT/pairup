@@ -2,7 +2,7 @@
 # Necessary Imports
 #=============================================================
 # package imports
-# import pipelining
+import pipelining
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -28,7 +28,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 #import the tables
-im
+
 #=============================================================
 
 #initialize the app
