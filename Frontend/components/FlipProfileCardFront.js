@@ -34,6 +34,9 @@ function FlipProfileCardFront(props) {
           elevation: 4,
           borderRadius: 48,
           zIndex: 4,
+        }}
+        onPress={() => {
+          navigation.navigate('ViewProfile', {card_user: card});
         }}>
         <Image
           style={{

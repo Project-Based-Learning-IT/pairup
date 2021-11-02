@@ -10,7 +10,13 @@ import {
   TouchableHighlight,
   TouchableOpacity,
 } from 'react-native';
-import {IconButton, Portal, useTheme} from 'react-native-paper';
+import {
+  IconButton,
+  Portal,
+  useTheme,
+  ActivityIndicator,
+} from 'react-native-paper';
+import {useAuth} from '../App';
 import {leftOptions} from '../staticStore';
 import {
   skillList,
@@ -43,6 +49,11 @@ function Filter(props) {
   const [filterBatches, setFilterBatches] = React.useState([]);
   const [filterSocialMedia, setFilterSocialMedia] = React.useState([]);
 
+  const [skillsLoading, setSkillsLoading] = React.useState(false);
+  const [skills, setSkills] = React.useState([]);
+
+  const {axiosInstance} = useAuth();
+
   React.useEffect(() => {
     const slideIn = () => {
       Animated.spring(springAnim, {
@@ -52,6 +63,20 @@ function Filter(props) {
     };
 
     slideIn();
+  }, []);
+
+  React.useEffect(() => {
+    const getSkills = async () => {
+      try {
+        setSkillsLoading(true);
+        const res = await axiosInstance.get('/get_domains_and_its_skills');
+        setSkills(res.data);
+        setSkillsLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getSkills();
   }, []);
 
   const handleClose = () => {
@@ -118,13 +143,24 @@ function Filter(props) {
             onPress={handleClose}
           />
         </View>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          {/* <View
+        {skillsLoading || skills.length === 0 ? (
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <ActivityIndicator size="large" color={colors.secondary} />
+          </View>
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            {/* <View
             style={{
               flex: 0.3,
             }}>
@@ -159,21 +195,21 @@ function Filter(props) {
               ))}
             </ScrollView>
           </View> */}
-          <View
-            style={{
-              // flex: 0.7,
-              flex: 1,
-              height: '100%',
-              padding: 10,
-            }}>
-            {selectedLeftIndex == 0 && (
-              <SkillSection
-                skills={filterSkills}
-                setSkills={setFilterSkills}
-                skillList={skillList}
-              />
-            )}
-            {/* {selectedLeftIndex == 1 && <FilterSection
+            <View
+              style={{
+                // flex: 0.7,
+                flex: 1,
+                height: '100%',
+                padding: 10,
+              }}>
+              {selectedLeftIndex == 0 && (
+                <SkillSection
+                  skills={filterSkills}
+                  setSkills={setFilterSkills}
+                  skillList={skills}
+                />
+              )}
+              {/* {selectedLeftIndex == 1 && <FilterSection
               items={filterLanguages}
               setItems={setFilterLanguages}
               itemList={languageList}
@@ -213,8 +249,9 @@ function Filter(props) {
                 itemList={socialMedia}
               />
             } */}
+            </View>
           </View>
-        </View>
+        )}
         <View
           style={{
             width: '100%',
