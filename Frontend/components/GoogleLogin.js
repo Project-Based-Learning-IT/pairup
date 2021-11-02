@@ -29,9 +29,9 @@ function GoogleLogin() {
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
 
   const signIn = async () => {
-    setIsLoggingIn(true);
-
     const userInfo = await signInWithGoogle();
+    if (!userInfo) return;
+    setIsLoggingIn(true);
     let new_user = false;
     // NOTE Get the jwt access token
     let res_access_token;

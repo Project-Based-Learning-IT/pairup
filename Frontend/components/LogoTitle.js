@@ -5,7 +5,6 @@ import {defaultProfilePic} from '../staticStore';
 
 function LogoTitle({userChatting, Routename, user}) {
   const {colors} = useTheme();
-  // console.log(Routename);
   return (
     <View style={{flexDirection: 'row', marginLeft: -16}}>
       <Image

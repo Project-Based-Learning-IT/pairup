@@ -218,49 +218,37 @@ function SignUp({route}) {
     }
   };
 
-  React.useEffect(async () => {
-    console.log(user);
-
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-    async function getDBskills() {
-      let res = [];
-      while (res.length === 0) {
-        await axiosInstance
-          .get('/get_domains_and_its_skills')
-          .then(response => {
-            // console.log(JSON.stringify(response.data));
-            res = response.data;
-          })
-          .catch(err => {
-            console.error('SkillsList Error : ' + err);
-          });
-        await sleep(4000);
+  React.useEffect(() => {
+    const getDBskills = async () => {
+      try {
+        const res = await axiosInstance.get('/get_domains_and_its_skills');
+        setskillsList(res.data);
+      } catch (e) {
+        console.log(e);
       }
-      setskillsList(res);
-    }
+    };
 
-    async function getDBlanguages() {
-      let res = [];
-      while (res.length === 0) {
-        await axiosInstance
-          .get('/get_all_languages')
-          .then(response => {
-            // console.log(JSON.stringify(response.data));
-            res = response.data;
-          })
-          .catch(err => {
-            console.error('languageList Error : ' + err);
-          });
-        await sleep(4000);
+    const getDBlanguages = async () => {
+      try {
+        const res = await axiosInstance.get('/get_all_languages');
+        setlanguageList(res.data);
+      } catch (e) {
+        console.log(e);
       }
-      setlanguageList(res);
-    }
-    setIsSigningUp(true);
-    await getDBskills();
-    await getDBlanguages();
-    setIsSigningUp(false);
+    };
+
+    const init = async () => {
+      try {
+        setIsSigningUp(true);
+        await getDBskills();
+        await getDBlanguages();
+        setIsSigningUp(false);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    init();
   }, []);
 
   return (
