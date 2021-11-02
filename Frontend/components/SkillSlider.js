@@ -81,7 +81,7 @@ function SkillSlider(props) {
             },
           ],
         }}>
-        {skills[skillIndex].skill_name}
+        {skills[skillIndex] ? skills[skillIndex].skill_name : 'None'}
         {/* {console.log(skills[skillIndex].skill_name)} */}
       </Animated.Text>
       <IconButton
