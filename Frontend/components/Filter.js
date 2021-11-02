@@ -11,8 +11,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {IconButton, Portal, useTheme} from 'react-native-paper';
-import { leftOptions } from '../staticStore';
-import { skillList, languageList, years, branches, divisions, batches, socialMedia } from '../staticStore';
+import {leftOptions} from '../staticStore';
+import {
+  skillList,
+  languageList,
+  years,
+  branches,
+  divisions,
+  batches,
+  socialMedia,
+} from '../staticStore';
 import FilterSection from './FilterSection';
 import SkillSection from './SkillSection';
 
@@ -71,7 +79,7 @@ function Filter(props) {
       <Animated.View
         style={{
           position: 'absolute',
-          top: StatusBar.currentHeight+12, // for full screen
+          top: StatusBar.currentHeight + 12, // for full screen
           // top: StatusBar.currentHeight + height/10,
           left: 0,
           right: 0,
@@ -116,7 +124,7 @@ function Filter(props) {
             flexDirection: 'row',
             alignItems: 'center',
           }}>
-          <View
+          {/* <View
             style={{
               flex: 0.3,
             }}>
@@ -140,28 +148,32 @@ function Filter(props) {
                     style={{
                       textAlign: 'center',
                       fontSize: 16,
-                      color: index == selectedLeftIndex ? colors.secondary : 'black',
-                      fontWeight: index == selectedLeftIndex ? 'bold' : 'normal',
+                      color:
+                        index == selectedLeftIndex ? colors.secondary : 'black',
+                      fontWeight:
+                        index == selectedLeftIndex ? 'bold' : 'normal',
                     }}>
                     {option}
                   </Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
-          </View>
+          </View> */}
           <View
             style={{
-              flex: 0.7,
+              // flex: 0.7,
+              flex: 1,
               height: '100%',
               padding: 10,
-            }}
-          >
-            {selectedLeftIndex == 0 && <SkillSection
-              skills={filterSkills}
-              setSkills={setFilterSkills}
-              skillList={skillList}
-            />}
-            {selectedLeftIndex == 1 && <FilterSection
+            }}>
+            {selectedLeftIndex == 0 && (
+              <SkillSection
+                skills={filterSkills}
+                setSkills={setFilterSkills}
+                skillList={skillList}
+              />
+            )}
+            {/* {selectedLeftIndex == 1 && <FilterSection
               items={filterLanguages}
               setItems={setFilterLanguages}
               itemList={languageList}
@@ -200,7 +212,7 @@ function Filter(props) {
                 setItems={setFilterSocialMedia}
                 itemList={socialMedia}
               />
-            }
+            } */}
           </View>
         </View>
         <View
@@ -220,7 +232,7 @@ function Filter(props) {
             padding: 18,
             paddingLeft: 12,
             paddingRight: 12,
-              // backgroundColor: colors.primary,
+            // backgroundColor: colors.primary,
           }}>
           <View>
             <Text
@@ -228,8 +240,9 @@ function Filter(props) {
                 fontSize: 18,
                 fontWeight: 'bold',
                 color: colors.textHeadBlack,
-              }}
-            >8</Text>
+              }}>
+              8
+            </Text>
             <Text>Students found</Text>
           </View>
           <View>
@@ -241,15 +254,15 @@ function Filter(props) {
                 paddingRight: 36,
                 borderRadius: 8,
               }}
-              onPress={handleClose}
-            >
+              onPress={handleClose}>
               <Text
                 style={{
                   fontSize: 16,
                   fontWeight: 'bold',
                   color: colors.textWhite,
-                }}
-              >Apply</Text>
+                }}>
+                Apply
+              </Text>
             </TouchableHighlight>
           </View>
         </View>
