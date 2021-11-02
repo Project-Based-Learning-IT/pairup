@@ -30,6 +30,10 @@ load_dotenv()
 #import the tables
 #=============================================================
 
+#add a counter for retraining
+# COUNTER_FOR_RETRANING = 0
+#=============================================================
+
 #initialize the app
 app = Flask(__name__)
 api = Api(app, version='3.18.3', title='Sample API',
@@ -212,8 +216,6 @@ class Social_URLs(db.Model):
 @app.route("/",  methods=['GET', 'POST'])
 def hello_world():
     return "How you doin'??"
-    # listOfUsers = getSimilarUsers(10, 'krishna purohit')
-    # return str(listOfUsers)
 
 # Login
 # Create a route to authenticate your users and return JWTs. The
