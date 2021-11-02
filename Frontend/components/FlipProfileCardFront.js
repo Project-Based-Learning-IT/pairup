@@ -5,6 +5,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Button, IconButton, useTheme} from 'react-native-paper';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useNavigation} from '@react-navigation/native';
+import {defaultProfilePic} from '../staticStore';
 
 function FlipProfileCardFront(props) {
   const navigation = useNavigation();
@@ -48,7 +49,7 @@ function FlipProfileCardFront(props) {
           source={{
             uri:
               props.card.photo.length === 0
-                ? 'https://s3-alpha.figma.com/hub/file/1214651386/269de90c-2656-4842-81dd-499fe6b2f2dc-cover.png'
+                ? defaultProfilePic
                 : props.card.photo,
           }}></Image>
       </TouchableOpacity>
