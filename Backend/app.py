@@ -1,5 +1,5 @@
 # package imports
-# import pipelining
+import pipelining
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask.templating import DispatchingJinjaLoader
@@ -245,35 +245,35 @@ def protected():
 @jwt_required()
 def get_recommendations():
     user_skill_dict = request.json['skills']
-    # rec_names = pipelining.predict(user_skill_dict)
+    rec_names = pipelining.predict(user_skill_dict)
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
     cards = list()
-    # id = get_jwt_identity()
-    # student = Student.query.filter_by(Student_ID=id).first()
-    # for rec_name in rec_names:
-    #     if(student.Name.title() == rec_name):
-    #         continue
-    #     curr_rec = dict()
-    #     rec = Student.query.filter_by(Name=rec_name).first()
-    #     curr_rec['id'] = rec.Student_ID
-    #     curr_rec['name'] = rec.Name.title()
-    #     curr_rec['photo'] = rec.Image_URL if rec.Image_URL else 'https://static.thenounproject.com/png/64485-200.png'
-    #     curr_rec['headline'] = rec.Headline if rec.Headline else "Headline NULL"
-    #     curr_rec['requirements'] = rec.Requirements if rec.Requirements else "REQ NULL"
-    #     curr_rec['Degree_ID'] = rec.degree.Degree_ID if rec.degree else -1
-    #     curr_rec['year'] = rec.degree.year if rec.degree else 404
-    #     curr_rec['branch'] = rec.degree.branch if rec.degree else 'BRNF'
-    #     curr_rec['batch'] = rec.degree.batch if rec.degree else 'BANF'
-    #     curr_rec['info'] = str(curr_rec['year'])+' | ' + \
-    #         curr_rec['branch']+' | ' + curr_rec['batch']
-    #     curr_rec['skills'] = list()
-    #     for skill in rec.skills:
-    #         curr_skill = dict()
-    #         curr_skill['skill_id'] = skill.Skill_ID
-    #         curr_skill['skill_name'] = skill.Skill_name
-    #         curr_rec['skills'].append(curr_skill)
-    #         # curr_rec['skills'].append(skill.Skill_name)
-    #     cards.append(curr_rec)
+    id = get_jwt_identity()
+    student = Student.query.filter_by(Student_ID=id).first()
+    for rec_name in rec_names:
+        if(student.Name.title() == rec_name):
+            continue
+        curr_rec = dict()
+        rec = Student.query.filter_by(Name=rec_name).first()
+        curr_rec['id'] = rec.Student_ID
+        curr_rec['name'] = rec.Name.title()
+        curr_rec['photo'] = rec.Image_URL if rec.Image_URL else 'https://static.thenounproject.com/png/64485-200.png'
+        curr_rec['headline'] = rec.Headline if rec.Headline else "Headline NULL"
+        curr_rec['requirements'] = rec.Requirements if rec.Requirements else "REQ NULL"
+        curr_rec['Degree_ID'] = rec.degree.Degree_ID if rec.degree else -1
+        curr_rec['year'] = rec.degree.year if rec.degree else 404
+        curr_rec['branch'] = rec.degree.branch if rec.degree else 'BRNF'
+        curr_rec['batch'] = rec.degree.batch if rec.degree else 'BANF'
+        curr_rec['info'] = str(curr_rec['year'])+' | ' + \
+            curr_rec['branch']+' | ' + curr_rec['batch']
+        curr_rec['skills'] = list()
+        for skill in rec.skills:
+            curr_skill = dict()
+            curr_skill['skill_id'] = skill.Skill_ID
+            curr_skill['skill_name'] = skill.Skill_name
+            curr_rec['skills'].append(curr_skill)
+            # curr_rec['skills'].append(skill.Skill_name)
+        cards.append(curr_rec)
     return jsonify(cards), 200
 
 # Social URLs Routes
@@ -962,7 +962,7 @@ def domain_and_skills_for_retraining():
 def call_to_retraining_function():
     users_and_their_skills = user_and_skills_for_retraining()
     domain_and_skills = domain_and_skills_for_retraining()
-    # pipelining.update_models(domain_and_skills, users_and_their_skills)
+    pipelining.update_models(domain_and_skills, users_and_their_skills)
     print('Retraining performed successfully')
 
 
