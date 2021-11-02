@@ -264,6 +264,7 @@ def protected():
 @jwt_required()
 def get_recommendations():
     filter_skill_arr = request.json['filter_skills']
+    filter_skill_arr = [x.strip().lower() for x in filter_skill_arr]
     id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     skill_arr = []
@@ -294,7 +295,7 @@ def get_recommendations():
         for skill in rec.skills:
             curr_skill = dict()
             curr_skill['skill_id'] = skill.Skill_ID
-            curr_skill['skill_name'] = skill.Skill_name
+            curr_skill['skill_name'] = skill.Skill_name.title()
             curr_rec['skills'].append(curr_skill)
             # curr_rec['skills'].append(skill.Skill_name)
         cards.append(curr_rec)
@@ -464,12 +465,12 @@ def get_domains_and_its_skills():
     for domain_obj in ids_domains:
         curr_id_domain = dict()
         curr_id_domain['domain_id'] = domain_obj.Domain_ID
-        curr_id_domain['domain_name'] = domain_obj.Domain_name
+        curr_id_domain['domain_name'] = domain_obj.Domain_name.title()
         curr_id_domain['skills'] = list()
         for s in domain_obj.see_skills:
             skill_in_domain = dict()
             skill_in_domain['skill_id'] = s.Skill_ID
-            skill_in_domain['skill_name'] = s.Skill_name
+            skill_in_domain['skill_name'] = s.Skill_name.title()
             curr_id_domain['skills'].append(skill_in_domain)
         res_ids_domains_skills.append(curr_id_domain)
     return jsonify(res_ids_domains_skills), 200
