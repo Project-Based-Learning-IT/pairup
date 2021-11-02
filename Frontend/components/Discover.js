@@ -162,7 +162,8 @@ function Discover() {
     const init = async () => {
       try {
         updateAxiosInstance();
-        await getCards();
+        //TODO Build two model files first using retraining function in server for updated db
+        // await getCards();
         setIsLoading(false);
       } catch (err) {
         console.log(err);

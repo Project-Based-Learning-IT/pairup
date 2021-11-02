@@ -956,6 +956,8 @@ def user_and_skills_for_retraining():
     users = Student.query.all()
     users_and_their_skills = dict()
     for user in users:
+        if user.Name == "Dummy_a" or user.Name == "Dummy_ab":
+            continue
         user_skills = list()
         db_user_skills = user.skills
         for skill in db_user_skills:
@@ -993,7 +995,7 @@ def domain_and_skills_for_retraining():
 def call_to_retraining_function():
     users_and_their_skills = user_and_skills_for_retraining()
     domain_and_skills = domain_and_skills_for_retraining()
-    # pipelining.update_models(domain_and_skills, users_and_their_skills)
+    pipelining.update_models(domain_and_skills, users_and_their_skills)
     print('Retraining performed successfully')
 
 
