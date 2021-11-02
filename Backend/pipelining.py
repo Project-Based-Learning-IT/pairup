@@ -129,8 +129,8 @@ def recommendUsers(target_user_skills, target_user_domains, UserNames):
     domain_based_model = joblib.load('KNN_user_domains.pkl', mmap_mode='r')
 
     #TODO: See this return distances parameter and how to access these distances
-    skills_based_similar_users, skills_based_similar_user_distances = skill_based_model.kneighbors([target_user_skills],10)
-    domains_based_similar_users, domains_based_similar_user_distances = domain_based_model.kneighbors([target_user_domains],10)
+    skills_based_similar_user_distances, skills_based_similar_users = skill_based_model.kneighbors([target_user_skills],10)
+    domains_based_similar_user_distances, domains_based_similar_users = domain_based_model.kneighbors([target_user_domains],10)
 
     # skill_based_user_names = []
     # domain_based_user_names = []
