@@ -148,11 +148,8 @@ function Discover() {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-
-
     // console.log(user);
     async function getCards() {
-
       // TODO: POST user skills to server
       // If user has done filtering post that list
       // If not, then post users skill list
@@ -160,7 +157,9 @@ function Discover() {
       let res = [];
       while (res.length === 0) {
         await axiosInstance
-          .get('/get_recommendations')
+          .post('/get_recommendations', {
+            filter_skills: [],
+          })
           .then(response => {
             res = response.data;
           })
