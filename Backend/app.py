@@ -1,40 +1,43 @@
+#=============================================================
+# Necessary Imports
+#=============================================================
 # package imports
-import pipelining
+# import pipelining
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask.templating import DispatchingJinjaLoader
 from flask_sqlalchemy import SQLAlchemy
+
 # DateTime
 from datetime import datetime
 from dateutil import parser
+
+#Bloom filter - for matching
 from bloom_filter2 import BloomFilter
 import pickle
-# ML packages
-import pandas as pd
-# from sklearn.externals import joblib
-import joblib
-from sklearn.neighbors import NearestNeighbors
+
 # JWT
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 from flask_restx import Api, Resource, fields
+
 # dotenv import
 import os
-# import pymysql
-# pymysql.install_as_MySQLdb()
 from dotenv import load_dotenv
 load_dotenv()
 
+#import the tables
+im
+#=============================================================
+
+#initialize the app
 app = Flask(__name__)
 api = Api(app, version='3.18.3', title='Sample API',
           description='A sample API',
           )
 
 # Sample Swagger UI
-
-
 @api.route('/my-resource/<id>')
 @api.doc(params={'id': 'An ID'})
 class MyResource(Resource):
@@ -264,6 +267,7 @@ def protected():
 @jwt_required()
 def get_recommendations():
     filter_skill_arr = request.json['filter_skills']
+    filter_skill_arr = [x.strip().lower() for x in filter_skill_arr]
     id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     skill_arr = []
@@ -271,6 +275,8 @@ def get_recommendations():
         skill_arr = student.skills
     else:
         skill_arr = filter_skill_arr
+<<<<<<< Updated upstream
+    print(f'{student.name} skills are :\n {skill_arr}')
     rec_names = pipelining.predict(skill_arr)
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
     cards = list()
@@ -294,11 +300,41 @@ def get_recommendations():
         for skill in rec.skills:
             curr_skill = dict()
             curr_skill['skill_id'] = skill.Skill_ID
-            curr_skill['skill_name'] = skill.Skill_name
+            curr_skill['skill_name'] = skill.Skill_name.title()
             curr_rec['skills'].append(curr_skill)
             # curr_rec['skills'].append(skill.Skill_name)
         cards.append(curr_rec)
     return jsonify(cards), 200
+=======
+    # rec_names = pipelining.predict(skill_arr)
+    # id, name, photo, headline, requirements, info created using branch-year-batch, skills
+    # cards = list()
+    # for rec_name in rec_names:
+    #     if(student.Name.title() == rec_name):
+    #         continue
+    #     curr_rec = dict()
+    #     rec = Student.query.filter_by(Name=rec_name).first()
+    #     curr_rec['id'] = rec.Student_ID
+    #     curr_rec['name'] = rec.Name.title()
+    #     curr_rec['photo'] = rec.Image_URL if rec.Image_URL else 'https://static.thenounproject.com/png/64485-200.png'
+    #     curr_rec['headline'] = rec.Headline if rec.Headline else "Headline NULL"
+    #     curr_rec['requirements'] = rec.Requirements if rec.Requirements else "REQ NULL"
+    #     curr_rec['Degree_ID'] = rec.degree.Degree_ID if rec.degree else -1
+    #     curr_rec['year'] = rec.degree.year if rec.degree else 404
+    #     curr_rec['branch'] = rec.degree.branch if rec.degree else 'BRNF'
+    #     curr_rec['batch'] = rec.degree.batch if rec.degree else 'BANF'
+    #     curr_rec['info'] = str(curr_rec['year'])+' | ' + \
+    #         curr_rec['branch']+' | ' + curr_rec['batch']
+    #     curr_rec['skills'] = list()
+    #     for skill in rec.skills:
+    #         curr_skill = dict()
+    #         curr_skill['skill_id'] = skill.Skill_ID
+    #         curr_skill['skill_name'] = skill.Skill_name
+    #         curr_rec['skills'].append(curr_skill)
+    #         # curr_rec['skills'].append(skill.Skill_name)
+    #     cards.append(curr_rec)
+    # return jsonify(cards), 200
+>>>>>>> Stashed changes
 
 # Social URLs Routes
 
@@ -464,12 +500,12 @@ def get_domains_and_its_skills():
     for domain_obj in ids_domains:
         curr_id_domain = dict()
         curr_id_domain['domain_id'] = domain_obj.Domain_ID
-        curr_id_domain['domain_name'] = domain_obj.Domain_name
+        curr_id_domain['domain_name'] = domain_obj.Domain_name.title()
         curr_id_domain['skills'] = list()
         for s in domain_obj.see_skills:
             skill_in_domain = dict()
             skill_in_domain['skill_id'] = s.Skill_ID
-            skill_in_domain['skill_name'] = s.Skill_name
+            skill_in_domain['skill_name'] = s.Skill_name.title()
             curr_id_domain['skills'].append(skill_in_domain)
         res_ids_domains_skills.append(curr_id_domain)
     return jsonify(res_ids_domains_skills), 200
@@ -595,22 +631,22 @@ def update_student_profile():
 
 
 # NOTE To add dataset
-# new_631_Stud_Id_Name_Skills_list = pd.read_csv(
-#     'new_631_Stud_Id_Name_Skills_list.csv')
+# Stud_Id_Name_Skills_list_627 = pd.read_csv(
+#     '627_Stud_Id_Name_Skills_list.csv')
 
 
 # @app.route("/add_dataset",  methods=['POST'])
 # def add_dataset():
 #     if request.method == "POST":
-#         for ind in new_631_Stud_Id_Name_Skills_list.index:
-#             curr_stud_id = new_631_Stud_Id_Name_Skills_list['Student_ID'][ind]
-#             curr_stud_name = new_631_Stud_Id_Name_Skills_list['Names'][ind]
+#         for ind in Stud_Id_Name_Skills_list_627.index:
+#             curr_stud_id = Stud_Id_Name_Skills_list_627['Student_ID'][ind]
+#             curr_stud_name = Stud_Id_Name_Skills_list_627['Names'][ind]
 
 #             bloom = BloomFilter(max_elements=1000, error_rate=0.001)
 
 #             student = Student(
 #                 Student_ID=curr_stud_id, Name=curr_stud_name, Bloom_filter=pickle.dumps(bloom))
-#             print("addding new student")
+
 #             db.session.add(student)
 #             db.session.commit()
 #         return "Dataset added", 200
@@ -986,7 +1022,7 @@ def domain_and_skills_for_retraining():
 def call_to_retraining_function():
     users_and_their_skills = user_and_skills_for_retraining()
     domain_and_skills = domain_and_skills_for_retraining()
-    pipelining.update_models(domain_and_skills, users_and_their_skills)
+    # pipelining.update_models(domain_and_skills, users_and_their_skills)
     print('Retraining performed successfully')
 
 
@@ -995,5 +1031,3 @@ def call_to_retraining_function():
 
 if __name__ == "__main__":
     app.run(debug=True)
-    # host = os.getenv(
-    #     'Sidhant_IP_ADDRESS'),

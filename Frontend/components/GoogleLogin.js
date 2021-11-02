@@ -20,6 +20,7 @@ function GoogleLogin() {
     setIsSignedIn,
     axiosInstance,
     setaxiosInstance,
+    setVProfilesInterval,
   } = useAuth();
 
   const navigation = useNavigation();
@@ -130,6 +131,7 @@ function GoogleLogin() {
       await Keychain.setGenericPassword('user', JSON.stringify(userData));
       setaxiosInstance({axiosInstance});
       setUser(userData);
+      setVProfilesInterval(null);
       setIsLoggingIn(false);
       setIsSignedIn(true);
     }

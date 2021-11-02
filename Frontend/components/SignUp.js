@@ -36,7 +36,13 @@ import {
 function SignUp({route}) {
   const {user, id} = route.params;
 
-  const {setUser, setIsSignedIn, axiosInstance, setaxiosInstance} = useAuth();
+  const {
+    setUser,
+    setIsSignedIn,
+    axiosInstance,
+    setaxiosInstance,
+    setVProfilesInterval,
+  } = useAuth();
   const {colors} = useTheme();
 
   const [isSigningUp, setIsSigningUp] = React.useState(false);
@@ -210,6 +216,7 @@ function SignUp({route}) {
       setaxiosInstance({axiosInstance});
       await Keychain.setGenericPassword('user', JSON.stringify(userData));
       setUser(userData);
+      setVProfilesInterval(null);
       setIsSigningUp(false);
       setIsSignedIn(true);
     } catch (e) {
