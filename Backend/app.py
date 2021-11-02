@@ -278,7 +278,8 @@ def get_recommendations():
         skill_arr = student.skills
     else:
         skill_arr = filter_skill_arr
-    # print(f'{student.name} skills are :\n {skill_arr}')
+    #for checking if updated skills were fetched
+    print(f'{student.name} skills are :\n {skill_arr}')
     rec_names = pipelining.predict(skill_arr)
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
     cards = list()
