@@ -309,6 +309,8 @@ def should_call_retrain():
         p1 = multiprocessing.Process(target=call_to_retraining_function)
         p1.start()
         reset_counter(counter_filename)
+        #remove this call in case of lagg
+        p1.join()
     else:
         update_counter(counter_filename)
 
