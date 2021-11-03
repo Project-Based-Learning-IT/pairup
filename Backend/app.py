@@ -309,8 +309,6 @@ def should_call_retrain():
         p1 = multiprocessing.Process(target=call_to_retraining_function)
         p1.start()
         reset_counter(counter_filename)
-        #remove this call in case of lagg
-        p1.join()
     else:
         update_counter(counter_filename)
 
@@ -679,7 +677,7 @@ def get_student_profile():
 @app.route("/update_student_profile",  methods=['POST'])
 @jwt_required()
 def update_student_profile():
-    should_call_retrain() # For new user sign up and name update for logged in users
+    should_call_retrain()  # For new user sign up and name update for logged in users
     if request.method == "POST":
         id = get_jwt_identity()
         student = Student.query.filter_by(Student_ID=id).first()
