@@ -210,10 +210,12 @@ class Social_URLs(db.Model):
 
     def __repr__(self) -> str:
         return f"{self.Social_URL_ID}"
-#==========================================================================================
+# ==========================================================================================
 
-#re-training logic
+# re-training logic
 # @app.route("/get_all_users_skills",  methods=['GET'])
+
+
 def user_and_skills_for_retraining():
     users = Student.query.all()
     users_and_their_skills = dict()
@@ -262,18 +264,20 @@ def call_to_retraining_function():
     print('Retraining performed successfully')
 
 
-#counter logic
-#==========================================================================================
+# counter logic
+# ==========================================================================================
 counter_filename = 'counter.txt'
 target_count_value = 25
 
+
 def check_file_exists(filename):
-  if(exists(filename)):
-    pass
-  else:
-    with open(filename, 'w') as f:
-      f.write('0')
-    f.close()
+    if(exists(filename)):
+        pass
+    else:
+        with open(filename, 'w') as f:
+            f.write('0')
+        f.close()
+
 
 def check_counter(filename):
     check_file_exists(filename)
@@ -285,31 +289,34 @@ def check_counter(filename):
         return True
     return False
 
+
 def update_counter(filename):
-  with open(filename, 'r') as f:
+    with open(filename, 'r') as f:
         count = int(f.read())
-  with open(filename, 'w') as f:
-      f.write(str(count + 1))
+    with open(filename, 'w') as f:
+        f.write(str(count + 1))
+
 
 def reset_counter(filename):
-  with open(filename, 'w') as f:
-      f.write('0')
+    with open(filename, 'w') as f:
+        f.write('0')
+
 
 def should_call_retrain():
-  global counter_filename
-  status = check_counter(counter_filename)
-  if(status):
-    p1 = multiprocessing.Process(target=call_to_retraining_function)
-    p1.start()
-    reset_counter(counter_filename)
-  else:
-    update_counter(counter_filename)
-    
-#==========================================================================================
+    global counter_filename
+    status = check_counter(counter_filename)
+    if(status):
+        p1 = multiprocessing.Process(target=call_to_retraining_function)
+        p1.start()
+        reset_counter(counter_filename)
+    else:
+        update_counter(counter_filename)
+
+# ==========================================================================================
 
 
 # Routes
-#==========================================================================================
+# ==========================================================================================
 
 # Homepage
 @app.route("/",  methods=['GET', 'POST'])
@@ -323,7 +330,6 @@ def hello_world():
 
 @app.route("/signup_and_login", methods=["POST"])
 def signup_and_login():
-    # should_call_retrain()
     username = str(request.json["username"])
     new_user = False
     student = Student.query.filter_by(
@@ -367,7 +373,6 @@ def protected():
 @app.route("/get_recommendations",  methods=['POST'])
 @jwt_required()
 def get_recommendations():
-    # should_call_retrain()
     filter_skill_arr = request.json['filter_skills']
     filter_skill_arr = [x.strip().lower() for x in filter_skill_arr]
     # print(filter_skill_arr)
@@ -672,7 +677,7 @@ def get_student_profile():
 @app.route("/update_student_profile",  methods=['POST'])
 @jwt_required()
 def update_student_profile():
-    # should_call_retrain()
+    # should_call_retrain() # For new user sign up and name update for logged in users
     if request.method == "POST":
         id = get_jwt_identity()
         student = Student.query.filter_by(Student_ID=id).first()
@@ -1057,7 +1062,8 @@ def get_chats_after_last_cached():
 # }
 # or "DateTime": "Tue, 26 Oct 2021 13:10:38 GMT"
 
-#==============================================================================
+# ==============================================================================
+
 
 if __name__ == "__main__":
-    app.run(debug=True,threaded=True)
+    app.run(debug=True, threaded=True)
