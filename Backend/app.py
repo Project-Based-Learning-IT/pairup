@@ -1058,4 +1058,4 @@ def get_chats_after_last_cached():
 #==============================================================================
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,threaded=True)
