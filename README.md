@@ -103,7 +103,7 @@ https://www.npmjs.com/package/react-native-dotenv
 
 https://www.npmjs.com/package/axios
 
-https://www.npmjs.com/package/frisbee
+https://react-native-async-storage.github.io/async-storage/ [Not Working]
 
 
 ## Backend
@@ -125,7 +125,7 @@ max_execution_time = 5000
 max_input_time = 5000
 memory_limit = 1000M
 ```
-Then import the sql file using phpMyAdmin (XAMMP->MySQL->Admin)
+Normally Exported sql Script does not have create database syntax. So you should create a database using phpMyAdmin and then import SQL file using phpMyAdmin (XAMMP->MySQL->Admin)
 
 ### Setup Server
 
@@ -154,6 +154,7 @@ Main Packages
     pip install python-dotenv
     pip install python-dateutil
     pip install -U flask-cors
+    pip install flask-restx
 
 Install a python formatter in VSCode outside of virtual environment
 
@@ -173,7 +174,8 @@ Same email and password
 * Documentation Flask : https://flask.palletsprojects.com/en/2.0.x/  
 * Documentation SQLAlchemy: https://flask-sqlalchemy.palletsprojects.com/en/2.x/
 * Documentation JWT: https://flask-jwt-extended.readthedocs.io/en/stable/basic_usage/
-* https://pypi.org/project/Flask-Cors/
+* CORS: https://pypi.org/project/Flask-Cors/
+* Swagger UI: https://flask-restx.readthedocs.io/en/latest/index.html 
 
 * To start flask server <br>
 `python app.py`
