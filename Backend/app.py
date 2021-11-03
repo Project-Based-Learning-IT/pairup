@@ -10,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 # DateTime
 from datetime import datetime
 from dateutil import parser
+from os.path import exists
 
 # Bloom filter - for matching
 from bloom_filter2 import BloomFilter
@@ -28,10 +29,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # import the tables
-# =============================================================
-
-# add a counter for retraining
-# COUNTER_FOR_RETRANING = 0
 # =============================================================
 
 # initialize the app
@@ -212,7 +209,105 @@ class Social_URLs(db.Model):
 
     def __repr__(self) -> str:
         return f"{self.Social_URL_ID}"
+#==========================================================================================
 
+#re-training logic
+# @app.route("/get_all_users_skills",  methods=['GET'])
+def user_and_skills_for_retraining():
+    users = Student.query.all()
+    users_and_their_skills = dict()
+    for user in users:
+        if user.Name == "Dummy_a" or user.Name == "Dummy_ab":
+            continue
+        user_skills = list()
+        db_user_skills = user.skills
+        for skill in db_user_skills:
+            user_skills.append(skill.Skill_name)
+        users_and_their_skills[user.Name] = user_skills
+    return users_and_their_skills
+    # return users_and_their_skills, 200
+
+
+def domain_and_skills_for_retraining():
+    '''
+    For direct API calls through request
+    '''
+    # For post
+    # data = request.get_json(force=True)
+    # prediction = model.predict([np.array(list(data.values()))])
+    # output = prediction[0]
+    ids_domains = Domains.query.all()
+
+    res_ids_domains_skills = list()
+    for domain_obj in ids_domains:
+        curr_id_domain = dict()
+        curr_id_domain['domain_id'] = domain_obj.Domain_ID
+        curr_id_domain['domain_name'] = domain_obj.Domain_name
+        curr_id_domain['skills'] = list()
+        for s in domain_obj.see_skills:
+            skill_in_domain = dict()
+            skill_in_domain['skill_id'] = s.Skill_ID
+            skill_in_domain['skill_name'] = s.Skill_name
+            curr_id_domain['skills'].append(skill_in_domain)
+        res_ids_domains_skills.append(curr_id_domain)
+    return res_ids_domains_skills
+    # output is list of domains dictionaries which has domian id,name and skills list with skill dictionaries with skill id,name
+
+
+def call_to_retraining_function():
+    users_and_their_skills = user_and_skills_for_retraining()
+    domain_and_skills = domain_and_skills_for_retraining()
+    pipelining.update_models(domain_and_skills, users_and_their_skills)
+    print('Retraining performed successfully')
+
+
+#counter logic
+#==========================================================================================
+counter_filename = 'counter.txt'
+target_count_value = 25
+
+def check_file_exists(filename):
+  if(exists(filename)):
+    pass
+  else:
+    with open(filename, 'w') as f:
+      f.write('0')
+    f.close()
+
+def check_counter(filename):
+    check_file_exists(filename)
+    with open(filename, 'r') as f:
+        count = int(f.read())
+    f.close()
+    global target_count_value
+    if(count > target_count_value):
+        return True
+    return False
+
+def update_counter(filename):
+  with open(filename, 'r') as f:
+        count = int(f.read())
+  with open(filename, 'w') as f:
+      f.write(str(count + 1))
+
+def reset_counter(filename):
+  with open(filename, 'w') as f:
+      f.write('0')
+
+def should_call_retrain():
+  global counter_filename
+  status = check_counter(counter_filename)
+  if(status):
+    call_to_retraining_function()
+    reset_counter(counter_filename)
+  else:
+    update_counter(counter_filename)
+    
+#==========================================================================================
+
+
+# Routes
+#==========================================================================================
 
 # Homepage
 @app.route("/",  methods=['GET', 'POST'])
@@ -226,6 +321,7 @@ def hello_world():
 
 @app.route("/signup_and_login", methods=["POST"])
 def signup_and_login():
+    # should_call_retrain()
     username = str(request.json["username"])
     new_user = False
     student = Student.query.filter_by(
@@ -269,6 +365,7 @@ def protected():
 @app.route("/get_recommendations",  methods=['POST'])
 @jwt_required()
 def get_recommendations():
+    # should_call_retrain()
     filter_skill_arr = request.json['filter_skills']
     filter_skill_arr = [x.strip().lower() for x in filter_skill_arr]
     # print(filter_skill_arr)
@@ -573,6 +670,7 @@ def get_student_profile():
 @app.route("/update_student_profile",  methods=['POST'])
 @jwt_required()
 def update_student_profile():
+    # should_call_retrain()
     if request.method == "POST":
         id = get_jwt_identity()
         student = Student.query.filter_by(Student_ID=id).first()
@@ -720,6 +818,7 @@ def get_student_languages():
 @app.route("/add_student_skills",  methods=['POST'])
 @jwt_required()
 def add_student_skills():
+    # should_call_retrain()
     if request.method == "POST":
         id = get_jwt_identity()
         skills_ids = list(request.json['Skills'])
@@ -739,6 +838,7 @@ def add_student_skills():
 @app.route("/update_student_skills",  methods=['POST'])
 @jwt_required()
 def update_student_skills():
+    # should_call_retrain()
     if request.method == "POST":
         id = get_jwt_identity()
         skills_ids = list(request.json['Skills'])
@@ -955,58 +1055,7 @@ def get_chats_after_last_cached():
 # }
 # or "DateTime": "Tue, 26 Oct 2021 13:10:38 GMT"
 
-
-# @app.route("/get_all_users_skills",  methods=['GET'])
-def user_and_skills_for_retraining():
-    users = Student.query.all()
-    users_and_their_skills = dict()
-    for user in users:
-        if user.Name == "Dummy_a" or user.Name == "Dummy_ab":
-            continue
-        user_skills = list()
-        db_user_skills = user.skills
-        for skill in db_user_skills:
-            user_skills.append(skill.Skill_name)
-        users_and_their_skills[user.Name] = user_skills
-    return users_and_their_skills
-    # return users_and_their_skills, 200
-
-
-def domain_and_skills_for_retraining():
-    '''
-    For direct API calls through request
-    '''
-    # For post
-    # data = request.get_json(force=True)
-    # prediction = model.predict([np.array(list(data.values()))])
-    # output = prediction[0]
-    ids_domains = Domains.query.all()
-
-    res_ids_domains_skills = list()
-    for domain_obj in ids_domains:
-        curr_id_domain = dict()
-        curr_id_domain['domain_id'] = domain_obj.Domain_ID
-        curr_id_domain['domain_name'] = domain_obj.Domain_name
-        curr_id_domain['skills'] = list()
-        for s in domain_obj.see_skills:
-            skill_in_domain = dict()
-            skill_in_domain['skill_id'] = s.Skill_ID
-            skill_in_domain['skill_name'] = s.Skill_name
-            curr_id_domain['skills'].append(skill_in_domain)
-        res_ids_domains_skills.append(curr_id_domain)
-    return res_ids_domains_skills
-    # output is list of domains dictionaries which has domian id,name and skills list with skill dictionaries with skill id,name
-
-
-def call_to_retraining_function():
-    users_and_their_skills = user_and_skills_for_retraining()
-    domain_and_skills = domain_and_skills_for_retraining()
-    pipelining.update_models(domain_and_skills, users_and_their_skills)
-    print('Retraining performed successfully')
-
-
-# call to retrain the model
-# call_to_retraining_function()
+#==============================================================================
 
 if __name__ == "__main__":
     app.run(debug=True)
