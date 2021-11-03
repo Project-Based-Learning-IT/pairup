@@ -3,6 +3,7 @@
 # =============================================================
 # package imports
 import pipelining
+import multiprocessing
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -298,7 +299,8 @@ def should_call_retrain():
   global counter_filename
   status = check_counter(counter_filename)
   if(status):
-    call_to_retraining_function()
+    p1 = multiprocessing.Process(target=call_to_retraining_function)
+    p1.start()
     reset_counter(counter_filename)
   else:
     update_counter(counter_filename)
