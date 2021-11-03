@@ -1,4 +1,9 @@
 # PairUp
+**Deployed Frontend on https://appetize.io/app/b5u340q115tqhw165t0cxy9cwm**
+
+**Deployed Backend on http://campusspace.herokuapp.com**
+
+### Setup
 <li> Clone the repository using following command or github desktop
 <p><code>git clone https://github.com/Project-Based-Learning-IT/CollegeSpace.git</code></p>
 </li>
@@ -180,8 +185,7 @@ Same email and password
 * To start flask server <br>
 `python app.py`
 
-### Heroku
-Deployed Backend on http://campusspace.herokuapp.com
+## Backend hosted on Heroku
 
     pip install gunicorn
     pip freeze > requirements.txt
@@ -201,6 +205,11 @@ Inside Procfile:
 To check logs on heroku cli -
 
     heroku logs --app appname_on_heroku
+
+## Frontend hosted on Appetize
+* Build Debug APK using following guide
+https://stackoverflow.com/a/56520746/15395433, use `gradlew assembleDebug`
+* Upload it on [Appetize](https://appetize.io/)
 
 ## Comment Anchors
 
