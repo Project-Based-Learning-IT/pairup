@@ -62,12 +62,12 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
 jwt = JWTManager(app)
 
 # MYSQL Production URI
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-#     'SQLALCHEMY_DATABASE_URI')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+    'SQLALCHEMY_DATABASE_URI')
 
 # MYSQL Local URI
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-    'LOCAL_SQLALCHEMY_DATABASE_URI')
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+#     'LOCAL_SQLALCHEMY_DATABASE_URI')
 
 db = SQLAlchemy(app)
 
@@ -957,21 +957,21 @@ def get_last_msgs():
       ifnull(NewSC.newmsgs, 0) newmsgs,
       StudNI.Name,
       StudNI.Image_URL
-    FROM messages AS m1
+    FROM Messages AS m1
       INNER JOIN (
         select T1.pid pid,
           max(T1.maxMsgID) maxMsgID
         from (
             select R.RECEIVER_ID pid,
               max(R.Message_ID) maxMsgID
-            from messages AS R
+            from Messages AS R
             where R.SENDER_ID = :id
             group by R.RECEIVER_ID
             union
             distinct
             select S.Sender_ID pid,
               max(S.Message_ID) maxMsgID
-            from messages AS S
+            from Messages AS S
             where S.Receiver_ID = :id
             group by S.Sender_ID
           ) AS T1
@@ -980,7 +980,7 @@ def get_last_msgs():
       LEFT JOIN (
         select Sender_ID,
           COUNT(*) newmsgs
-        from messages as NewM
+        from Messages as NewM
         where NewM.timestamp >= :dt
           and NewM.Sender_ID != :id
         group by NewM.Sender_ID
@@ -989,7 +989,7 @@ def get_last_msgs():
         select Student_ID,
           Name,
           Image_URL
-        from student AS Stud
+        from Student AS Stud
       ) AS StudNI ON maxTsC.pid = StudNI.Student_ID"""
 
     str_last_date_time = request.json['DateTime']

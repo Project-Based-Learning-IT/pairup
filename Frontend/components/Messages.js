@@ -52,22 +52,30 @@ function Messages() {
       }
       console.log('VPsTime: ', MinlastMessageTimestamp);
 
-      let res = null;
-      while (res === null) {
-        await axiosInstance
-          .post('/get_last_msgs_with_count_name_photo', {
-            //TODO set MinlastMessageTimestamp for DateTime
-            // DateTime: '2021-10-26 13:10:38',
-            DateTime: MinlastMessageTimestamp,
-          })
-          .then(response => {
-            res = response.data;
-          })
-          .catch(err => {
-            console.error('MessageProfiles Error : ' + err);
-          });
-        await sleep(2000);
-      }
+      // let res = null;
+      // while (res === null) {
+      //   await axiosInstance
+      //     .post('/get_last_msgs_with_count_name_photo', {
+      //       //TODO set MinlastMessageTimestamp for DateTime
+      //       // DateTime: '2021-10-26 13:10:38',
+      //       DateTime: MinlastMessageTimestamp,
+      //     })
+      //     .then(response => {
+      //       res = response.data;
+      //     })
+      //     .catch(err => {
+      //       console.error('MessageProfiles Error : ' + err);
+      //     });
+      //   await sleep(2000);
+      // }
+      const response = await axiosInstance.post(
+        '/get_last_msgs_with_count_name_photo',
+        {
+          // DateTime: '2021-10-26 13:10:38',
+          DateTime: MinlastMessageTimestamp,
+        },
+      );
+      const res = response.data;
 
       // let unreads = {};
       // res.map(profile => {
@@ -102,7 +110,7 @@ function Messages() {
 
   // let vProfilesInterval;
 
-  React.useEffect(async () => {
+  React.useEffect(() => {
     // setIsLoading(true);
 
     // async function getProfiles() {
@@ -124,7 +132,11 @@ function Messages() {
     // getProfiles();
 
     // console.log('Before append: ', allChats);
-    await getMessageProfiles();
+    const init = async () => {
+      await getMessageProfiles();
+    };
+
+    init();
 
     // if (Object.keys(allChats).length === 0) {
     //   console.log('Stored chats', getData('chats'));
@@ -143,20 +155,23 @@ function Messages() {
   }, []);
 
   React.useEffect(() => {
-    console.log('messages vProfilesInterval', vProfilesInterval);
-    if (!vProfilesInterval) {
-      vProfilesInterval = setInterval(async () => {
-        await getMessageProfiles();
-      }, 5000);
-      setVProfilesInterval(vProfilesInterval);
-    }
-    // else if (vProfilesInterval._idleTimeout === -1) {
-    else if (vProfilesInterval._idleTimeout === -1) {
-      setVProfilesInterval(prevVProfilesInterval => {
-        clearInterval(prevVProfilesInterval);
-        return prevVProfilesInterval;
-      });
-    }
+    const init = async () => {
+      console.log('messages vProfilesInterval', vProfilesInterval);
+      if (!vProfilesInterval) {
+        vProfilesInterval = setInterval(async () => {
+          await getMessageProfiles();
+        }, 15000);
+        setVProfilesInterval(vProfilesInterval);
+      }
+      // else if (vProfilesInterval._idleTimeout === -1) {
+      else if (vProfilesInterval._idleTimeout === -1) {
+        await setVProfilesInterval(prevVProfilesInterval => {
+          clearInterval(prevVProfilesInterval);
+          return prevVProfilesInterval;
+        });
+      }
+    };
+    init();
   }, [vProfilesInterval]);
 
   return (
