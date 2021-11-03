@@ -124,10 +124,14 @@ function Discover() {
     });
     if (res.data === 'Matched') {
       console.log('Matched');
-      const msg = await axiosInstance.post('/message', {
-        Receiver_ID: cards[index].id,
-        text: 'Hi, 👋 We matched up',
-      });
+      try {
+        const msg = await axiosInstance.post('/message', {
+          Receiver_ID: cards[index].id,
+          text: 'Hi, 👋 We matched up',
+        });
+      } catch (err) {
+        console.log(err);
+      }
     } else {
       console.log('Yet to Match');
     }
@@ -187,7 +191,7 @@ function Discover() {
     };
 
     init();
-  }, [filtered_skills]);
+  }, [filtered_skills, user.skills]);
 
   return (
     <View style={styles.container}>
