@@ -3,6 +3,18 @@
 
 **Deployed Backend on http://campusspace.herokuapp.com**
 
+**Sub-project**: https://github.com/Project-Based-Learning-IT/linkedin-scraper
+
+## Demo
+
+## Recommendation Algorithm
+
+### Process Flow Diagram
+![Diagram](https://github.com/Project-Based-Learning-IT/Recommendation-Algorithm/blob/main/Process%20Flow%20diagram%20for%20ML%20model.png)
+
+### Example prediction
+![Diagram of prediction](https://github.com/Project-Based-Learning-IT/Recommendation-Algorithm/blob/main/Top%20prediction.png)
+
 ### Setup
 <li> Clone the repository using following command or github desktop
 <p><code>git clone https://github.com/Project-Based-Learning-IT/CollegeSpace.git</code></p>
