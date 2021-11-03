@@ -267,7 +267,7 @@ def call_to_retraining_function():
 # counter logic
 # ==========================================================================================
 counter_filename = 'counter.txt'
-target_count_value = 25
+target_count_value = 5
 
 
 def check_file_exists(filename):
@@ -677,7 +677,7 @@ def get_student_profile():
 @app.route("/update_student_profile",  methods=['POST'])
 @jwt_required()
 def update_student_profile():
-    # should_call_retrain() # For new user sign up and name update for logged in users
+    should_call_retrain() # For new user sign up and name update for logged in users
     if request.method == "POST":
         id = get_jwt_identity()
         student = Student.query.filter_by(Student_ID=id).first()
@@ -825,7 +825,7 @@ def get_student_languages():
 @app.route("/add_student_skills",  methods=['POST'])
 @jwt_required()
 def add_student_skills():
-    # should_call_retrain()
+    should_call_retrain()
     if request.method == "POST":
         id = get_jwt_identity()
         skills_ids = list(request.json['Skills'])
@@ -845,7 +845,7 @@ def add_student_skills():
 @app.route("/update_student_skills",  methods=['POST'])
 @jwt_required()
 def update_student_skills():
-    # should_call_retrain()
+    should_call_retrain()
     if request.method == "POST":
         id = get_jwt_identity()
         skills_ids = list(request.json['Skills'])
