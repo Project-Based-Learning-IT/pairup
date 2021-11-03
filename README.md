@@ -82,8 +82,7 @@ added these to my `/android/app/src/main/AndroidManifest.xml`
     </application>
 </manifest>
 ```
-and localhost (http://127.0.0.1:8000/) is replaced by
-your IP address
+
 </ol>
 
 ### Frontend References
@@ -180,6 +179,7 @@ Same email and password
 `python app.py`
 
 ### Heroku
+Deployed Backend on http://campusspace.herokuapp.com
 
     pip install gunicorn
     pip freeze > requirements.txt
@@ -189,6 +189,7 @@ Inside Procfile:
     web: gunicorn <main_file_name>:<flask_app_name>
 
 * Login to heroku and deploy from Repository after creating new app
+* To deploy from subfolder follow https://stackoverflow.com/questions/39197334/automated-heroku-deploy-from-subfolder
 * Set config vars in settings from .env file
 
 #### For errors
