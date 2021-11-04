@@ -5,6 +5,8 @@
 
 **Sub-project**: https://github.com/Project-Based-Learning-IT/linkedin-scraper
 
+**Database**: https://console.clever-cloud.com/users/me/addons/addon_326ddae1-0de7-44f0-93da-c1eb2eea89c7
+
 ## Demo
 
 ## Recommendation Algorithm
