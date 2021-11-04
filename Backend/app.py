@@ -220,15 +220,17 @@ def user_and_skills_for_retraining():
     users = Student.query.all()
     users_and_their_skills = dict()
     for user in users:
-        #TODO: here we should do user.Email insttead of user.Name
+        #TODO: here we should do user.Email instead of user.Name
+        #skipping condition remains same
         if user.Name == "Dummy_a" or user.Name == "Dummy_ab":
             continue
         user_skills = list()
         db_user_skills = user.skills
         for skill in db_user_skills:
             user_skills.append(skill.Skill_name)
-        users_and_their_skills[user.Name] = user_skills
+        users_and_their_skills[user.Email] = user_skills
     return users_and_their_skills
+    #{'name@college.com':[skill1, skill2, skill3]}
     # return users_and_their_skills, 200
 
 
@@ -259,9 +261,9 @@ def domain_and_skills_for_retraining():
 
 
 def call_to_retraining_function():
-    users_and_their_skills = user_and_skills_for_retraining()
+    user_emails_and_their_skills = user_and_skills_for_retraining()
     domain_and_skills = domain_and_skills_for_retraining()
-    pipelining.update_models(domain_and_skills, users_and_their_skills)
+    pipelining.update_models(domain_and_skills, user_emails_and_their_skills)
     print('Retraining performed successfully')
 
 
@@ -384,17 +386,20 @@ def get_recommendations():
         skill_arr = [skill.Skill_name for skill in student.skills]
     else:
         skill_arr = filter_skill_arr
-    rec_names = pipelining.predict(skill_arr)
+    #get mails of the recommended students
+    rec_emails = pipelining.predict(skill_arr)
     # NOTE For testing
     # rec_names = ["Dummy_a", "Dummy_ab"]
     # rec_names = ["Sidhant Khamankar"]
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
     cards = list()
-    for rec_name in rec_names:
-        if(student.Name.lower() == rec_name):
+    for rec_mail in rec_emails:
+        #TODO: change here to email (done)
+        if(student.Name.lower() == rec_mail):
             continue
         curr_rec = dict()
-        rec = Student.query.filter_by(Name=rec_name).first()
+        #TODO: change here filter by email (done)
+        rec = Student.query.filter_by(Email=rec_mail).first()
         curr_rec['id'] = rec.Student_ID
         curr_rec['name'] = rec.Name.title()
         curr_rec['photo'] = rec.Image_URL if rec.Image_URL else ''
@@ -427,10 +432,6 @@ def get_social_urls():
         id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     res = dict()
-    # Why is this hardcoded? !DOUBT
-    # social media handles may vary
-    # if we want to hardcode then only allow certain social media handles
-    # which are commom to all students
     if student.social_urls != None:
         res['SocialURL_ID'] = student.social_urls.SocialURL_ID
         res['codechef'] = student.social_urls.codechef

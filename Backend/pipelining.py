@@ -84,16 +84,16 @@ def create_models(UserSkills, UserDomains):
     joblib.dump(domain_based_model, 'KNN_user_domains.pkl')
 
 
-def save_usernames_insequence(usernames):
-    with open('usernames.txt', 'w', encoding="utf-8") as f:
-        for username in usernames:
-            f.write(username + '\n')
+def save_usernames_insequence(user_emails):
+    with open('user_emails.txt', 'w', encoding="utf-8") as f:
+        for email in user_emails:
+            f.write(email + '\n')
 
 
 def read_usernames_insequence():
-    with open('usernames.txt', 'r', encoding="utf-8") as f:
-        usernames = list(map(lambda x: x.strip('\n'), f.readlines()))
-    return usernames
+    with open('user_emails.txt', 'r', encoding="utf-8") as f:
+        user_emails = list(map(lambda x: x.strip('\n'), f.readlines()))
+    return user_emails
 
 #this function takes input of user and skill map
 #format - {'username': [skill1, skill2, ...]}
@@ -101,12 +101,12 @@ def read_usernames_insequence():
 #format - {'official user email': [skill1, skill2, ...]}
 #Email is unique and is used to identify the user (no repetition)
 #rest code will work exactly the same as before.
-def user_data_matrix(user_skill_dict, Allskills):
+def user_data_matrix(user_email_skill_dict, Allskills):
     UserSkills = []
-    UserNames = []
-    for username, skill_list in user_skill_dict.items():
-        if(username != None):
-            UserNames.append(username.lower())
+    UserEmails = []
+    for email, skill_list in user_email_skill_dict.items():
+        if(email != None):
+            UserEmails.append(email.lower())
             oneHotSkillList = []
             for skill in Allskills:
                 if(skill in skill_list):
@@ -114,8 +114,8 @@ def user_data_matrix(user_skill_dict, Allskills):
                 else:
                     oneHotSkillList.append(0)
             UserSkills.append(oneHotSkillList)
-    # write usernames in same sequence to text file and read also from text file
-    save_usernames_insequence(UserNames)
+    #TODO: write emails in same sequence to text file and read also from text file
+    save_usernames_insequence(UserEmails)
     return UserSkills
 
 
@@ -141,33 +141,29 @@ def get_target_user_data(target_user_skills):
     target_domains = np.dot(target_skills, SkillDomains)
     return target_skills, target_domains
 
+#TODO: pass list of emails here
+def recommendUsers(target_user_skills, target_user_domains, UserEmails):
 
-def recommendUsers(target_user_skills, target_user_domains, UserNames):
+    #No of suggestions to return
+    topn_skill_based = 10
+    topn_domain_based = 10
+
     skill_based_model = joblib.load('KNN_user_skills.pkl', mmap_mode='r')
     domain_based_model = joblib.load('KNN_user_domains.pkl', mmap_mode='r')
 
-    # TODO: See this return distances parameter and how to access these distances
-    skills_based_similar_user_distances, skills_based_similar_users = skill_based_model.kneighbors([
-                                                                                                   target_user_skills], 10)
-    domains_based_similar_user_distances, domains_based_similar_users = domain_based_model.kneighbors([
-                                                                                                      target_user_domains], 10)
-
-    # skill_based_user_names = []
-    # domain_based_user_names = []
-
-    # # cutoff = 0.5
-    # for usr_indx in skills_based_similar_users[0]:
-    #     skill_based_user_names.append(UserNames[usr_indx])
-    # for usr_indx in domains_based_similar_users[0]:
-    #     domain_based_user_names.append(UserNames[usr_indx])
+    skills_based_similar_user_distances, skills_based_similar_user_index = skill_based_model.kneighbors([
+                                                                                                   target_user_skills], topn_skill_based)
+    domains_based_similar_user_distances, domains_based_similar_user_index = domain_based_model.kneighbors([
+                                                                                                      target_user_domains], topn_domain_based)
+    #feature add a cutoff value using returned distances
 
     Suggestions = list()
-    for usr_indx in skills_based_similar_users[0]:
-        if(UserNames[usr_indx] not in Suggestions):
-            Suggestions.append(UserNames[usr_indx])
-    for usr_indx in domains_based_similar_users[0]:
-        if(UserNames[usr_indx] not in Suggestions):
-            Suggestions.append(UserNames[usr_indx])
+    for usr_indx in skills_based_similar_user_index[0]:
+        if(UserEmails[usr_indx] not in Suggestions):
+            Suggestions.append(UserEmails[usr_indx])
+    for usr_indx in domains_based_similar_user_index[0]:
+        if(UserEmails[usr_indx] not in Suggestions):
+            Suggestions.append(UserEmails[usr_indx])
     return Suggestions
 
 # =======================================================================================================================
@@ -175,10 +171,10 @@ def recommendUsers(target_user_skills, target_user_domains, UserNames):
 # =======================================================================================================================
 
 
-def update_models(skill_domain_dict, user_skill_dict):
+def update_models(skill_domain_dict, usermail_skill_dict):
     skills, SkillDomains = get_skills_n_domains(skill_domain_dict)
     UserSkills = user_data_matrix(
-        user_skill_dict, skills)  # user-skill-data-matrix
+        usermail_skill_dict, skills)  # usermail-skills-data-matrix
     UserDomains = weights(UserSkills, SkillDomains)
     create_models(UserSkills, UserDomains)
     # add return statement to see if everything went down properly
@@ -186,13 +182,14 @@ def update_models(skill_domain_dict, user_skill_dict):
 
 def predict(target_user_skills):
     """
-    input: target_user_skills - dict{"username": [skill1, skill2, ...]}
+    input: target_user_skills - [skill1, skill2, ...]
     """
-    UserNames = read_usernames_insequence()  # [1]
+    #TODO: replace recomended usernames with emails
+    UserEmails = read_usernames_insequence()  # [1]
     encoded_target_user_skills, encoded_target_user_domains = get_target_user_data(
         target_user_skills)
     suggestions = recommendUsers(
-        encoded_target_user_skills, encoded_target_user_domains, UserNames)
+        encoded_target_user_skills, encoded_target_user_domains, UserEmails)
     return suggestions
 
 
