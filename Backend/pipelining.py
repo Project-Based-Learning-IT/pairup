@@ -8,8 +8,8 @@ import joblib
 
 #As this function is receiving a skill_domain_dict as input
 #if there are changes in input the weights will be changed accordingly
-#as this data is being taken from a public repo containing static data
-#future scope : write code to update that repo.
+#create a function to collect user preferences for skill and domain
+#assign weights accordingly. (feature)
 def get_skills_n_domains(skill_domain_dict):
     json.dump(skill_domain_dict, open('skill_domain_dict.json', 'w'))
     skills = set()
@@ -97,12 +97,11 @@ def read_usernames_insequence():
 
 #this function takes input of user and skill map
 #format - {'username': [skill1, skill2, ...]}
-#TODO: make the frontend pass input of format
+#TODO: make the fetching function pass input of format
 #format - {'official user email': [skill1, skill2, ...]}
 #Email is unique and is used to identify the user (no repetition)
 #rest code will work exactly the same as before.
 def user_data_matrix(user_skill_dict, Allskills):
-    #     user_skill_dict = sorted(user_skill_dict)
     UserSkills = []
     UserNames = []
     for username, skill_list in user_skill_dict.items():

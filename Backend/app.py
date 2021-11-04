@@ -220,6 +220,7 @@ def user_and_skills_for_retraining():
     users = Student.query.all()
     users_and_their_skills = dict()
     for user in users:
+        #TODO: here we should do user.Email insttead of user.Name
         if user.Name == "Dummy_a" or user.Name == "Dummy_ab":
             continue
         user_skills = list()
