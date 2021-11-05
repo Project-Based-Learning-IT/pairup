@@ -161,12 +161,15 @@ function Discover({route}) {
 
     const getCards = async () => {
       try {
-        const res = await axiosInstance.post('/get_recommendations', {
-          filter_skills: filtered_skills.map(skill => {
-            return skill.skill_name;
-          }),
-        });
-
+        let tries = 5;
+        let res;
+        while (!res & tries--) {
+          res = await axiosInstance.post('/get_recommendations', {
+            filter_skills: filtered_skills.map(skill => {
+              return skill.skill_name;
+            }),
+          });
+        }
         setCards(res.data);
       } catch (err) {
         console.log(err);
