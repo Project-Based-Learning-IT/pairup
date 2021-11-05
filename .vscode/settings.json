@@ -4,5 +4,6 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[sql]": {
     "editor.defaultFormatter": "mtxr.sqltools"
-  }
+  },
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

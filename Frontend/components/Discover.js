@@ -182,7 +182,6 @@ function Discover() {
       try {
         setIsLoading(true);
         updateAxiosInstance();
-        //TODO Build two model files first using retraining function in server for updated db
         await getCards();
         setIsLoading(false);
       } catch (err) {

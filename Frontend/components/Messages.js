@@ -5,6 +5,7 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import * as React from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -13,10 +14,18 @@ import {useTheme, Portal, ActivityIndicator} from 'react-native-paper';
 // import {chats} from '../staticStore';
 import {useAuth} from '../App';
 import {ChatContext} from './ChatContext';
+import {defaultProfilePic} from '../staticStore';
 
 function Messages() {
   const {user, axiosInstance} = useAuth();
-  let {vProfilesInterval, setVProfilesInterval} = useAuth();
+  // let {vProfilesInterval, setVProfilesInterval} = useAuth();
+  const {vProfilesInterval, setVProfilesInterval} = React.useState();
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await getMessageProfiles();
+    await sleep(2000).then(() => setRefreshing(false));
+  }, []);
   const {
     allChats,
     setAllChats,
@@ -81,7 +90,8 @@ function Messages() {
       // res.map(profile => {
       //   unreads[profile.pid] = profile.newmsgs;
       // });
-      if (res.length > 0 && vProfilesInterval._idleTimeout !== -1) {
+      // if (res.length > 0 && vProfilesInterval._idleTimeout !== -1) {
+      if (res.length > 0) {
         await setVerticalProfiles(prevVProfiles => {
           res.map(profile => {
             if (
@@ -154,25 +164,25 @@ function Messages() {
     // setIsLoading(false);
   }, []);
 
-  React.useEffect(() => {
-    const init = async () => {
-      console.log('messages vProfilesInterval', vProfilesInterval);
-      if (!vProfilesInterval) {
-        vProfilesInterval = setInterval(async () => {
-          await getMessageProfiles();
-        }, 15000);
-        setVProfilesInterval(vProfilesInterval);
-      }
-      // else if (vProfilesInterval._idleTimeout === -1) {
-      else if (vProfilesInterval._idleTimeout === -1) {
-        await setVProfilesInterval(prevVProfilesInterval => {
-          clearInterval(prevVProfilesInterval);
-          return prevVProfilesInterval;
-        });
-      }
-    };
-    init();
-  }, [vProfilesInterval]);
+  // React.useEffect(() => {
+  //   const init = async () => {
+  //     console.log('messages vProfilesInterval', vProfilesInterval);
+  //     if (!vProfilesInterval) {
+  //       vProfilesInterval = setInterval(async () => {
+  //         await getMessageProfiles();
+  //       }, 15000);
+  //       setVProfilesInterval(vProfilesInterval);
+  //     }
+  //     // else if (vProfilesInterval._idleTimeout === -1) {
+  //     else if (vProfilesInterval._idleTimeout === -1) {
+  //       await setVProfilesInterval(prevVProfilesInterval => {
+  //         clearInterval(prevVProfilesInterval);
+  //         return prevVProfilesInterval;
+  //       });
+  //     }
+  //   };
+  //   init();
+  // }, [vProfilesInterval]);
 
   return (
     <View
@@ -288,15 +298,31 @@ function Messages() {
         ))}
       </ScrollView> */}
 
-      <Text
+      <View
         style={{
-          padding: 10,
-          color: colors.primary,
-          fontSize: 20,
-          fontWeight: 'bold',
+          flexDirection: 'row',
         }}>
-        Messages
-      </Text>
+        <Text
+          style={{
+            padding: 10,
+            color: colors.primary,
+            fontSize: 20,
+            fontWeight: 'bold',
+          }}>
+          Messages
+        </Text>
+        <Text
+          style={{
+            padding: 10,
+            color: colors.textLightBlack,
+            fontSize: 15,
+            fontWeight: 'bold',
+            alignSelf: 'flex-end',
+            marginLeft: 130,
+          }}>
+          Pull to refresh
+        </Text>
+      </View>
 
       {isLoading ? (
         <Portal>
@@ -321,8 +347,27 @@ function Messages() {
           style={{
             flex: 1,
             width: '100%',
-          }}>
-          {verticalProfiles.map((profile, index) => (
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
+          {verticalProfiles?.length === 0 && (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  marginTop: 50,
+                  fontSize: 20,
+                  color: colors.textLightBlack,
+                }}>
+                No messages yet
+              </Text>
+            </View>
+          )}
+          {verticalProfiles?.map((profile, index) => (
             <TouchableOpacity
               key={index}
               style={{
@@ -351,9 +396,10 @@ function Messages() {
               }}>
               <Image
                 source={{
-                  uri: profile.Image_URL
-                    ? profile.Image_URL
-                    : 'https://www.xeus.com/wp-content/uploads/2014/09/One_User_Orange.png',
+                  uri:
+                    profile.Image_URL && profile.Image_URL !== 'None'
+                      ? profile.Image_URL
+                      : defaultProfilePic,
                 }}
                 style={{
                   width: 64,

@@ -14,11 +14,12 @@ function LogoTitle({userChatting, Routename, user}) {
           borderRadius: 21,
         }}
         source={{
-          uri: userChatting?.Image_URL
-            ? userChatting?.Image_URL
-            : user?.photo
-            ? user?.photo
-            : defaultProfilePic,
+          uri:
+            userChatting?.Image_URL && userChatting?.Image_URL !== 'None'
+              ? userChatting?.Image_URL
+              : user?.photo
+              ? user?.photo
+              : defaultProfilePic,
         }}
       />
       {Routename == 'Chat' && (

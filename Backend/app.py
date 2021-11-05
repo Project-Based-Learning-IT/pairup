@@ -220,7 +220,7 @@ def user_and_skills_for_retraining():
     users = Student.query.all()
     users_and_their_skills = dict()
     for user in users:
-        #TODO: here we should do user.Email insttead of user.Name
+        # TODO: here we should do user.Email insttead of user.Name
         if user.Name == "Dummy_a" or user.Name == "Dummy_ab":
             continue
         user_skills = list()
@@ -998,7 +998,9 @@ def get_last_msgs():
     result = db.session.execute(q, {'id': id, 'dt': last_date_time})
     res = list()
     for row in result:
-        res.append(row._asdict())  # convert to dict keyed by column names
+        curr_dic = row._asdict()
+        curr_dic.update({"Name": curr_dic["Name"].title()})
+        res.append(curr_dic)  # convert to dict keyed by column names
     return jsonify(res), 200
 
 # Sample json request body

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "394579027980",
+    "project_id": "campusspace-1632482069921",
+    "storage_bucket": "campusspace-1632482069921.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394579027980:android:a41d847c7397dea4a16629",
+        "android_client_info": {
+          "package_name": "com.pbl.collegespace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "394579027980-pcr6jtjponhlh7spf5t04oaek4ht8e2s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqiwiMIAR7Az9kVpmPQCgNuwr_w3esY-E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "394579027980-pcr6jtjponhlh7spf5t04oaek4ht8e2s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

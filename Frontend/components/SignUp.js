@@ -41,7 +41,7 @@ function SignUp({route}) {
     setIsSignedIn,
     axiosInstance,
     setaxiosInstance,
-    setVProfilesInterval,
+    // setVProfilesInterval,
   } = useAuth();
   const {colors} = useTheme();
 
@@ -216,7 +216,7 @@ function SignUp({route}) {
       setaxiosInstance({axiosInstance});
       await Keychain.setGenericPassword('user', JSON.stringify(userData));
       setUser(userData);
-      setVProfilesInterval(null);
+      // setVProfilesInterval(null);
       setIsSigningUp(false);
       setIsSignedIn(true);
     } catch (e) {
