@@ -227,7 +227,8 @@ def user_and_skills_for_retraining():
         db_user_skills = user.skills
         for skill in db_user_skills:
             user_skills.append(skill.Skill_name)
-        users_and_their_skills[user.Name] = user_skills
+        #{'google id' : ['skill1', 'skill2']}
+        users_and_their_skills[user.Google_ID] = user_skills
     return users_and_their_skills
     # return users_and_their_skills, 200
 
@@ -384,17 +385,17 @@ def get_recommendations():
         skill_arr = [skill.Skill_name for skill in student.skills]
     else:
         skill_arr = filter_skill_arr
-    rec_names = pipelining.predict(skill_arr)
+    rec_ids = pipelining.predict(skill_arr)
     # NOTE For testing
     # rec_names = ["Dummy_a", "Dummy_ab"]
     # rec_names = ["Sidhant Khamankar"]
     # id, name, photo, headline, requirements, info created using branch-year-batch, skills
     cards = list()
-    for rec_name in rec_names:
-        if(student.Name.lower() == rec_name):
+    for rec_id in rec_ids:
+        if(student.Google_ID == rec_id):
             continue
         curr_rec = dict()
-        rec = Student.query.filter_by(Name=rec_name).first()
+        rec = Student.query.filter_by(Google_ID=rec_id).first()
         curr_rec['id'] = rec.Student_ID
         curr_rec['name'] = rec.Name.title()
         curr_rec['photo'] = rec.Image_URL if rec.Image_URL else ''

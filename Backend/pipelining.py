@@ -84,16 +84,16 @@ def create_models(UserSkills, UserDomains):
     joblib.dump(domain_based_model, 'KNN_user_domains.pkl')
 
 
-def save_usernames_insequence(usernames):
-    with open('usernames.txt', 'w', encoding="utf-8") as f:
-        for username in usernames:
-            f.write(username + '\n')
+def save_usernames_insequence(userids):
+    with open('userids.txt', 'w', encoding="utf-8") as f:
+        for userid in userids:
+            f.write(userid + '\n')
 
 
-def read_usernames_insequence():
-    with open('usernames.txt', 'r', encoding="utf-8") as f:
-        usernames = list(map(lambda x: x.strip('\n'), f.readlines()))
-    return usernames
+def read_userids_insequence():
+    with open('userids.txt', 'r', encoding="utf-8") as f:
+        userids = list(map(lambda x: x.strip('\n'), f.readlines()))
+    return userids
 
 #this function takes input of user and skill map
 #format - {'username': [skill1, skill2, ...]}
@@ -103,10 +103,10 @@ def read_usernames_insequence():
 #rest code will work exactly the same as before.
 def user_data_matrix(user_skill_dict, Allskills):
     UserSkills = []
-    UserNames = []
-    for username, skill_list in user_skill_dict.items():
-        if(username != None):
-            UserNames.append(username.lower())
+    UserIDs = []
+    for user_id, skill_list in user_skill_dict.items():
+        if(user_id != None):
+            UserIDs.append(user_id)
             oneHotSkillList = []
             for skill in Allskills:
                 if(skill in skill_list):
@@ -115,7 +115,7 @@ def user_data_matrix(user_skill_dict, Allskills):
                     oneHotSkillList.append(0)
             UserSkills.append(oneHotSkillList)
     # write usernames in same sequence to text file and read also from text file
-    save_usernames_insequence(UserNames)
+    save_usernames_insequence(UserIDs)
     return UserSkills
 
 
@@ -142,7 +142,7 @@ def get_target_user_data(target_user_skills):
     return target_skills, target_domains
 
 
-def recommendUsers(target_user_skills, target_user_domains, UserNames):
+def recommendUsers(target_user_skills, target_user_domains, Userids):
     skill_based_model = joblib.load('KNN_user_skills.pkl', mmap_mode='r')
     domain_based_model = joblib.load('KNN_user_domains.pkl', mmap_mode='r')
 
@@ -163,11 +163,11 @@ def recommendUsers(target_user_skills, target_user_domains, UserNames):
 
     Suggestions = list()
     for usr_indx in skills_based_similar_users[0]:
-        if(UserNames[usr_indx] not in Suggestions):
-            Suggestions.append(UserNames[usr_indx])
+        if(Userids[usr_indx] not in Suggestions):
+            Suggestions.append(Userids[usr_indx])
     for usr_indx in domains_based_similar_users[0]:
-        if(UserNames[usr_indx] not in Suggestions):
-            Suggestions.append(UserNames[usr_indx])
+        if(Userids[usr_indx] not in Suggestions):
+            Suggestions.append(Userids[usr_indx])
     return Suggestions
 
 # =======================================================================================================================
@@ -188,11 +188,11 @@ def predict(target_user_skills):
     """
     input: target_user_skills - dict{"username": [skill1, skill2, ...]}
     """
-    UserNames = read_usernames_insequence()  # [1]
+    Userids = read_userids_insequence()  # [1]
     encoded_target_user_skills, encoded_target_user_domains = get_target_user_data(
         target_user_skills)
     suggestions = recommendUsers(
-        encoded_target_user_skills, encoded_target_user_domains, UserNames)
+        encoded_target_user_skills, encoded_target_user_domains, Userids)
     return suggestions
 
 
