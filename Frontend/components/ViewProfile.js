@@ -411,19 +411,19 @@ function ViewProfile({route}) {
             <NewSection name="Social URLs" />
             <SocialURL
               label="Linkedin"
-              value={cardUserData.linkedin}
+              value={cardUserData.linkedinUrl}
               onChangeText={text => setLinkedinUrl(text)}
               logoName="linkedin"
               RouteName={route.name}></SocialURL>
             <SocialURL
               label="Twitter"
-              value={cardUserData.twitter}
+              value={cardUserData.twitterUrl}
               onChangeText={text => setTwitterUrl(text)}
               logoName="twitter"
               RouteName={route.name}></SocialURL>
             <SocialURL
               label="GitHub"
-              value={cardUserData.github}
+              value={cardUserData.githubUrl}
               onChangeText={text => setGithubUrl(text)}
               logoName="github"
               RouteName={route.name}></SocialURL>

@@ -161,9 +161,6 @@ function Discover({route}) {
 
     const getCards = async () => {
       try {
-        // TODO: POST user skills to server
-        // If user has done filtering post that list
-        // If not, then post users skill list
         const res = await axiosInstance.post('/get_recommendations', {
           filter_skills: filtered_skills.map(skill => {
             return skill.skill_name;
@@ -267,27 +264,26 @@ function Discover({route}) {
                 justifyContent: 'space-between',
                 marginTop: 10,
               }}
-              // overlayLabels={{
-              //   left: {
-              //     title: 'NOPE',
-              //     element: <OverlayLabel label="NOPE" color="#E5566D" />,
-              //     style: {
-              //       wrapper: styles.overlayWrapper,
-              //     },
-              //   },
-              //   right: {
-              //     title: 'LIKE',
-              //     element: <OverlayLabel label="LIKE" color="#4CCC93" />,
-              //     style: {
-              //       wrapper: {
-              //         ...styles.overlayWrapper,
-              //         alignItems: 'flex-start',
-              //         marginLeft: 30,
-              //       },
-              //     },
-              //   },
-              // }}
-            ></Swiper>
+              overlayLabels={{
+                left: {
+                  title: 'NOPE',
+                  element: <OverlayLabel label="NOPE" color="#E5566D" />,
+                  style: {
+                    wrapper: styles.overlayWrapper,
+                  },
+                },
+                right: {
+                  title: 'LIKE',
+                  element: <OverlayLabel label="LIKE" color="#4CCC93" />,
+                  style: {
+                    wrapper: {
+                      ...styles.overlayWrapper,
+                      alignItems: 'flex-start',
+                      marginLeft: 30,
+                    },
+                  },
+                },
+              }}></Swiper>
           </View>
 
           <View style={styles.bottomOptionsContainer}>
