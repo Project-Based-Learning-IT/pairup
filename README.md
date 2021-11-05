@@ -6,6 +6,7 @@
 **Sub-project**: https://github.com/Project-Based-Learning-IT/linkedin-scraper
 
 ## Demo
+https://user-images.githubusercontent.com/63101268/140554176-f7dbe3b8-dc1e-48cd-b2a0-a9ea3b04b691.mp4
 
 ## Recommendation Algorithm
 
