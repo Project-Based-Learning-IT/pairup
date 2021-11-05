@@ -73,8 +73,12 @@ To open the dev menu: `adb shell input keyevent 82`
 8.  Go back to the  **Developer menu**  and select  **Reload JS**.
 
 ### Errors and solutions
-<p>Error: mergeLibDexDebug FAILED </p>
-<p>Solution: fixed by enabling the multiDex in the </p>
+* Error: Keyboard.removeListener is not a function
+
+Solution: https://github.com/FaridSafi/react-native-gifted-chat/issues/2090
+* Error: mergeLibDexDebug FAILED 
+
+Solution: fixed by enabling the multiDex in the
 
     /android/app/build.gradle file.
     android { 
@@ -84,7 +88,7 @@ To open the dev menu: `adb shell input keyevent 82`
     } 
     ......
     }
-Network Error of Axios:
+* Network Error of Axios:
 
 Solution:
 added these to my `/android/app/src/main/AndroidManifest.xml`
@@ -121,6 +125,8 @@ https://www.npmjs.com/package/react-native-dotenv
 https://www.npmjs.com/package/axios
 
 https://react-native-async-storage.github.io/async-storage/ [Not Working]
+
+https://rnfirebase.io/firestore/usage
 
 
 ## Backend
