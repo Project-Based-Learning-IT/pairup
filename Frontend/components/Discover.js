@@ -24,7 +24,7 @@ import Filter from './Filter';
 // import {cards} from '../staticStore';
 import {useAuth} from '../App';
 
-function Discover() {
+function Discover({route}) {
   const {colors} = useTheme();
   const {height} = Dimensions.get('window');
 
@@ -254,7 +254,9 @@ function Discover() {
               // stackAnimationTension={100}
               backgroundColor="transparent"
               cards={cards}
-              renderCard={card => <FlipProfileCard card={card} />}
+              renderCard={card => (
+                <FlipProfileCard card={card} swiperRef={swiperRef} />
+              )}
               stackSize={cards.length}
               stackScale={4}
               stackSeparation={8}

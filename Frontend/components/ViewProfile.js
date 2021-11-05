@@ -25,9 +25,11 @@ import DropdownMenu from './DropdownMenu';
 import SocialURL from './SocialURL';
 import NewSection from './NewSection';
 import {defaultProfilePic} from '../staticStore';
+import {useNavigation} from '@react-navigation/native';
 
 function ViewProfile({route}) {
-  const {card_user} = route.params;
+  const {card_user, swiperRef} = route.params;
+  const navigation = useNavigation();
 
   const {axiosInstance} = useAuth();
   const {colors} = useTheme();
@@ -191,7 +193,7 @@ function ViewProfile({route}) {
         <>
           <ScrollView
             style={{
-              paddingTop: StatusBar.currentHeight,
+              // paddingTop: StatusBar.currentHeight,
               width: '100%',
               padding: 10,
             }}>
@@ -223,21 +225,6 @@ function ViewProfile({route}) {
                       ? cardUserData.photo
                       : defaultProfilePic,
                   }}></Image>
-                <View
-                  style={{
-                    position: 'absolute',
-                    bottom: 10,
-                    right: 8,
-                    padding: 8,
-                    backgroundColor: `${colors.secondary}99`,
-                    borderRadius: 500,
-                  }}>
-                  <MaterialCommunityIcons
-                    name="camera"
-                    size={20}
-                    color="#fff"
-                  />
-                </View>
               </View>
             </View>
             <TextInput
@@ -295,17 +282,6 @@ function ViewProfile({route}) {
               label="Batch"
               placeholder="Batch"
               value={cardUserData.batch}
-              style={{
-                paddingBottom: 20,
-              }}
-              disabled={true}
-            />
-            <TextInput
-              mode="outlined"
-              label="Personal Email (Optional)"
-              placeholder="Type your personal email"
-              value={cardUserData.personalEmail}
-              onChangeText={text => setPersonalEmail(text)}
               style={{
                 paddingBottom: 20,
               }}
@@ -428,7 +404,8 @@ function ViewProfile({route}) {
           <TouchableOpacity
             style={styles.bottomOptionRight}
             onPress={() => {
-              // swiperRef.current.swipeLeft();
+              swiperRef.current.swipeLeft();
+              navigation.navigate('Discover');
             }}>
             <MaterialCommunityIcons name="close-thick" size={36} color="gray" />
           </TouchableOpacity>
@@ -436,7 +413,8 @@ function ViewProfile({route}) {
           <TouchableOpacity
             style={styles.bottomOptionLeft}
             onPress={() => {
-              // swiperRef.current.swipeRight();
+              swiperRef.current.swipeRight();
+              navigation.navigate('Discover');
             }}>
             <MaterialCommunityIcons
               name="check-bold"

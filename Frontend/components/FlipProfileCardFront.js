@@ -6,12 +6,17 @@ import {Button, IconButton, useTheme} from 'react-native-paper';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useNavigation} from '@react-navigation/native';
 import {defaultProfilePic} from '../staticStore';
+import {LogBox} from 'react-native';
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 function FlipProfileCardFront(props) {
   const navigation = useNavigation();
   const {colors} = useTheme();
 
-  const {card} = props;
+  const {card, swiperRef} = props;
 
   return (
     <View
@@ -37,7 +42,10 @@ function FlipProfileCardFront(props) {
           zIndex: 4,
         }}
         onPress={() => {
-          navigation.navigate('ViewProfile', {card_user: card});
+          navigation.navigate('ViewProfile', {
+            card_user: card,
+            swiperRef: swiperRef,
+          });
         }}>
         <Image
           style={{
@@ -107,7 +115,10 @@ function FlipProfileCardFront(props) {
         <Button
           onPress={() => {
             // console.log('ViewProfile pressed');
-            navigation.navigate('ViewProfile', {card_user: card});
+            navigation.navigate('ViewProfile', {
+              card_user: card,
+              swiperRef: swiperRef,
+            });
           }}>
           View Profile
         </Button>
