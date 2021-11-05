@@ -7,7 +7,6 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Swiper from 'react-native-deck-swiper';
@@ -104,7 +103,6 @@ function Discover({route}) {
     },
   });
 
-  const navigation = useNavigation();
   const swiperRef = React.useRef();
 
   const [index, setIndex] = React.useState(0);

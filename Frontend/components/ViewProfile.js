@@ -69,19 +69,16 @@ function ViewProfile({route}) {
     },
   });
 
-  React.useEffect(async () => {
-    setIsLoading(true);
-
-    function sleep(ms) {
+  React.useEffect(() => {
+    const sleep = ms => {
       return new Promise(resolve => setTimeout(resolve, ms));
-    }
+    };
     // console.log(user);
-    async function getCardUser() {
+    const getCardUser = async () => {
       let studData = {};
       while (Object.keys(studData).length === 0) {
         await axiosInstance
           .get('/get_student_profile', {
-            //TODO Handle params in API
             params: {
               id: card_user.id,
             },
@@ -115,10 +112,10 @@ function ViewProfile({route}) {
         await sleep(2000);
       }
 
-      let SocialsData = {};
-      while (Object.keys(SocialsData).length === 0) {
+      let SocialsData;
+      while (!SocialsData) {
         await axiosInstance
-          .get('/get_student_profile', {
+          .get('/get_social_urls', {
             //TODO Handle params in API
             params: {
               id: card_user.id,
@@ -140,7 +137,11 @@ function ViewProfile({route}) {
         personalEmail: 'NotinDB',
         bio: studData.Bio,
         SocialURL_ID: studData.SocialURL_ID,
-        division: card_user.batch !== '' ? card_user.batch[0] : '',
+        division: card_user.batch
+          ? card_user.batch !== ''
+            ? card_user.batch[0]
+            : ''
+          : '',
         twitterUrl: SocialsData.twitter,
         githubUrl: SocialsData.github,
         linkedinUrl: SocialsData.linkedin,
@@ -152,14 +153,47 @@ function ViewProfile({route}) {
       //TODO Fetch remaining data for navigations coming from messages with id only
       // if (!cardUserData.skills)
       // Fetch skills and all from get_student_profile route
+      if (!card_user.info) {
+        const skillRes = await axiosInstance.get('/get_stud_skills', {
+          params: {
+            id: card_user.id,
+          },
+        });
+        const degreeRes = await axiosInstance.get('/get_degree', {
+          params: {
+            id: card_user.id,
+          },
+        });
+        cardUserData = {
+          ...cardUserData,
+          headline: studData.Headline,
+          photo: studData.Image_URL,
+          name: studData.Name,
+          requirements: studData.Requirements,
+          skills: skillRes.data,
+          Degree_ID: degreeRes.data.Degree_ID,
+          year: degreeRes.data.year,
+          branch: degreeRes.data.branch,
+          batch: degreeRes.data.batch,
+          division: degreeRes.data.batch !== '' ? degreeRes.data.batch[0] : '',
+        };
+      }
 
       setcardUserData(cardUserData);
-    }
+    };
 
     // console.log(axiosInstance.defaults.headers['Authorization']);
-    await getCardUser();
 
-    setIsLoading(false);
+    const init = async () => {
+      try {
+        setIsLoading(true);
+        await getCardUser();
+        setIsLoading(false);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    init();
   }, []);
 
   return (
@@ -401,27 +435,35 @@ function ViewProfile({route}) {
           </ScrollView>
 
           {/* <View style={styles.bottomOptionsContainer}> */}
-          <TouchableOpacity
-            style={styles.bottomOptionRight}
-            onPress={() => {
-              swiperRef.current.swipeLeft();
-              navigation.navigate('Discover');
-            }}>
-            <MaterialCommunityIcons name="close-thick" size={36} color="gray" />
-          </TouchableOpacity>
+          {swiperRef !== -1 && (
+            <>
+              <TouchableOpacity
+                style={styles.bottomOptionRight}
+                onPress={() => {
+                  swiperRef.current.swipeLeft();
+                  navigation.navigate('Discover');
+                }}>
+                <MaterialCommunityIcons
+                  name="close-thick"
+                  size={36}
+                  color="gray"
+                />
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.bottomOptionLeft}
-            onPress={() => {
-              swiperRef.current.swipeRight();
-              navigation.navigate('Discover');
-            }}>
-            <MaterialCommunityIcons
-              name="check-bold"
-              size={36}
-              color={colors.secondary}
-            />
-          </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.bottomOptionLeft}
+                onPress={() => {
+                  swiperRef.current.swipeRight();
+                  navigation.navigate('Discover');
+                }}>
+                <MaterialCommunityIcons
+                  name="check-bold"
+                  size={36}
+                  color={colors.secondary}
+                />
+              </TouchableOpacity>
+            </>
+          )}
         </>
       )}
       {/* </View> */}

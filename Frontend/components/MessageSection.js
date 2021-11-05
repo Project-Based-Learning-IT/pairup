@@ -93,7 +93,7 @@ function MessageSection() {
             headerRight: () => <IconButton icon="dots-horizontal" />,
           })}></MessageSectionStack.Screen>
         <MessageSectionStack.Screen
-          name="ViewProfileRightSwipedU"
+          name="ChatViewProfile"
           component={ViewProfile}
           options={({route}) => ({
             headerTitle: () => (

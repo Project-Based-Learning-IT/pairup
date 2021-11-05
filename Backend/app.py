@@ -419,7 +419,7 @@ def get_recommendations():
 # Social URLs Routes
 
 
-@app.route("/get_social_urls",  methods=['GET', 'POST'])
+@app.route("/get_social_urls",  methods=['GET'])
 @jwt_required()
 def get_social_urls():
     id = request.args.get('id', -1, type=int)
@@ -553,7 +553,9 @@ def update_degree():
 @ app.route("/get_degree",  methods=['GET'])
 @jwt_required()
 def get_degree():
-    id = get_jwt_identity()
+    id = request.args.get('id', -1, type=int)
+    if id == -1:
+        id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     res = dict()
     res['Degree_ID'] = student.degree.Degree_ID
@@ -647,7 +649,7 @@ def get_student_profile():
     res['Email'] = student.Email
     res['Headline'] = student.Headline
     res['Google_ID'] = student.Google_ID
-    res['Image_URl'] = student.Image_URL
+    res['Image_URL'] = student.Image_URL
     res['Name'] = student.Name.title()
     res['Requirements'] = student.Requirements
     res['SocialURL_ID'] = student.SocialURL_ID
@@ -877,7 +879,9 @@ def update_student_skills():
 @app.route("/get_stud_skills",  methods=['GET'])
 @jwt_required()
 def get_stud_skills():
-    id = get_jwt_identity()
+    id = request.args.get('id', -1, type=int)
+    if id == -1:
+        id = get_jwt_identity()
     student = Student.query.filter_by(Student_ID=id).first()
     res = list()
     for skill in student.skills:
