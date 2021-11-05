@@ -128,6 +128,7 @@ https://react-native-async-storage.github.io/async-storage/ [Not Working]
 
 https://rnfirebase.io/firestore/usage
 
+https://github.com/FaridSafi/react-native-gifted-chat
 
 ## Backend
 
