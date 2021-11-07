@@ -171,7 +171,7 @@ function Chat(props) {
     //   Message_ID: docRef.id,
     // };
     // setMessages(previousMessages => GiftedChat.append(previousMessages, mymsg));
-    const MySQLDB = await axiosInstance.post('/message', {
+    const MySQLDB = axiosInstance.post('/message', {
       Receiver_ID: userChatting.pid,
       text: mymsg.text,
     });
