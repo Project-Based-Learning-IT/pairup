@@ -1,12 +1,13 @@
 # PairUp
+
+## Demo
+[![Demo Portrait 720p](https://yt-embed.herokuapp.com/embed?v=ZCl0nVtK7hQ)](https://www.youtube.com/watch?v=ZCl0nVtK7hQ "Demo Portrait 720p")
+
 **Deployed Frontend on https://appetize.io/app/b5u340q115tqhw165t0cxy9cwm**
 
 **Deployed Backend on http://campusspace.herokuapp.com**
 
 **Sub-project**: https://github.com/Project-Based-Learning-IT/linkedin-scraper
-
-## Demo
-https://user-images.githubusercontent.com/63101268/140554176-f7dbe3b8-dc1e-48cd-b2a0-a9ea3b04b691.mp4
 
 ## Recommendation Algorithm
 
