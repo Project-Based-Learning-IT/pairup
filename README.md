@@ -77,7 +77,10 @@ To open the dev menu: `adb shell input keyevent 82`
 ### Errors and solutions
 * Error: Keyboard.removeListener is not a function
 
-Solution: https://github.com/FaridSafi/react-native-gifted-chat/issues/2090
+Solution: 
+Edit Frontend\node_modules\react-native-gifted-chat\lib\MessageContainer.js
+
+https://github.com/FaridSafi/react-native-gifted-chat/issues/2090#issuecomment-901812607
 * Error: mergeLibDexDebug FAILED 
 
 Solution: fixed by enabling the multiDex in the
@@ -242,4 +245,3 @@ https://stackoverflow.com/a/56520746/15395433, use `gradlew assembleDebug`
 -   REVIEW - An item that requires additional review
 -   SECTION - Used to define a region (See 'Hierarchical anchors')
 -   LINK - Used to link to a file that can be opened within the editor (See 'Link Anchors')
-
