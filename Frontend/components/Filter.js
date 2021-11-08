@@ -141,7 +141,9 @@ function Filter(props) {
           <IconButton
             color={colors.textHeadBlack}
             icon="close-thick"
-            onPress={handleClose}
+            onPress={() => {
+              close();
+            }}
           />
         </View>
         {skillsLoading || skills.length === 0 ? (
@@ -273,7 +275,7 @@ function Filter(props) {
             // backgroundColor: colors.primary,
           }}>
           <View>
-            <Text
+            {/* <Text
               style={{
                 fontSize: 18,
                 fontWeight: 'bold',
@@ -281,16 +283,40 @@ function Filter(props) {
               }}>
               8
             </Text>
-            <Text>Students found</Text>
+            <Text>Students found</Text> */}
+            <TouchableHighlight
+              underlayColor="#dddddd"
+              style={{
+                backgroundColor: 'white',
+                padding: 10,
+                paddingLeft: 36,
+                paddingRight: 36,
+                borderRadius: 8,
+                borderColor: colors.primary,
+                borderWidth: 3,
+              }}
+              onPress={() => {
+                setFilterSkills([]);
+              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  color: colors.primary,
+                }}>
+                Reset
+              </Text>
+            </TouchableHighlight>
           </View>
           <View>
             <TouchableHighlight
               style={{
                 backgroundColor: colors.primary,
-                padding: 12,
+                padding: 10,
                 paddingLeft: 36,
                 paddingRight: 36,
                 borderRadius: 8,
+                borderWidth: 3,
               }}
               onPress={handleClose}>
               <Text
