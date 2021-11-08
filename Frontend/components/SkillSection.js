@@ -32,7 +32,7 @@ function SkillSection(props) {
   }
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps="handled">
       <SearchBox
         value={searchTerm}
         onChangeText={setSearchTerm}
