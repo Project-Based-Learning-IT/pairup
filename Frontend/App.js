@@ -1,5 +1,5 @@
-import React, {useContext} from 'react';
-import {StatusBar, StyleSheet, View, Alert} from 'react-native';
+import React, {useCallback, useContext} from 'react';
+import {StatusBar, StyleSheet, View, Alert, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import Discover from './components/Discover';
 import DiscoverSection from './components/DiscoverSection';
@@ -21,7 +21,7 @@ import SignUp from './components/SignUp';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 import * as Keychain from 'react-native-keychain';
 import MessageSection from './components/MessageSection';
-
+import NetInfo from '@react-native-community/netinfo';
 import axios from 'axios';
 import {Android_Local_ADDRESS, IOS_Local_ADDRESS} from '@env';
 import {ChatContext} from './components/ChatContext';
@@ -78,6 +78,7 @@ const App = () => {
   const [isSignedIn, setIsSignedIn] = React.useState(false);
   const [user, setUser] = React.useState({});
   const [axiosInst, setaxiosInstance] = React.useState({});
+  const [isConnected, setIsConnected] = React.useState(true);
 
   const BASE_ADDRESS = 'https://campusspace.herokuapp.com';
   // Platform.OS === 'android' ? Android_Local_ADDRESS : IOS_Local_ADDRESS;
@@ -129,6 +130,14 @@ const App = () => {
     }
   };
 
+  const checkConnection = useCallback(state => {
+    if (state.isConnected) {
+      setIsConnected(true);
+    } else {
+      setIsConnected(false);
+    }
+  }, []);
+
   React.useEffect(() => {
     async function init() {
       try {
@@ -137,7 +146,6 @@ const App = () => {
         GoogleSignin.configure({});
         await GoogleSignin.hasPlayServices();
 
-        // TODO: store user in storage
         const credentials = await Keychain.getGenericPassword();
 
         if (credentials) {
@@ -153,10 +161,9 @@ const App = () => {
 
         setaxiosInstance({axiosInstance});
 
-        // TODO: Remove this fake splash screen
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 2000);
+        NetInfo.addEventListener(checkConnection);
+
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -177,10 +184,13 @@ const App = () => {
     }
 
     init();
+
+    return () => {
+      NetInfo.removeEventListener(checkConnection);
+    };
   }, []);
 
   if (isLoading) {
-    console.log('Loading');
     return <SplashScreen></SplashScreen>;
   }
 
@@ -208,6 +218,26 @@ const App = () => {
               backgroundColor="transparent"
               translucent={true}
             />
+            {!isConnected && (
+              <View
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingTop: StatusBar.currentHeight + 4,
+                  paddingBottom: 4,
+                  backgroundColor: theme.colors.danger,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: theme.colors.textHeadBlack,
+                    fontWeight: 'bold',
+                  }}>
+                  No network connection
+                </Text>
+              </View>
+            )}
             {!isSignedIn && (
               <LoggedOutStack.Navigator>
                 <LoggedOutStack.Screen
