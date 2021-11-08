@@ -14,7 +14,7 @@ const MessageSectionStack = createNativeStackNavigator();
 
 function MessageSection() {
   const [allChats, setAllChats] = React.useState({});
-  const [verticalProfiles, setVerticalProfiles] = React.useState([]);
+  // const [verticalProfiles, setVerticalProfiles] = React.useState([]);
   // const MMKV = new MMKVStorage.Loader().initialize();
 
   // const removeItem = key => {
@@ -72,14 +72,26 @@ function MessageSection() {
         // removeItem,
         allChats,
         setAllChats,
-        verticalProfiles,
-        setVerticalProfiles,
+        // verticalProfiles,
+        // setVerticalProfiles,
       }}>
       <MessageSectionStack.Navigator>
         <MessageSectionStack.Screen
           name="Messages"
           component={Messages}
           options={{headerShown: false}}></MessageSectionStack.Screen>
+        <MessageSectionStack.Screen
+          name="ViewProfileRightSwipedU"
+          component={ViewProfile}
+          options={({route}) => ({
+            headerTitle: () => (
+              <LogoTitle
+                user={route?.params?.card_user}
+                Routename={route.name}
+              />
+            ),
+            headerRight: () => <IconButton icon="dots-horizontal" />,
+          })}></MessageSectionStack.Screen>
         <MessageSectionStack.Screen
           name="Chat"
           component={Chat}

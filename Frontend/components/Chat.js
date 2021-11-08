@@ -45,7 +45,7 @@ function Chat(props) {
     allChats,
     setAllChats,
     // verticalProfiles,
-    setVerticalProfiles,
+    // setVerticalProfiles,
     // getData,
     // storeData,
   } = React.useContext(ChatContext);
@@ -53,7 +53,7 @@ function Chat(props) {
   const {colors} = useTheme();
   const route = useRoute();
 
-  const {user, axiosInstance} = useAuth();
+  const {user, axiosInstance, setVerticalProfiles} = useAuth();
 
   const [chatText, setChatText] = React.useState('');
   // const [isLoading, setIsLoading] = React.useState(false);

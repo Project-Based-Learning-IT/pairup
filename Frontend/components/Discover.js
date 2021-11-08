@@ -132,6 +132,14 @@ function Discover({route}) {
       }
     } else {
       console.log('Yet to Match');
+      try {
+        const msg = await axiosInstance.post('/message', {
+          Receiver_ID: cards[index].id,
+          text: `Right Swiped ${cards[index].id}`,
+        });
+      } catch (err) {
+        console.log(err);
+      }
     }
     setIndex(index + 1);
   };

@@ -1069,6 +1069,20 @@ def get_chats_after_last_cached():
 # }
 # or "DateTime": "Tue, 26 Oct 2021 13:10:38 GMT"
 
+
+@ app.route("/delete_last_msg",  methods=['POST'])
+@jwt_required()
+def delete_last_msg():
+    if request.method == "POST":
+        pid = int(request.json['pid'])
+        id = get_jwt_identity()
+        last_msg = Messages.query.filter((Messages.Sender_ID == pid) & (
+            Messages.Receiver_ID == id)).order_by(Messages.timestamp.desc()).first()
+        db.session.delete(last_msg)
+        db.session.commit()
+        return "Deleted", 200
+
+
 # ==============================================================================
 
 

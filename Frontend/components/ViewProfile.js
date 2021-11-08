@@ -29,9 +29,12 @@ import {useNavigation} from '@react-navigation/native';
 
 function ViewProfile({route}) {
   const {card_user, swiperRef} = route.params;
+
+  const {setHorizontalProfiles} = route?.params;
+
   const navigation = useNavigation();
 
-  const {axiosInstance} = useAuth();
+  const {axiosInstance, setVerticalProfiles} = useAuth();
   const {colors} = useTheme();
 
   const [cardUserData, setcardUserData] = React.useState({});
@@ -62,8 +65,8 @@ function ViewProfile({route}) {
     elevation: 4,
   };
   const styles = StyleSheet.create({
-    bottomOptionLeft: bottomOptionLeft,
-    bottomOptionRight: {
+    bottomOptionRight: bottomOptionLeft,
+    bottomOptionLeft: {
       ...bottomOptionLeft,
       left: 90,
     },
@@ -255,9 +258,10 @@ function ViewProfile({route}) {
                 <Image
                   style={{width: 120, height: 120, borderRadius: 70}}
                   source={{
-                    uri: cardUserData.photo
-                      ? cardUserData.photo
-                      : defaultProfilePic,
+                    uri:
+                      cardUserData.photo && cardUserData.photo !== 'None'
+                        ? cardUserData.photo
+                        : defaultProfilePic,
                   }}></Image>
               </View>
             </View>
@@ -438,10 +442,27 @@ function ViewProfile({route}) {
           {swiperRef !== -1 && (
             <>
               <TouchableOpacity
-                style={styles.bottomOptionRight}
-                onPress={() => {
-                  swiperRef.current.swipeLeft();
-                  navigation.navigate('Discover');
+                style={styles.bottomOptionLeft}
+                onPress={async () => {
+                  if (route.name === 'ViewProfileRightSwipedU') {
+                    await setHorizontalProfiles(prevHorizontalProfiles => {
+                      let newHProfiles = prevHorizontalProfiles.filter(
+                        profile => profile.pid !== card_user.id,
+                      );
+                      return newHProfiles;
+                    });
+                    navigation.navigate('Messages');
+                    try {
+                      const msg = axiosInstance.post('/delete_last_msg', {
+                        pid: card_user.id,
+                      });
+                    } catch (err) {
+                      console.log(err);
+                    }
+                  } else {
+                    swiperRef.current.swipeLeft();
+                    navigation.navigate('Discover');
+                  }
                 }}>
                 <MaterialCommunityIcons
                   name="close-thick"
@@ -451,10 +472,38 @@ function ViewProfile({route}) {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.bottomOptionLeft}
-                onPress={() => {
-                  swiperRef.current.swipeRight();
-                  navigation.navigate('Discover');
+                style={styles.bottomOptionRight}
+                onPress={async () => {
+                  if (route.name === 'ViewProfileRightSwipedU') {
+                    let newVProfile = [];
+                    await setHorizontalProfiles(prevHorizontalProfiles => {
+                      newVProfile.push(
+                        prevHorizontalProfiles.find(profile => {
+                          return profile.pid === card_user.id;
+                        }),
+                      );
+                      return prevHorizontalProfiles.filter(
+                        profile => profile.pid !== card_user.id,
+                      );
+                    });
+                    newVProfile[0].text = 'Hi, 👋 We matched up';
+                    newVProfile[0].newmsgs = 1;
+                    await setVerticalProfiles(prevVerticalProfiles => {
+                      return [...prevVerticalProfiles, ...newVProfile];
+                    });
+                    navigation.navigate('Messages');
+                    try {
+                      const msg = axiosInstance.post('/message', {
+                        Receiver_ID: card_user.id,
+                        text: 'Hi, 👋 We matched up',
+                      });
+                    } catch (err) {
+                      console.log(err);
+                    }
+                  } else {
+                    swiperRef.current.swipeRight();
+                    navigation.navigate('Discover');
+                  }
                 }}>
                 <MaterialCommunityIcons
                   name="check-bold"

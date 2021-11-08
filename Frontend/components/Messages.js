@@ -17,7 +17,8 @@ import {ChatContext} from './ChatContext';
 import {defaultProfilePic} from '../staticStore';
 
 function Messages() {
-  const {user, axiosInstance} = useAuth();
+  const {user, axiosInstance, verticalProfiles, setVerticalProfiles} =
+    useAuth();
   // let {vProfilesInterval, setVProfilesInterval} = useAuth();
   const {vProfilesInterval, setVProfilesInterval} = React.useState();
   const [refreshing, setRefreshing] = React.useState(false);
@@ -29,8 +30,8 @@ function Messages() {
   const {
     allChats,
     setAllChats,
-    verticalProfiles,
-    setVerticalProfiles,
+    // verticalProfiles,
+    // setVerticalProfiles,
     // storeData,
     // getData,
     // removeItem,
@@ -93,6 +94,8 @@ function Messages() {
       // if (res.length > 0 && vProfilesInterval._idleTimeout !== -1) {
       if (res.length > 0) {
         await setVerticalProfiles(prevVProfiles => {
+          let vPs = [],
+            hPs = [];
           res.map(profile => {
             if (
               prevVProfiles.some(
@@ -105,8 +108,17 @@ function Messages() {
             ) {
               profile.newmsgs = 0;
             }
+            if (
+              profile.text === `Right Swiped ${user.id}` &&
+              profile.Sender_ID !== user.id
+            ) {
+              hPs.push(profile);
+            } else {
+              vPs.push(profile);
+            }
           });
-          return res;
+          setHorizontalProfiles(hPs);
+          return vPs;
         });
       }
       // console.log('Res: ', res);
@@ -122,24 +134,6 @@ function Messages() {
 
   React.useEffect(() => {
     // setIsLoading(true);
-
-    // async function getProfiles() {
-    //   try {
-    // Loop to fetch 8 horizontal profiles
-    // for (let i = 0; i < 8; i++) {
-    //   const response = await fetch(
-    //     'https://randomuser.me/api/?results=1&inc=name,picture,email,location,phone,cell,dob,login,registered,id,nat&noinfo',
-    //   );
-    //   const data = await response.json();
-    //   setHorizontalProfiles(horizontalProfiles => [
-    //     ...horizontalProfiles,
-    //     data.results[0],
-    //   ]);
-    // }
-
-    // console.log(horizontalProfiles);
-    // }
-    // getProfiles();
 
     // console.log('Before append: ', allChats);
     const init = async () => {
@@ -195,7 +189,7 @@ function Messages() {
       }}>
       {console.log('Messages Rerender')}
       <FocusAwareStatusBar barStyle={'dark-content'} backgroundColor={'#fff'} />
-      {/* <Text
+      <Text
         style={{
           padding: 10,
           color: colors.primary,
@@ -221,48 +215,18 @@ function Messages() {
               justifyContent: 'center',
             }}
             onPress={() => {
-              card1 = {
-                id: 1,
-                name: 'Tanya Agrawal',
-                email: 'abc@viit.ac.in',
-                personalEmail: 'lol@lol.com',
-                bio: 'Common man',
-                photo:
-                  'https://media-exp1.licdn.com/dms/image/C5103AQFKbyGxKxMYGA/profile-displayphoto-shrink_200_200/0/1539165110959?e=1638403200&v=beta&t=c93WpMen-FJ1jheRQ2DAhVzHWU06ocZHHvjp1BH2jSM',
-                info: 'BTech | CS | A1',
-                year: '2023',
-                division: 'A',
-                batch: 'A1',
-                branch: 'Information Technology',
-                headline:
-                  'Student at VIIT | Passionate about NodeJS, Angular and iOS',
-                requirements:
-                  'Looking for a python developer who is comfortable with numpy and pandas. Need someone who is capable of extracting insights from the given data. Knowledge of iOS development or Web Development is a plus.',
-                skills: [
-                  'Web Development',
-                  'iOS App Development',
-                  'NodeJS',
-                  'Angular',
-                  'Swift',
-                  'Objective-C',
-                ],
-                links: {
-                  // https://www.linkedin.com/in/
-                  linkedin: 'rohini-dutta-b9a8a817b',
-                  // https://www.github.com/
-                  github: 'siddheshkothadi',
-                  // https://twitter.com/
-                  twitter: 'siddheshkothadi',
-                },
-                languages: ['Marathi', 'English', 'Hindi'],
-              };
               navigation.navigate('ViewProfileRightSwipedU', {
-                card_user: card1,
+                card_user: {id: profile.pid, name: profile.Name},
+                swiperRef: -2,
+                setHorizontalProfiles: setHorizontalProfiles,
               });
             }}>
             <Image
               source={{
-                uri: profile.picture.large,
+                uri:
+                  profile.Image_URL && profile.Image_URL !== 'None'
+                    ? profile.Image_URL
+                    : defaultProfilePic,
               }}
               style={{
                 width: 64,
@@ -271,32 +235,32 @@ function Messages() {
                 borderRadius: 50,
               }}
             />
-            {index < 2 && (
-              <View
-                style={{
-                  position: 'absolute',
-                  right: 3,
-                  top: 50,
-                  backgroundColor: colors.success,
-                  padding: 0,
-                  borderWidth: 2,
-                  borderColor: '#fff',
-                  borderRadius: 10,
-                  height: 12,
-                  width: 12,
-                }}></View>
-            )}
+            {/* {index < 2 && ( */}
+            <View
+              style={{
+                position: 'absolute',
+                right: 3,
+                top: 50,
+                backgroundColor: colors.success,
+                padding: 0,
+                borderWidth: 2,
+                borderColor: '#fff',
+                borderRadius: 10,
+                height: 12,
+                width: 12,
+              }}></View>
+            {/* )} */}
             <Text
               style={{
                 textAlign: 'center',
                 fontSize: 11,
                 color: colors.textLightBlack,
               }}>
-              {profile.name.first}
+              {profile.Name}
             </Text>
           </TouchableOpacity>
         ))}
-      </ScrollView> */}
+      </ScrollView>
 
       <View
         style={{

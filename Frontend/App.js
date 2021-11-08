@@ -79,6 +79,7 @@ const App = () => {
   const [user, setUser] = React.useState({});
   const [axiosInst, setaxiosInstance] = React.useState({});
   const [isConnected, setIsConnected] = React.useState(true);
+  const [verticalProfiles, setVerticalProfiles] = React.useState([]);
 
   const BASE_ADDRESS = 'https://campusspace.herokuapp.com';
   // Platform.OS === 'android' ? Android_Local_ADDRESS : IOS_Local_ADDRESS;
@@ -209,6 +210,8 @@ const App = () => {
             // NOTE pass common Networking instance
             axiosInstance: axiosInst.axiosInstance,
             setaxiosInstance,
+            verticalProfiles,
+            setVerticalProfiles,
             // vProfilesInterval,
             // setVProfilesInterval,
           }}>
