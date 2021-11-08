@@ -225,12 +225,8 @@ function MyProfile({route}) {
     const init = async () => {
       try {
         setIsSaving(true);
-        if (skillsList.length === 0) {
-          await getDBskills();
-        }
-        if (languageList.length === 0) {
-          await getDBlanguages();
-        }
+        await getDBskills();
+        await getDBlanguages();
         setIsSaving(false);
       } catch (e) {
         console.log(e);
