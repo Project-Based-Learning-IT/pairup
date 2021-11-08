@@ -9,6 +9,7 @@ import {
   StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
 import {
   IconButton,
@@ -54,6 +55,17 @@ function Filter(props) {
 
   const {axiosInstance} = useAuth();
 
+  const backAction = React.useCallback(() => {
+    Animated.timing(springAnim, {
+      toValue: height + 100,
+      duration: 256,
+      useNativeDriver: true,
+    }).start(() => {
+      close();
+    });
+    return true;
+  }, [close]);
+
   React.useEffect(() => {
     const slideIn = () => {
       Animated.spring(springAnim, {
@@ -77,6 +89,13 @@ function Filter(props) {
       }
     };
     getSkills();
+  }, []);
+
+  React.useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', backAction);
   }, []);
 
   const handleClose = () => {
