@@ -80,8 +80,7 @@ function SkillSection(props) {
                     setSkills(newSkills);
                   }}
                   style={{margin: 4}}
-                  icon="close"
-                  selected={true}>
+                  icon="close-circle-outline">
                   {skill.skill_name}
                 </Chip>
               );
