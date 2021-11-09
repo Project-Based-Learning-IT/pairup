@@ -232,7 +232,7 @@ To check logs on heroku cli -
 
 ## Frontend hosted on Appetize
 * Build Debug APK using following guide
-https://stackoverflow.com/a/56520746/15395433, use `gradlew assembleDebug`
+https://stackoverflow.com/a/56520746/15395433, use `npx react-native....` and `gradlew assembleDebug`
 * Upload it on [Appetize](https://appetize.io/)
 
 ## Comment Anchors
