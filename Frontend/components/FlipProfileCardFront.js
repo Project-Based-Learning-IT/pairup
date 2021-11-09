@@ -56,7 +56,7 @@ function FlipProfileCardFront(props) {
           }}
           source={{
             uri:
-              props.card.photo.length === 0
+              props.card.photo.length === 0 || props.card.photo === 'None'
                 ? defaultProfilePic
                 : props.card.photo,
           }}></Image>

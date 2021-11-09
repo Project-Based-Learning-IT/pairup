@@ -113,7 +113,7 @@ function Messages() {
               profile.Sender_ID !== user.id
             ) {
               hPs.push(profile);
-            } else {
+            } else if (!profile.text.startsWith('Right Swiped')) {
               vPs.push(profile);
             }
           });
