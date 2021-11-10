@@ -3,7 +3,6 @@
 # =============================================================
 # package imports
 import pipelining
-import multiprocessing
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -268,7 +267,7 @@ def call_to_retraining_function():
 # counter logic
 # ==========================================================================================
 counter = 0
-target_count_value = 5
+target_count_value = 3
 
 def should_call_retrain():
     global counter
