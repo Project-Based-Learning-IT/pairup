@@ -269,12 +269,13 @@ def call_to_retraining_function():
 counter = 0
 target_count_value = 3
 
+
 def should_call_retrain():
     global counter
     global target_count_value
-    #logs
+    # logs
     print('should_call_retrain() accessible\nCounter is - {}'.format(counter))
-    if(counter>=target_count_value):
+    if(counter >= target_count_value):
         print('Calling retraining function with multiprocessing')
         call_to_retraining_function()
         print('Resetting counter to 0')
@@ -960,6 +961,7 @@ def get_last_msgs():
         from Messages as NewM
         where NewM.timestamp >= :dt
           and NewM.Sender_ID != :id
+          and NewM.Receiver_ID = :id
         group by NewM.Sender_ID
       ) AS NewSC ON NewSC.Sender_ID = maxTsC.pid
       INNER JOIN (
