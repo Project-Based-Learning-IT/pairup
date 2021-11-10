@@ -321,8 +321,9 @@ def should_call_retrain():
     print('should_call_retrain() accessible\nCounter is - {}'.format(counter))
     if(counter>=target_count_value):
         print('Calling retraining function with multiprocessing')
-        p1 = multiprocessing.Process(target=call_to_retraining_function)
-        p1.start()
+        # p1 = multiprocessing.Process(target=call_to_retraining_function)
+        # p1.start()
+        call_to_retraining_function()
         # print('calling reset counter file')
         print('Resetting counter to 0')
         counter = 0
