@@ -273,8 +273,10 @@ target_count_value = 5
 
 def check_file_exists(filename):
     if(exists(filename)):
+        print('counter.txt already exists')
         pass
     else:
+        print('counter.txt does not exist, creating it')
         with open(filename, 'w') as f:
             f.write('0')
         f.close()
@@ -286,8 +288,11 @@ def check_counter(filename):
         count = int(f.read())
     f.close()
     global target_count_value
+    print('current count - {}\ntarget count - {}'.format(count,target_count_value))
     if(count > target_count_value):
+        print('Lets retrain...')
         return True
+    print('not retraining yet')
     return False
 
 
@@ -296,21 +301,29 @@ def update_counter(filename):
         count = int(f.read())
     with open(filename, 'w') as f:
         f.write(str(count + 1))
+    print('Update successful')
 
 
 def reset_counter(filename):
     with open(filename, 'w') as f:
         f.write('0')
+    print('Reset successful')
 
 
 def should_call_retrain():
     global counter_filename
+    #logs
+    print('should_call_retrain() accessible\nCounter file name is - {}'.format(counter_filename))
     status = check_counter(counter_filename)
     if(status):
+        print('Calling retraining function with multiprocessing')
         p1 = multiprocessing.Process(target=call_to_retraining_function)
         p1.start()
+        print('calling reset counter file')
         reset_counter(counter_filename)
     else:
+        print('Not calling retraining function')
+        print('updating value of counter in counter.txt')
         update_counter(counter_filename)
 
 # ==========================================================================================
