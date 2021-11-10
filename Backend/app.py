@@ -328,6 +328,8 @@ def should_call_retrain():
         counter = 0
         reset_counter(counter_filename)
     else:
+        counter += 1
+        print('Incremented counter to - {}'.format(counter))
         print('Not calling retraining function')
         # print('updating value of counter in counter.txt')
         print('Not resetting counter')
