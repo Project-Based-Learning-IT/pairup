@@ -319,7 +319,7 @@ def should_call_retrain():
     # print('should_call_retrain() accessible\nCounter file name is - {}'.format(counter_filename))
     # status = check_counter(counter_filename)
     print('should_call_retrain() accessible\nCounter is - {}'.format(counter))
-    if(counter==0):
+    if(counter>=target_count_value):
         print('Calling retraining function with multiprocessing')
         p1 = multiprocessing.Process(target=call_to_retraining_function)
         p1.start()
