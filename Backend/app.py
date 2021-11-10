@@ -268,6 +268,7 @@ def call_to_retraining_function():
 # counter logic
 # ==========================================================================================
 counter_filename = 'counter.txt'
+counter = 0
 target_count_value = 5
 
 
@@ -311,20 +312,26 @@ def reset_counter(filename):
 
 
 def should_call_retrain():
-    global counter_filename
+    # global counter_filename
+    global counter
+    global target_count_value
     #logs
-    print('should_call_retrain() accessible\nCounter file name is - {}'.format(counter_filename))
-    status = check_counter(counter_filename)
-    if(status):
+    # print('should_call_retrain() accessible\nCounter file name is - {}'.format(counter_filename))
+    # status = check_counter(counter_filename)
+    print('should_call_retrain() accessible\nCounter is - {}'.format(counter))
+    if(counter>=target_count_value):
         print('Calling retraining function with multiprocessing')
         p1 = multiprocessing.Process(target=call_to_retraining_function)
         p1.start()
-        print('calling reset counter file')
+        # print('calling reset counter file')
+        print('Resetting counter to 0')
+        counter = 0
         reset_counter(counter_filename)
     else:
         print('Not calling retraining function')
-        print('updating value of counter in counter.txt')
-        update_counter(counter_filename)
+        # print('updating value of counter in counter.txt')
+        print('Not resetting counter')
+        # update_counter(counter_filename)
 
 # ==========================================================================================
 
