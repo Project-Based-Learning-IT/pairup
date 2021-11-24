@@ -1,7 +1,7 @@
 # PairUp
 
 ## Demo
-[![Demo Portrait 720p](https://yt-embed.herokuapp.com/embed?v=ZCl0nVtK7hQ)](https://www.youtube.com/watch?v=ZCl0nVtK7hQ "Demo Portrait 720p")
+[![PairUP](https://img.youtube.com/vi/ZCl0nVtK7hQ/hqdefault.jpg)](https://www.youtube.com/watch?v=ZCl0nVtK7hQ "Demo Portrait 720p")
 
 **Deployed Frontend on https://appetize.io/app/b5u340q115tqhw165t0cxy9cwm**
 
