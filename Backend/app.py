@@ -62,7 +62,7 @@ jwt = JWTManager(app)
 
 # MYSQL Production URI
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-    'SQLALCHEMY_DATABASE_URI')
+    'PLANET_SCALE_DB_URI')
 
 # MYSQL Local URI
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(

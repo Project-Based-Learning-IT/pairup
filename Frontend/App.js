@@ -23,7 +23,7 @@ import * as Keychain from 'react-native-keychain';
 import MessageSection from './components/MessageSection';
 import NetInfo from '@react-native-community/netinfo';
 import axios from 'axios';
-import {Android_Local_ADDRESS, IOS_Local_ADDRESS} from '@env';
+import {Android_Emulator_Local_ADDRESS, IOS_Local_ADDRESS} from '@env';
 import {ChatContext} from './components/ChatContext';
 
 const AuthContext = React.createContext();
@@ -81,8 +81,8 @@ const App = () => {
   const [isConnected, setIsConnected] = React.useState(true);
   const [verticalProfiles, setVerticalProfiles] = React.useState([]);
 
-  const BASE_ADDRESS = 'https://campusspace.herokuapp.com';
-  // Platform.OS === 'android' ? Android_Local_ADDRESS : IOS_Local_ADDRESS;
+  // const BASE_ADDRESS = 'https://campusspace.herokuapp.com';
+  const BASE_ADDRESS = Platform.OS === 'android' ? Android_Emulator_Local_ADDRESS : IOS_Local_ADDRESS;
   let axiosInstance = axios.create({
     baseURL: BASE_ADDRESS,
     timeout: 30000,
