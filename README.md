@@ -17,6 +17,10 @@
 ### Example prediction
 ![Diagram of prediction](https://github.com/Project-Based-Learning-IT/Recommendation-Algorithm/blob/main/Top%20prediction.png)
 
+### Class Diagram:
+![Class_diagram](https://user-images.githubusercontent.com/63101268/154047279-f32326da-2f54-45e6-9abe-a55f52603929.jpg)
+
+
 ### Setup
 <li> Clone the repository using following command or github desktop
 <p><code>git clone https://github.com/Project-Based-Learning-IT/CollegeSpace.git</code></p>
