@@ -1,6 +1,6 @@
 # PairUp
 
-## Demo
+## Demo Video
 [![PairUP](https://img.youtube.com/vi/ZCl0nVtK7hQ/hqdefault.jpg)](https://www.youtube.com/watch?v=ZCl0nVtK7hQ "Demo Portrait 720p")
 
 **Deployed Frontend on https://appetize.io/app/b5u340q115tqhw165t0cxy9cwm**
